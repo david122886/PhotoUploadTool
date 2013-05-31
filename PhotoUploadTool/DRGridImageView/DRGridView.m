@@ -57,7 +57,11 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
 
 -(void)singleTapGestureCaptured:(UITapGestureRecognizer*)tapGesture{
     CGPoint point = [tapGesture locationInView:tapGesture.view];
-    DRGridViewCell *cell = [self.loadedCells objectAtIndex:[self getCurrentloadedArrIndex:point]];
+    int selectedIndex = [self getCurrentloadedArrIndex:point];
+    if (selectedIndex < 0) {
+        return;
+    }
+    DRGridViewCell *cell = [self.loadedCells objectAtIndex:selectedIndex];
     if (cell.cellIndex == 0) {
         if (self.gridViewDelegate && [self.gridViewDelegate respondsToSelector:@selector(prepareAddNewCellData)]) {
             [self.gridViewDelegate prepareAddNewCellData];
@@ -174,6 +178,11 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
     _cellPool = nil;
     [self.loadedCells removeAllObjects];
     _loadedCells = nil;
+    for (UIView *subview in self.subviews) {
+        if ([subview isKindOfClass:[DRGridViewCell class]]) {
+            [subview removeFromSuperview];
+        }
+    }
 }
 
 -(void)prepareLoad{
@@ -483,6 +492,10 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
     }
     return nil;
 }
+
+-(void)jumpToCellIndex:(int)index{
+
+}
 #pragma mark --
 
 -(void)scrollViewScrollEnd{
@@ -515,7 +528,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
         return;
     }
     if (decelerate) {
-        NSLog(@"scrollViewDidEndDragging>>>>>>>>>>>>>>>>>>>>>>>>>>>decelerate");
+        
     }else{
         NSLog(@"scrollViewDidEndDragging>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     }

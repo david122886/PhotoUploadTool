@@ -13,7 +13,7 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-
+@synthesize afhttpClient = _afhttpClient;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 //    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -146,4 +146,12 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
+#pragma mark property
+-(AFHTTPClient *)afhttpClient{
+    if (!_afhttpClient) {
+        _afhttpClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:LIUYUSERVER_URL]];
+    }
+    return _afhttpClient;
+}
+#pragma mark --
 @end

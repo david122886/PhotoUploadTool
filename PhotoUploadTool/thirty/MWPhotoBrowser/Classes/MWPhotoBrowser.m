@@ -11,7 +11,7 @@
 #import "MWZoomingScrollView.h"
 #import "MBProgressHUD.h"
 #import "SDImageCache.h"
-
+#import "MWPhotoBrowserTabBarView.h"
 #define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
 #define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
@@ -54,7 +54,7 @@
     UIBarStyle _previousNavBarStyle;
     UIStatusBarStyle _previousStatusBarStyle;
     UIBarButtonItem *_previousViewControllerBackButton;
-    
+    MWPhotoBrowserTabBarView *mwTabView;
     // Misc
     BOOL _displayActionButton;
 	BOOL _performingLayout;
@@ -226,7 +226,6 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 	
 	// View
 	self.view.backgroundColor = [UIColor blackColor];
-	
 	// Setup paging scrolling view
 	CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
 	_pagingScrollView = [[UIScrollView alloc] initWithFrame:pagingScrollViewFrame];
@@ -239,6 +238,11 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     _pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
 	[self.view addSubview:_pagingScrollView];
 	
+    //tab bar
+    mwTabView = [[MWPhotoBrowserTabBarView alloc] initWithFrame:(CGRect){0,0,self.view.frame.size.width,44}];
+    mwTabView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+    
+    
     // Toolbar
     _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
     _toolbar.tintColor = nil;
@@ -274,7 +278,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     
     // Toolbar
     if (numberOfPhotos > 1 || _displayActionButton) {
-        [self.view addSubview:_toolbar];
+//        [self.view addSubview:_toolbar];
     } else {
         [_toolbar removeFromSuperview];
     }
@@ -295,6 +299,35 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [items release];
 	[self updateNavigationWithCurrentIndex:_currentPageIndex];
     
+    
+    [self.view addSubview:mwTabView];
+    [mwTabView.leftBt addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [mwTabView.rightBt addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    /*
+    UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"scan_back.png"] landscapeImagePhone:[UIImage imageNamed:@"scan_back.png"] style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonPressed:)] autorelease];
+    UIBarButtonItem *deleteButton = [[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"scan_delete.png"] landscapeImagePhone:[UIImage imageNamed:@"scan_delete.png"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteButtonPressed:)] autorelease];
+//    UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"返回", nil) style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonPressed:)] autorelease];
+//     UIBarButtonItem *deleteButton = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"删除", nil) style:UIBarButtonItemStylePlain target:self action:@selector(deleteButtonPressed:)] autorelease];
+    // Set appearance
+    if ([UIBarButtonItem respondsToSelector:@selector(appearance)]) {
+        [doneButton setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+        [doneButton setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+        [doneButton setBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+        [doneButton setBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+        [doneButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateNormal];
+        [doneButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateHighlighted];
+        
+        [deleteButton setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+        [deleteButton setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+        [deleteButton setBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+        [deleteButton setBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+        [deleteButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateNormal];
+        [deleteButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateHighlighted];
+    }
+    self.navigationItem.rightBarButtonItem = deleteButton;
+    self.navigationItem.leftBarButtonItem = doneButton;
+    */
+    /*
     // Navigation buttons
     if ([self.navigationController.viewControllers objectAtIndex:0] == self) {
         // We're first on stack so show done button
@@ -326,7 +359,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
         self.previousViewControllerBackButton = previousViewController.navigationItem.backBarButtonItem; // remember previous
         previousViewController.navigationItem.backBarButtonItem = newBackButton;
     }
-    
+    */
     // Content offset
 	_pagingScrollView.contentOffset = [self contentOffsetForPageAtIndex:_currentPageIndex];
     [self tilePages];
@@ -344,6 +377,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [_previousButton release], _previousButton = nil;
     [_nextButton release], _nextButton = nil;
     self.progressHUD = nil;
+    [mwTabView release];mwTabView = nil;
     [super viewDidUnload];
 }
 
@@ -360,7 +394,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     // Status bar
     if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         _previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
+//        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
     }
     
     // Navigation bar appearance
@@ -411,12 +445,17 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 #pragma mark - Nav Bar Appearance
 
 - (void)setNavBarAppearance:(BOOL)animated {
+    
     self.navigationController.navigationBar.tintColor = nil;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
     if ([[UINavigationBar class] respondsToSelector:@selector(appearance)]) {
         [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
         [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsLandscapePhone];
     }
+    [self.navigationController.navigationBar setHidden:YES];
+    mwTabView.center = self.navigationController.navigationBar.center;
+//    mwTabView.frame = self.navigationController.navigationBar.frame;
+    
 }
 
 - (void)storePreviousNavBarAppearance {
@@ -486,13 +525,14 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 	// Reset
 	_currentPageIndex = indexPriorToLayout;
 	_performingLayout = NO;
+    mwTabView.frame = self.navigationController.navigationBar.frame;
     
 }
 
 #pragma mark - Rotation
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-    return YES;
+    return NO;
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -776,9 +816,11 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 }
 
 -(void)didStartDeletingPageAtIndex:(NSUInteger)index{
+    if ([self numberOfPhotos] <1) {
+        [self updateNavigationWithCurrentIndex:_currentPageIndex];
+        return;
+    }
     MWZoomingScrollView *page = [self pageDisplayedAtIndex:index];
-    CGRect visibleBounds = _pagingScrollView.bounds;
-    NSLog(@"%@,%@",NSStringFromCGRect(visibleBounds),NSStringFromCGRect(page.frame));
     if (page) {
         
         if (index+1 < [self numberOfPhotos]) {
@@ -852,6 +894,9 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     int index = (int)(floorf(CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds)));
     if (index < 0) index = 0;
 	if (index > [self numberOfPhotos] - 1) index = [self numberOfPhotos] - 1;
+    if ([_pagingScrollView.subviews count] < 1) {
+        index = -1;
+    }
     return index;
 }
 
@@ -908,12 +953,12 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 - (void)updateNavigationWithCurrentIndex:(NSUInteger)index {
     
 	// Title
-	if ([self numberOfPhotos] > 1) {
-		self.title = [NSString stringWithFormat:@"%i %@ %i", index+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]];		
+	if ([self numberOfPhotos] > 0) {
+		self.title = [NSString stringWithFormat:@"第%i张/共%i张", index+1, [self numberOfPhotos]];
 	} else {
 		self.title = nil;
 	}
-	
+	mwTabView.middleLabel.text = self.title;
 	// Buttons
 	_previousButton.enabled = (index > 0);
 	_nextButton.enabled = (index < [self numberOfPhotos]-1);
@@ -959,7 +1004,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
         if ([UIApplication instancesRespondToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
             [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:animated?UIStatusBarAnimationFade:UIStatusBarAnimationNone];
         } else {
-            [[UIApplication sharedApplication] setStatusBarHidden:hidden animated:animated];
+            [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:animated];
         }
         
         // Get status bar height if visible
@@ -967,12 +1012,15 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
             CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
             statusBarHeight = MIN(statusBarFrame.size.height, statusBarFrame.size.width);
         }
-        
+        /*
         // Set navigation bar frame
         CGRect navBarFrame = self.navigationController.navigationBar.frame;
         navBarFrame.origin.y = statusBarHeight;
         self.navigationController.navigationBar.frame = navBarFrame;
-        
+        */
+        CGRect navBarFrame = mwTabView.frame;
+        navBarFrame.origin.y = statusBarHeight;
+        mwTabView.frame = navBarFrame;
     }
     
     // Captions
@@ -989,6 +1037,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     CGFloat alpha = hidden ? 0 : 1;
 	[self.navigationController.navigationBar setAlpha:alpha];
 	[_toolbar setAlpha:alpha];
+    mwTabView.alpha = alpha;
     for (UIView *v in captionViews) v.alpha = alpha;
 	if (animated) [UIView commitAnimations];
 	
@@ -1034,7 +1083,13 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 
 #pragma mark - Misc
 
+-(void)deleteButtonPressed:(id)sender{
+    [self didStartDeletingPageAtIndex:[self getCurrentIndex]];
+}
 - (void)doneButtonPressed:(id)sender {
+    if (_delegate && [_delegate respondsToSelector:@selector(photoBrowser:backAtIndex:)]) {
+        [_delegate photoBrowser:self backAtIndex:_currentPageIndex];
+    }
     [self dismissModalViewControllerAnimated:YES];
 }
 

@@ -27,6 +27,7 @@
 - (void)photoBrowser:(MWPhotoBrowser *)photoBrowser deletedPhotoAtIndex:(NSUInteger)index;
 @optional
 - (MWCaptionView *)photoBrowser:(MWPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
+- (void)photoBrowser:(MWPhotoBrowser *)photoBrowser backAtIndex:(NSUInteger)index;
 @end
 
 // MWPhotoBrowser

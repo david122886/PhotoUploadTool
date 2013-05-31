@@ -25,7 +25,6 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     }
     return self;
 }
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -34,14 +33,15 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     self.privateController = [[PrivateGridController alloc] init];
     self.privateController.view.backgroundColor = [UIColor clearColor];
     self.publicController.view.backgroundColor = [UIColor clearColor];
-    self.privateController.view.frame = (CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.width};
-    self.publicController.view.frame = (CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.width};
+    self.privateController.view.frame = (CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.height};
+    self.publicController.view.frame = (CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.height};
     
     [self itemSelected:self.publicItemBt withType:PUBLICITEM];
     self.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"_bg.png"]];
     self.drtabBarView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tabbarbg.png"]];
     self.pwdCoverView.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:0.8];
     self.pwdLabel.text = self.privatePwdTip;
+    
 	// Do any additional setup after loading the view.
 }
 
@@ -102,6 +102,7 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 //            self.publicController.view.center = center;
 //        }];
         [self.contentView addSubview:self.publicController.view];
+        self.publicController.rootController = self;
     }else
     if (type == PRIVATEITEM) {
         [self.publicItemBt setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -111,6 +112,7 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
         [self performSelector:@selector(dragUPCoverViewWthAnimation:) withObject:[NSNumber numberWithBool:YES] afterDelay:15.0];
         
         [self.contentView addSubview:self.privateController.view];
+        self.privateController.rootController = self;
         [self checkPrivatePassword];
     }else
     {

@@ -183,6 +183,7 @@ static char kAFImageRequestOperationUploadObjectKey;
         return;
     }
     AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
+    AFHTTPClient *httpClient =[AFHTTPClient clientWithBaseURL:url];
     NSData *imageData = UIImageJPEGRepresentation(self.image, 0.5);
     NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:parameters constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
         [formData appendPartWithFileData:imageData name:@"MainMedia.jpeg" fileName:@"MainMedia.jpeg" mimeType:@"image/jpeg"];

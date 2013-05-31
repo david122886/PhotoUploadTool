@@ -13,3 +13,5 @@
     #import <Foundation/Foundation.h>
     #import <CoreData/CoreData.h>
 #endif
+
+#define LIUYUSERVER_URL @"http://192.168.3.106:3000"

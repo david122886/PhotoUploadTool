@@ -21,6 +21,7 @@ typedef struct {int row;float offset;}GridViewCritical;
 @property(nonatomic,assign) BOOL isloadingData;
 - (DRGridViewCell *)dequeueReusableCellWithIdentifier: (NSString *)idStr;
 -(void)reloadData;
+-(void)jumpToCellIndex:(int)index;
 @end
 
 @protocol DRGridViewDelegate <NSObject>

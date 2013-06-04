@@ -20,6 +20,17 @@
 //    // Override point for customization after application launch.
 //    self.window.backgroundColor = [UIColor whiteColor];
 //    [self.window makeKeyAndVisible];
+//    UIImage *NavigationPortraitBackground = [[UIImage imageNamed:@"tabbarbg.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    
+    // Create image for navigation background - landscape
+    
+//    UIImage *NavigationLandscapeBackground = [[UIImage imageNamed:@"NavigationLandscapeBackground"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    
+    
+    // Set the background image all UINavigationBars
+    
+//    [[UINavigationBar appearance] setBackgroundImage:NavigationPortraitBackground forBarMetrics:UIBarMetricsDefault];
+//    [[UINavigationBar appearance] setBackgroundImage:NavigationLandscapeBackground forBarMetrics:UIBarMetricsLandscapePhone];
     return YES;
 }
 
@@ -153,5 +164,6 @@
     }
     return _afhttpClient;
 }
+
 #pragma mark --
 @end

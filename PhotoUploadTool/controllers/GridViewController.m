@@ -7,9 +7,9 @@
 //
 
 #import "GridViewController.h"
-
 @interface GridViewController ()
 @property(nonatomic,strong) DRGridView *gridView;
+@property(nonatomic,strong) AGImagePickerController *agImagePicker;
 @end
 
 @implementation GridViewController
@@ -41,6 +41,8 @@
     [self.view addSubview:self.gridView];
     [self.gridView reloadData];
 	// Do any additional setup after loading the view.
+    [self.view addSubview:self.uploadCtr.view];
+    self.uploadCtr.view.frame = (CGRect){0,0,self.view.frame.size.width,44};
 }
 
 - (void)didReceiveMemoryWarning
@@ -54,9 +56,15 @@
     self.scrollView = nil;
 }
 
+
 #pragma mark DRGridViewDelegate
 -(void)prepareAddNewCellData{
-
+    if (self.uploadCtr.isUploadFinished) {
+        [self.rootController presentModalViewController:self.agImagePicker animated:YES];
+    }else{
+        [self.uploadCtr viewTitleLabelUploadAnimation];
+    }
+    
 }
 -(int)numberOfColumns{
     return 3;
@@ -138,7 +146,53 @@
 //}
 #pragma mark --
 
+#pragma mark - AGImagePickerControllerDelegate methods
+
+- (NSUInteger)agImagePickerController:(AGImagePickerController *)picker
+         numberOfItemsPerRowForDevice:(AGDeviceType)deviceType
+              andInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    if (deviceType == AGDeviceTypeiPad)
+    {
+        if (UIInterfaceOrientationIsLandscape(interfaceOrientation))
+            return 7;
+        else
+            return 6;
+    } else {
+        if (UIInterfaceOrientationIsLandscape(interfaceOrientation))
+            return 5;
+        else
+            return 4;
+    }
+}
+
+- (BOOL)agImagePickerController:(AGImagePickerController *)picker shouldDisplaySelectionInformationInSelectionMode:(AGImagePickerControllerSelectionMode)selectionMode
+{
+    return (selectionMode == AGImagePickerControllerSelectionModeSingle ? NO : YES);
+}
+
+- (BOOL)agImagePickerController:(AGImagePickerController *)picker shouldShowToolbarForManagingTheSelectionInSelectionMode:(AGImagePickerControllerSelectionMode)selectionMode
+{
+    return (selectionMode == AGImagePickerControllerSelectionModeSingle ? NO : YES);
+}
+
+- (AGImagePickerControllerSelectionBehaviorType)selectionBehaviorInSingleSelectionModeForAGImagePickerController:(AGImagePickerController *)picker
+{
+    return AGImagePickerControllerSelectionBehaviorTypeRadio;
+}
+
+#pragma mark --
+
+
 #pragma mark property
+-(UPLoadImageController *)uploadCtr{
+    if (!_uploadCtr) {
+        UIStoryboard *story = [UIStoryboard storyboardWithName:@"Storyboard_iphone" bundle:nil];
+        _uploadCtr = (UPLoadImageController*)[story instantiateViewControllerWithIdentifier:@"UPLoadImageController"];
+        _uploadCtr.isUploadFinished = YES;
+    }
+    return _uploadCtr;
+}
 -(NSMutableArray *)summaryDataArr{
     if (!_summaryDataArr) {
         _summaryDataArr = [NSMutableArray arrayWithCapacity:1];
@@ -156,5 +210,46 @@
     }
     return _scanDataArr;
 }
+
+-(AGImagePickerController *)agImagePicker{
+    if (!_agImagePicker) {
+        __block GridViewController __weak *weakSelf = self;
+        _agImagePicker = [[AGImagePickerController alloc] initWithFailureBlock:^(NSError *error) {
+            NSLog(@"Fail. Error: %@", error);
+            GridViewController *gridView = weakSelf;
+            if (gridView) {
+                if (error == nil) {
+                    [gridView.rootController dismissModalViewControllerAnimated:YES];
+                } else {
+                    // We need to wait for the view controller to appear first.
+                    double delayInSeconds = 0.5;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        [gridView.rootController dismissModalViewControllerAnimated:YES];
+                    });
+                }
+            }
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+        } andSuccessBlock:^(NSArray *info) {
+            GridViewController *gridView = weakSelf;
+            if (gridView) {
+                NSLog(@"Info: %@", info);
+                [gridView convertAssertArrTOImageDataArr:info withWeakController:gridView];
+                [gridView.rootController dismissModalViewControllerAnimated:YES];
+            }
+            
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+        }];
+        _agImagePicker.delegate = self;
+        _agImagePicker.shouldChangeStatusBarStyle = YES;
+        _agImagePicker.shouldShowSavedPhotosOnTop = NO;
+        _agImagePicker.maximumNumberOfPhotosToBeSelected = 4;
+    }
+    return _agImagePicker;
+}
 #pragma mark --
+
+-(void)convertAssertArrTOImageDataArr:(NSArray *)info withWeakController:(GridViewController*)weakCtr{
+    [self.uploadCtr uploadImages:info];
+}
 @end

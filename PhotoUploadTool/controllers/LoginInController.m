@@ -8,6 +8,9 @@
 
 #import "LoginInController.h"
 #import "ForgetPasswordAlertView.h"
+#import "UserObjDao.h"
+#import "AppDelegate.h"
+#import "ForgotPasswordController.h"
 @interface LoginInController ()
 
 @end
@@ -49,11 +52,31 @@
     [self setTypeBackground:nil];
     [self setUserNameField:nil];
     [self setPasswdField:nil];
+    [self setForgotPwdBt:nil];
+    [self setRegisterBt:nil];
     [super viewDidUnload];
 }
 - (IBAction)LoginBtClicked:(id)sender {
-    if ([self checkInputField]) {
-        
+    self.userNameField.text = @"dd";
+    self.passwdField.text = @"dd";
+    if ([self checkInputField]) {        
+        NSString *name = [self.userNameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *passwd = [self.passwdField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+        AppDelegate __weak *weakAppDelegate = appDelegate;
+        __weak LoginInController *weakCtr = self;
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [UserObjDao loginInUserObjName:name withUserPwd:passwd withToken:appDelegate.token withSuccess:^(UserObj *userObj) {
+            AppDelegate *delegate = weakAppDelegate;
+            LoginInController *ctr = weakCtr;
+            delegate.user = userObj;
+            [MBProgressHUD hideHUDForView:ctr.view animated:YES];
+        } withFailure:^(NSError *errror) {
+            LoginInController *ctr = weakCtr;
+            [MBProgressHUD hideHUDForView:ctr.view animated:YES];
+            NSLog(@"%@",errror);
+            [ctr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        }];
     }
 }
 
@@ -62,13 +85,13 @@
 }
 
 - (IBAction)forgotPasswordClicked:(id)sender {
-    [ForgetPasswordAlertView defaultAlertViewWithEmal:@"liuchong1228@126.com" withSuccess:^{
-        
-    } orFailure:^(NSError *error) {
-        
-    } orCancel:^{
-        
-    }];
+//    [ForgetPasswordAlertView defaultAlertViewWithEmal:@"liuchong1228@126.com" withSuccess:^{
+//        
+//    } orFailure:^(NSError *error) {
+//        
+//    } orCancel:^{
+//        
+//    }];
 }
 
 -(BOOL)checkInputField{
@@ -97,4 +120,13 @@
     [self.passwdField resignFirstResponder];
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if (sender == self.forgotPwdBt) {
+        ForgotPasswordController *desCtr = segue.destinationViewController;
+        desCtr.userName = self.userNameField.text;
+    }else
+    if (sender == self.registerBt) {
+        
+    }
+}
 @end

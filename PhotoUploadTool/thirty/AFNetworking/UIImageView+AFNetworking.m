@@ -182,7 +182,6 @@ static char kAFImageRequestOperationUploadObjectKey;
         }
         return;
     }
-    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
     AFHTTPClient *httpClient =[AFHTTPClient clientWithBaseURL:url];
     NSData *imageData = UIImageJPEGRepresentation(self.image, 0.5);
     NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:parameters constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
@@ -225,6 +224,7 @@ static char kAFImageRequestOperationUploadObjectKey;
         }
     }];
     [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.upload_imageRequestOperation];
+    [self.upload_imageRequestOperation start];
 }
 @end
 

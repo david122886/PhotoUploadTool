@@ -11,6 +11,8 @@
 @interface LoginInController : UIViewController
 @property (weak, nonatomic) IBOutlet UIView *typeBackground;
 @property (weak, nonatomic) IBOutlet UITextField *userNameField;
+@property (weak, nonatomic) IBOutlet UIButton *forgotPwdBt;
+@property (weak, nonatomic) IBOutlet UIButton *registerBt;
 @property (weak, nonatomic) IBOutlet UITextField *passwdField;
 - (IBAction)LoginBtClicked:(id)sender;
 - (IBAction)registerBtClicked:(id)sender;

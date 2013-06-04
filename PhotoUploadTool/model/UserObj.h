@@ -16,4 +16,5 @@
 @property(nonatomic,strong) NSString *userAlbumPwd;
 @property(nonatomic,strong) NSString *userDescrible;
 @property(nonatomic,strong) NSString *userLocation;
+@property(nonatomic,strong) NSString *userWebURL;
 @end

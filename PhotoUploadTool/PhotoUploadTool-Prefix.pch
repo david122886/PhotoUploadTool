@@ -15,3 +15,13 @@
 #endif
 
 #define LIUYUSERVER_URL @"http://192.168.3.106:3000"
+
+#define debug 1
+#ifdef debug
+#define DRLOG(x,y) (NSLog((x),(y)))
+#else
+#define DRLOG(x,y) 
+#endif
+
+#define ENCRYPT_KEY @"liuyun_encrypt_key"
+#import "FBEncryptorAES.h"

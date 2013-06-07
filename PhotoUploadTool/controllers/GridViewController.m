@@ -7,9 +7,12 @@
 //
 
 #import "GridViewController.h"
+#import "AppDelegate.h"
+#import "PublicGridController.h"
 @interface GridViewController ()
-@property(nonatomic,strong) DRGridView *gridView;
 @property(nonatomic,strong) AGImagePickerController *agImagePicker;
+@property(nonatomic,copy) AGIPCDidFinish selectPhotoFinishBlock;
+@property(nonatomic,copy) AGIPCDidFail selectPhotoFailBlock;
 @end
 
 @implementation GridViewController
@@ -23,18 +26,11 @@
     return self;
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:nil action:nil];
-    for (int i = 0; i < 100	; i++) {
-        DRGridViewData *data = [[DRGridViewData alloc] init];
-        data.imageID = i;
-        data.imageURLStr = @"http://ww2.sinaimg.cn/bmiddle/acb53f76gw1e0d3m71gtdj.jpg";
-        [self.summaryDataArr addObject:data];
-        
-        [self.scanDataArr addObject:[MWPhoto photoWithURL:[NSURL URLWithString:data.imageURLStr]]];
-    }
     self.gridView = [[DRGridView alloc] initWithFrame:(CGRect){0,0,self.view.frame.size.width,self.view.frame.size.height}];
     self.gridView.gridViewDelegate = self;
     self.gridView.backgroundColor = [UIColor clearColor];
@@ -42,7 +38,38 @@
     [self.gridView reloadData];
 	// Do any additional setup after loading the view.
     [self.view addSubview:self.uploadCtr.view];
-    self.uploadCtr.view.frame = (CGRect){0,0,self.view.frame.size.width,44};
+    self.uploadCtr.view.frame = (CGRect){0,-44,self.view.frame.size.width,44};
+    [self setSelectPhotoBlock];
+}
+
+-(void)setSelectPhotoBlock{
+    GridViewController __weak *weakSelf = self;
+    self.selectPhotoFinishBlock = ^(NSArray *info) {
+        GridViewController *gridView = weakSelf;
+        if (gridView) {
+            NSLog(@"Info: %@", info);
+            [gridView convertAssertArrTOImageDataArr:info withWeakController:gridView];
+        }
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    };
+    
+    self.selectPhotoFailBlock = ^(NSError *error) {
+        NSLog(@"Fail. Error: %@", error);
+        GridViewController *gridView = weakSelf;
+        if (gridView) {
+            if (error == nil) {
+                [gridView.rootController dismissModalViewControllerAnimated:YES];
+            } else {
+                // We need to wait for the view controller to appear first.
+                double delayInSeconds = 0.5;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [gridView.rootController dismissModalViewControllerAnimated:YES];
+                });
+            }
+        }
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    };
 }
 
 - (void)didReceiveMemoryWarning
@@ -54,8 +81,18 @@
 - (void)viewDidUnload {
     [super viewDidUnload];
     self.scrollView = nil;
+    self.selectPhotoFailBlock = nil;
+    self.selectPhotoFinishBlock = nil;
 }
 
+-(void)stopRefreshView{
+    [self performSelector:@selector(stopRefreshDownloading) withObject:nil afterDelay:0.5];
+}
+
+-(void)stopRefreshDownloading{
+    [self.gridView.refreshView egoRefreshScrollViewDataSourceDidFinishedLoading:self.gridView];
+    self.gridView.isloadingData = NO;
+}
 
 #pragma mark DRGridViewDelegate
 -(void)prepareAddNewCellData{
@@ -96,7 +133,6 @@
     return [self.summaryDataArr objectAtIndex:index];
 }
 -(void)prepareReloadData:(DRGridView*)gridView{
-    NSLog(@"");
 }
 -(void)gridView:(DRGridView*)gridView prepareLoadNexPageIndex:(int)pageIndex{
     
@@ -118,6 +154,8 @@
     [self.scanDataArr removeObjectAtIndex:index-1];
 }
 #pragma mark --
+
+
 
 #pragma mark - MWPhotoBrowserDelegate
 
@@ -212,44 +250,26 @@
 }
 
 -(AGImagePickerController *)agImagePicker{
-    if (!_agImagePicker) {
-        __block GridViewController __weak *weakSelf = self;
-        _agImagePicker = [[AGImagePickerController alloc] initWithFailureBlock:^(NSError *error) {
-            NSLog(@"Fail. Error: %@", error);
-            GridViewController *gridView = weakSelf;
-            if (gridView) {
-                if (error == nil) {
-                    [gridView.rootController dismissModalViewControllerAnimated:YES];
-                } else {
-                    // We need to wait for the view controller to appear first.
-                    double delayInSeconds = 0.5;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        [gridView.rootController dismissModalViewControllerAnimated:YES];
-                    });
-                }
-            }
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-        } andSuccessBlock:^(NSArray *info) {
-            GridViewController *gridView = weakSelf;
-            if (gridView) {
-                NSLog(@"Info: %@", info);
-                [gridView convertAssertArrTOImageDataArr:info withWeakController:gridView];
-                [gridView.rootController dismissModalViewControllerAnimated:YES];
-            }
-            
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-        }];
-        _agImagePicker.delegate = self;
-        _agImagePicker.shouldChangeStatusBarStyle = YES;
-        _agImagePicker.shouldShowSavedPhotosOnTop = NO;
-        _agImagePicker.maximumNumberOfPhotosToBeSelected = 4;
-    }
+    _agImagePicker = [[AGImagePickerController alloc] initWithFailureBlock:_selectPhotoFailBlock  andSuccessBlock:_selectPhotoFinishBlock];
+    _agImagePicker.delegate = self;
+    _agImagePicker.shouldChangeStatusBarStyle = YES;
+    _agImagePicker.shouldShowSavedPhotosOnTop = NO;
+    _agImagePicker.maximumNumberOfPhotosToBeSelected = 4;
     return _agImagePicker;
 }
 #pragma mark --
 
 -(void)convertAssertArrTOImageDataArr:(NSArray *)info withWeakController:(GridViewController*)weakCtr{
-    [self.uploadCtr uploadImages:info];
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    if (!appDelegate.user || !appDelegate.user.userId) {
+        return;
+    }
+    int status = [self isKindOfClass:[PublicGridController class]]?1:0;
+    DRLOG(@"%@",@">>>>>>>>>>>");
+    [self.uploadCtr uploadImages:info withParmeters:@{@"id":appDelegate.user.userId,@"status":[NSString stringWithFormat:@"%d",status]}];
+}
+-(void)alertErrorMessage:(NSString*)mes{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:mes delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alert show];
 }
 @end

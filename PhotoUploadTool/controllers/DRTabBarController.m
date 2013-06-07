@@ -22,11 +22,14 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        
     }
     return self;
 }
 - (void)viewDidLoad
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadDataNotification) name:TABBAR_DOWNLOADDATA_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadDataNotificationFinished) name:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
     [super viewDidLoad];
     self.privatePwdTip = @"相册密码 :"; 
     self.publicController = [[PublicGridController alloc] init];
@@ -35,16 +38,28 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     self.publicController.view.backgroundColor = [UIColor clearColor];
     self.privateController.view.frame = (CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.height};
     self.publicController.view.frame = (CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.height};
+    self.underLine.frame = CGRectMake(self.publicItemBt.frame.origin.x + self.publicItemBt.contentEdgeInsets.left, self.underLine.frame.origin.y, self.publicItemBt.frame.size.width, self.underLine.frame.size.height);
     
-    [self itemSelected:self.publicItemBt withType:PUBLICITEM];
     self.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"_bg.png"]];
     self.drtabBarView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tabbarbg.png"]];
     self.pwdCoverView.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:0.8];
     self.pwdLabel.text = self.privatePwdTip;
+    self.publicController.rootController = self;
+    self.privateController.rootController = self;
+    [self itemSelected:self.publicItemBt withType:PUBLICITEM];
     
-	// Do any additional setup after loading the view.
+    	// Do any additional setup after loading the view.
 }
 
+-(void)downloadDataNotification{
+    [self.drtabBarView setUserInteractionEnabled:NO];
+    [self.pwdCoverView setUserInteractionEnabled:NO];
+}
+
+-(void)downloadDataNotificationFinished{
+    [self.drtabBarView setUserInteractionEnabled:YES];
+    [self.pwdCoverView setUserInteractionEnabled:YES];
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -102,7 +117,6 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 //            self.publicController.view.center = center;
 //        }];
         [self.contentView addSubview:self.publicController.view];
-        self.publicController.rootController = self;
     }else
     if (type == PRIVATEITEM) {
         [self.publicItemBt setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -112,7 +126,6 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
         [self performSelector:@selector(dragUPCoverViewWthAnimation:) withObject:[NSNumber numberWithBool:YES] afterDelay:15.0];
         
         [self.contentView addSubview:self.privateController.view];
-        self.privateController.rootController = self;
         [self checkPrivatePassword];
     }else
     {
@@ -150,4 +163,12 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     }
     
 }
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark property
+
+#pragma mark --
 @end

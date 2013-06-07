@@ -184,8 +184,8 @@ static char kAFImageRequestOperationUploadObjectKey;
     }
     AFHTTPClient *httpClient =[AFHTTPClient clientWithBaseURL:url];
     NSData *imageData = UIImageJPEGRepresentation(self.image, 0.5);
-    NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"POST" path:@"/upload" parameters:parameters constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
-        [formData appendPartWithFileData:imageData name:@"MainMedia.jpeg" fileName:@"MainMedia.jpeg" mimeType:@"image/jpeg"];
+    NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"POST" path:@"photos/upload" parameters:parameters constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
+        [formData appendPartWithFileData:imageData name:@"img" fileName:@"MainMedia.jpeg" mimeType:@"image/jpeg"];
     }];
     
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
@@ -211,7 +211,7 @@ static char kAFImageRequestOperationUploadObjectKey;
             if (failure) {
                 failure(error);
             }
-            NSLog(@"upload error");
+            NSLog(@"upload error:%@",error);
             if (self.upload_imageRequestOperation == operation) {
                 self.upload_imageRequestOperation = nil;
             }

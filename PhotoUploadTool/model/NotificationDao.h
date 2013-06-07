@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
-@interface NotificationDao : NSObject
+#import "DRNetWorkingException.h"
+@interface NotificationDao : DRNetWorkingException
 -(void)notificationDaoDownloadWithSuccess:(void(^)(NSArray* notificationArr))_success withFailure:(void(^)(NSError *error))_failure;
 @end

@@ -11,8 +11,9 @@
 #import "UserObjDao.h"
 #import "AppDelegate.h"
 #import "ForgotPasswordController.h"
+#import "DRTabBarController.h"
 @interface LoginInController ()
-
+@property (nonatomic,strong) DRTabBarController *drtabBarController;
 @end
 
 @implementation LoginInController
@@ -71,6 +72,7 @@
             LoginInController *ctr = weakCtr;
             delegate.user = userObj;
             [MBProgressHUD hideHUDForView:ctr.view animated:YES];
+            [self.navigationController pushViewController:self.drtabBarController animated:YES];
         } withFailure:^(NSError *errror) {
             LoginInController *ctr = weakCtr;
             [MBProgressHUD hideHUDForView:ctr.view animated:YES];
@@ -129,4 +131,15 @@
         
     }
 }
+
+#pragma mark property
+-(DRTabBarController *)drtabBarController{
+
+    if (!_drtabBarController) {
+        UIStoryboard *story = [UIStoryboard storyboardWithName:@"Storyboard_iphone" bundle:nil];
+        _drtabBarController = (DRTabBarController*)[story instantiateViewControllerWithIdentifier:@"DRTabBarController"];
+    }
+    return _drtabBarController;
+}
+#pragma mark --
 @end

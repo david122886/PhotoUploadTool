@@ -153,18 +153,19 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
 
 - (void)didFinishPickingAssets:(NSArray *)selectedAssets
 {
-    [self popToRootViewControllerAnimated:NO];
     
     // Reset the number of selections
     [AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
-    
-    if (self.didFinishBlock)
-        self.didFinishBlock(selectedAssets);
-    
-	if (_pickerFlags.delegateDidFinishPickingMediaWithInfo)
+    if (_pickerFlags.delegateDidFinishPickingMediaWithInfo)
     {
 		[self.delegate performSelector:@selector(agImagePickerController:didFinishPickingMediaWithInfo:) withObject:self withObject:selectedAssets];
 	}
+    
+    if (self.didFinishBlock)
+        self.didFinishBlock(selectedAssets);
+    [self popToRootViewControllerAnimated:NO];
+    [self dismissModalViewControllerAnimated:YES];
+
 }
 
 - (void)didCancelPickingAssets

@@ -11,6 +11,9 @@
 #import "MWPhotoBrowser.h"
 #import "AGImagePickerController.h"
 #import "UPLoadImageController.h"
+#import "DRImageTool.h"
+#import "AppDelegate.h"
+#import "DRImageObj.h"
 @protocol GridViewControllerDelegate;
 @interface GridViewController : UIViewController<DRGridViewDelegate,MWPhotoBrowserDelegate>
 @property(nonatomic,strong) UIScrollView *scrollView;
@@ -18,6 +21,9 @@
 @property(nonatomic,strong) NSMutableArray *scanDataArr;
 @property(nonatomic,strong) UIViewController *rootController;
 @property(nonatomic,strong) UPLoadImageController *uploadCtr;
+@property(nonatomic,strong) DRGridView *gridView;
+-(void)alertErrorMessage:(NSString*)mes;
+-(void)stopRefreshView;
 @end
 
 @protocol GridViewControllerDelegate <NSObject>

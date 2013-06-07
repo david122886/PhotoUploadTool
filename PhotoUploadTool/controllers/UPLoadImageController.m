@@ -51,7 +51,7 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)uploadImages:(NSArray *)assertArr{
+-(void)uploadImages:(NSArray *)assertArr withParmeters:(NSDictionary*)parmeters{
     [self.leftPhotos removeAllObjects];
     self.isUploadFinished = NO;
     self.progressBar.progress = 0.0;
@@ -60,15 +60,18 @@
     __block int finishedCount = 0;
     __block NSArray __weak *weakUploadImagesArr = assertArr;
     __block int totalCount = [assertArr count];
+    
+    [self setTitleLabelValueIndex:0 withTotal:totalCount];
     for (ALAsset *asset in assertArr) {
         
         UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
         UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
         NSURL *url = [NSURL URLWithString:LIUYUSERVER_URL];
-        [imageView uploadImageWithURL:url withParameters:nil success:^(NSString *success) {
+        [imageView uploadImageWithURL:url withParameters:parmeters success:^(NSString *success) {
+            DRLOG(@"%@", success);
             UPLoadImageController *uploadCtr  = weakUpoadCtr;
             if (uploadCtr) {
-                uploadCtr.progressBar.progress = finishedCount/totalCount;
+                uploadCtr.progressBar.progress = (float)finishedCount/totalCount;
                 [uploadCtr setTitleLabelValueIndex:finishedCount withTotal:totalCount];
                 if (finishedCount == totalCount-1) {
                     [uploadCtr endUploadAnimation];
@@ -89,13 +92,22 @@
                 }
             }
             errors = error;
+            if (finishedCount == totalCount-1) {
+                [uploadCtr endUploadAnimation];
+                uploadCtr.isUploadFinished = YES;
+                if (errors) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"上传照片失败" delegate:nil  cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                    [alert show];
+                    self.progressBar.progress = 1.0;
+                }
+            }
             finishedCount++;
         }];
     }
 }
 
 -(void)setTitleLabelValueIndex:(int)index withTotal:(int)total{
-    self.titleLabel.text = [NSString stringWithFormat:@"上传%d/%d张照片",index,total];
+    self.titleLabel.text = [NSString stringWithFormat:@"上传第%d张/共%d张照片",index+1,total];
 }
 
 #pragma mark upload

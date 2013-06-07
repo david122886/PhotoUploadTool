@@ -7,24 +7,22 @@
 //
 
 #import "UserObjDao.h"
-#import "AFNetworking.h"
-#import "AppDelegate.h"
-#import "JSONKit.h"
 @interface UserObjDao()
 
 @end
 @implementation UserObjDao
-+(NSError*)getErrorObjWithMessage:(NSString*)msg{
-    return  [[NSError alloc] initWithDomain:@"" code:0 userInfo:@{NSLocalizedDescriptionKey:msg}];
-}
 
 +(UserObj*)convertUserObjFromJsonDic:(NSDictionary*)jsonStr{
     if (!jsonStr) {
         return nil;
     }
     NSLog(@"%@",jsonStr);
+    NSString *userID = [NSString stringWithFormat:@"%@",[jsonStr objectForKey:@"id"]];
+    if (!userID || [userID isEqualToString:@"<null>"]) {
+        return nil;
+    }
     UserObj *user = [[UserObj alloc] init];
-    user.userId = [jsonStr objectForKey:@"id"];
+    user.userId = userID;
     user.userLocation = [jsonStr objectForKey:@"city_id"];
     user.userName = [jsonStr objectForKey:@"name"];
     user.userEmail = [jsonStr objectForKey:@"email"];
@@ -44,21 +42,6 @@
     return user;
 }
 
-+(BOOL)judgeErrorTypeWithFailureBlock:(void(^)(NSError *errror))_failure withError:(NSError*)error{
-    if ([[error.userInfo objectForKey:@"NSLocalizedDescription"] isEqualToString:@"Could not connect to the server."]) {
-        _failure([UserObjDao getErrorObjWithMessage:@"无法连接服务器"]);
-        return YES;
-    }
-    if ([[error.userInfo objectForKey:@"NSLocalizedDescription"] isEqualToString:@"Expected status code in (200-299)"]) {
-        _failure([UserObjDao getErrorObjWithMessage:@"无法连接服务器"]);
-        return YES;
-    }
-    if ([[error.userInfo objectForKey:@"NSLocalizedDescription"] isEqualToString:@"The network connection was lost."]) {
-        _failure([UserObjDao getErrorObjWithMessage:@"无法连接服务器"]);
-        return YES;
-    }
-    return NO;
-}
 
 +(void)registerUserObj:(UserObj*)_user withSuccess:(void(^)(UserObj *userObj))_success withFailure:(void(^)(NSError *errror))_failure{
     AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];

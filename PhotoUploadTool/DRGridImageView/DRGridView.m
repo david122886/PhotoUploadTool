@@ -30,6 +30,8 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
     if (self) {
         // Initialization code
         self.delegate = self;
+        self.decelerationRate = UIScrollViewDecelerationRateNormal;
+//        self.decelerationRate = 0.2;
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapGestureCaptured:)];
         singleTap.numberOfTapsRequired = 1;
         singleTap.numberOfTouchesRequired = 1;
@@ -234,7 +236,9 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
     while (true) {
         float topCrit = [self getCacheTopOffset];
         if ([self.loadedCells count] <= 0) {
+            
             NSLog(@">>>>>>>>>>>>>>>>not finished function");
+            break;
         }else{
             DRGridViewCell *firstCell = [self.loadedCells objectAtIndex:0];
             int startIndex = firstCell.cellIndex-1;
@@ -335,7 +339,9 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
         self.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height+1);
     }else{
         DRGridViewCell *lastCell = [self.loadedCells lastObject];
-        self.contentSize = CGSizeMake(self.contentSize.width, lastCell.frame.origin.y + lastCell.frame.size.height);
+        if (lastCell.frame.origin.y + lastCell.frame.size.height > self.frame.size.height) {
+            self.contentSize = CGSizeMake(self.contentSize.width, lastCell.frame.origin.y + lastCell.frame.size.height);
+        }
     }
 //    self.refreshView.frame = CGRectMake(0, -150, self.frame.size.width, 150);
 //    [self.footFreshView setFrame:CGRectMake(0, self.contentSize.height, self.frame.size.width, 150)];

@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "UserObj.h"
-@interface UserObjDao : NSObject
+#import "DRNetWorkingException.h"
+@interface UserObjDao : DRNetWorkingException
 +(void)registerUserObj:(UserObj*)_user withSuccess:(void(^)(UserObj *userObj))_success withFailure:(void(^)(NSError *errror))_failure;
 +(void)destroyUserObjID:(NSString*)_userID withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure;
 +(void)loginInUserObjName:(NSString*)_userName withUserPwd:(NSString*)_userPwd withToken:(NSString*)_token withSuccess:(void(^)(UserObj *userObj))_success withFailure:(void(^)(NSError *errror))_failure;

@@ -12,6 +12,7 @@
 @interface NotificationController ()
 @property(nonatomic,strong) EGORefreshTableHeaderView *refreshView;
 @property(nonatomic,strong)NSMutableArray *notificationArr;
+@property(nonatomic,strong)UITableView *tableView;
 @property(nonatomic,assign) BOOL isloadingData;
 @property(nonatomic,assign) NSIndexPath *selectedPath;
 @end
@@ -27,26 +28,19 @@
     return self;
 }
 
-- (void)tableViewEdit:(id)sender{
-    [self.tableView setEditing:!self.tableView.editing animated:YES];
-    self.selectedPath = nil;
-//    [self.tableView reloadData];
-    if (self.tableView.editing) {
-        [self.navigationItem.rightBarButtonItem setTitle:@"取消"];
-    }else{
-        [self.navigationItem.rightBarButtonItem setTitle:@"编辑"];
-    }
-}
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem  = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStyleDone target:self action:@selector(tableViewEdit:)];
+    [self.tabbarRightBt setTitle:@"编辑" forState:UIControlStateNormal];
+    [self.tabbarRightBt setBackgroundColor:[UIColor blueColor]];
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"privatePwd_bg.png"]];
 	// Do any additional setup after loading the view.
     for (int i = 0; i < 20; i++) {
         [self.notificationArr addObject:[NotificationObject initNotificationWithDateStr:@"2012/01/01" withDetailStr:@"umhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9oniumhoiumh9s9s8g9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s98g9msoiihsoshhis vnyguiwh m0ws9ui ,s9u"]];
     }
+    [self.contentView addSubview:self.tableView];
 }
 
 -(void)loadedData{
@@ -68,9 +62,11 @@
     
 }
 
+
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath{
     return @"删除";
 }
+
 
 //当 tableview 为 editing 时,左侧按钮的 style
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -138,9 +134,19 @@
         _refreshView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0, -150, self.view.frame.size.width, 150)];
         _refreshView.backgroundColor = [UIColor clearColor];
         _refreshView.delegate = self;
-        [self.view addSubview:_refreshView];
+        [self.tableView addSubview:_refreshView];
     }
     return _refreshView;
+}
+
+-(UITableView *)tableView{
+    if (!_tableView) {
+        UIStoryboard *story = [UIStoryboard storyboardWithName:@"Storyboard_iphone" bundle:nil];
+        _tableView = (UITableView*)[[story instantiateViewControllerWithIdentifier:@"NotificationTableViewController"] view];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+    }
+    return _tableView;
 }
 #pragma mark --
 
@@ -178,4 +184,25 @@
     
 }
 #pragma mark --
+- (IBAction)backBtClicked:(UIButton *)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (void)viewDidUnload {
+    [self setTabbarTitleLabel:nil];
+    [self setContentView:nil];
+    [self setTabbarRightBt:nil];
+    [super viewDidUnload];
+}
+- (IBAction)tabbarEditBtClicked:(UIButton *)sender {
+    [self.tableView setEditing:!self.tableView.editing animated:YES];
+    self.selectedPath = nil;
+    //    [self.tableView reloadData];
+    if (self.tableView.editing) {
+        [self.tabbarRightBt setTitle:@"取消" forState:UIControlStateNormal];
+        [self.tabbarRightBt setBackgroundColor:[UIColor redColor]];
+    }else{
+        [self.tabbarRightBt setTitle:@"编辑" forState:UIControlStateNormal];
+        [self.tabbarRightBt setBackgroundColor:[UIColor blueColor]];
+    }
+}
 @end

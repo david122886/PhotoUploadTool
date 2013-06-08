@@ -9,7 +9,7 @@
 #import "NotificationDao.h"
 
 @implementation NotificationDao
--(void)notificationDaoDownloadWithSuccess:(void(^)(NSArray* notificationArr))_success withFailure:(void(^)(NSError *error))_failure{
++(void)notificationDaoDownloadWithUserObjID:(NSString*)_userID WithSuccess:(void(^)(NSArray* notificationArr))_success withFailure:(void(^)(NSError *error))_failure{
 
 }
 @end

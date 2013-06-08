@@ -19,6 +19,7 @@
 
 // Properties
 @property (nonatomic, retain) NSString *caption;
+@property(nonatomic,strong) NSString *imageDataID;
 
 // Class
 + (MWPhoto *)photoWithImage:(UIImage *)image;

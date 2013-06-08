@@ -7,7 +7,9 @@
 //
 
 #import "ModifyUserPasswordController.h"
-
+#import "UserObjDao.h"
+#import "MBProgressHUD.h"
+#import "AppDelegate.h"
 @interface ModifyUserPasswordController ()
 
 @end
@@ -26,6 +28,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.tabbarTitleLabel.text = @"修改密码";
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userTapGesture:)];
     [self.scrollView addGestureRecognizer:tapGesture];
     self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height +300);
@@ -44,12 +47,30 @@
     [self setReNewPwdField:nil];
     [self setDNewPwdField:nil];
     [self setScrollView:nil];
+    [self setTabbarTitleLabel:nil];
     [super viewDidUnload];
 }
 - (IBAction)okBtClicked:(id)sender {
     if ([self checkInputStr]) {
+        NSString *dNewPwStr = [self.dNewPwdField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+        ModifyUserPasswordController __weak *weakCtr = self;
         
+        [UserObjDao modifyUserPwdUserObjId:appDelegate.user.userId withUserPwd:dNewPwStr withSuccess:^(NSString *success) {
+            ModifyUserPasswordController *modifyCtr = weakCtr;
+            [MBProgressHUD hideHUDForView:modifyCtr.view animated:YES];
+            [modifyCtr.navigationController popToRootViewControllerAnimated:YES];
+        } withFailure:^(NSError *errror) {
+            ModifyUserPasswordController *modifyCtr = weakCtr;
+            [MBProgressHUD hideHUDForView:modifyCtr.view animated:YES];
+            [modifyCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        }];
     }
+}
+
+- (IBAction)backBtClicked:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 -(void)userTapGesture:(UITapGestureRecognizer*)tapGesture{
@@ -78,8 +99,8 @@
         [self alertErrorMessage:@"确认新密码不正确"];
         return NO;
     }
-    
-    if (![oldpwStr isEqualToString:@""]) {
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    if (![oldpwStr isEqualToString:@""] || ![oldpwStr isEqualToString:appDelegate.user.userPwd]) {
         [self alertErrorMessage:@"原始密码不正确"];
         return NO;
     }

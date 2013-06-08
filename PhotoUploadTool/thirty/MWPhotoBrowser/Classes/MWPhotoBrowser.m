@@ -838,6 +838,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
             [_delegate photoBrowser:self deletedPhotoAtIndex:index];
         }
         [self scrollviewEnd];
+        [self cancelControlHiding];
         [self updateNavigationWithCurrentIndex:_currentPageIndex];
     }
 }
@@ -1083,8 +1084,13 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 
 #pragma mark - Misc
 
+-(void)deleteCellAtIndex:(int)index{
+    [self didStartDeletingPageAtIndex:index];
+}
 -(void)deleteButtonPressed:(id)sender{
-    [self didStartDeletingPageAtIndex:[self getCurrentIndex]];
+    if (_delegate && [_delegate respondsToSelector:@selector(photoBrowser:shoulddeletedPhotoAtIndex:)]) {
+        [_delegate photoBrowser:self shoulddeletedPhotoAtIndex:[self getCurrentIndex]];
+    }
 }
 - (void)doneButtonPressed:(id)sender {
     if (_delegate && [_delegate respondsToSelector:@selector(photoBrowser:backAtIndex:)]) {

@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 #import "DRNetWorkingException.h"
 @interface NotificationDao : DRNetWorkingException
--(void)notificationDaoDownloadWithSuccess:(void(^)(NSArray* notificationArr))_success withFailure:(void(^)(NSError *error))_failure;
++(void)notificationDaoDownloadWithUserObjID:(NSString*)_userID WithSuccess:(void(^)(NSArray* notificationArr))_success withFailure:(void(^)(NSError *error))_failure;
 @end

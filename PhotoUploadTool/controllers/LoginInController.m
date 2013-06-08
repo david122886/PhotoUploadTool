@@ -14,6 +14,7 @@
 #import "DRTabBarController.h"
 @interface LoginInController ()
 @property (nonatomic,strong) DRTabBarController *drtabBarController;
+@property(nonatomic,assign) float selfViewCenterheight;
 @end
 
 @implementation LoginInController
@@ -35,11 +36,30 @@
     [super viewWillAppear:animated];
     [self.navigationController.navigationBar setHidden:YES];
 }
+
+-(void)keyboardDown:(id)sender{
+    float durationTime = [[[(NSNotification*)sender userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    [UIView animateWithDuration:durationTime animations:^{
+        self.view.center = (CGPoint){self.view.center.x,self.selfViewCenterheight};
+    }];
+}
+
+
+-(void)keyboardUP:(id)sender{
+    float durationTime = [[[(NSNotification*)sender userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    [UIView animateWithDuration:durationTime animations:^{
+        self.view.center = (CGPoint){self.view.center.x,100};
+    }];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [self setTitle:@"返回"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDown:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardUP:) name:UIKeyboardWillShowNotification object:nil];
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"_bg.png"]];
+    self.selfViewCenterheight = self.view.center.y;
 	// Do any additional setup after loading the view.
 }
 
@@ -132,6 +152,12 @@
     }
 }
 
+#pragma mark UITextFieldDelegate
+-(void)textFieldDidBeginEditing:(UITextField *)textField{
+    
+}
+#pragma mark --
+
 #pragma mark property
 -(DRTabBarController *)drtabBarController{
 
@@ -142,4 +168,8 @@
     return _drtabBarController;
 }
 #pragma mark --
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 @end

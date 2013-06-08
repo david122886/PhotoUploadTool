@@ -12,5 +12,6 @@ typedef enum {DRGRIDVIEWDATA_LOCATION,DRGRIDVIEWDATA_NETWORK}DRGridViewDataSourc
 @property(nonatomic,strong) NSString *imageURLStr;
 @property(nonatomic,strong) NSString *bigImageURLStr;
 @property(nonatomic,assign) int imageID;
+@property(nonatomic,strong) NSString *imageDataID;
 @property(nonatomic,assign) DRGridViewDataSourceType imageSourceType;
 @end

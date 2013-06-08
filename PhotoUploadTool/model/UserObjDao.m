@@ -23,9 +23,22 @@
     }
     UserObj *user = [[UserObj alloc] init];
     user.userId = userID;
-    user.userLocation = [jsonStr objectForKey:@"city_id"];
-    user.userName = [jsonStr objectForKey:@"name"];
-    user.userEmail = [jsonStr objectForKey:@"email"];
+    
+    NSString *location = [jsonStr objectForKey:@"city_id"];
+    if (location && ![[location class] isSubclassOfClass:[NSNull class]] && ![location isEqualToString:@"<null>"]) {
+         user.userLocation = location;
+    }
+    
+    NSString *name = [jsonStr objectForKey:@"name"];
+    if (name && ![[name class] isSubclassOfClass:[NSNull class]] && ![name isEqualToString:@"<null>"]) {
+        user.userName = name;
+    }
+    
+    NSString *email = [jsonStr objectForKey:@"email"];
+    if (email && ![[email class] isSubclassOfClass:[NSNull class]] && ![email isEqualToString:@"<null>"]) {
+        user.userEmail = email;
+    }
+    
     NSString *albumPwd = [jsonStr objectForKey:@"photo_password"];
     if (albumPwd && ![[albumPwd class] isSubclassOfClass:[NSNull class]] && ![albumPwd isEqualToString:@"<null>"]) {
          user.userAlbumPwd = [FBEncryptorAES decryptBase64String:albumPwd keyString:ENCRYPT_KEY];
@@ -34,8 +47,17 @@
     if (pwd && ![[albumPwd class] isSubclassOfClass:[NSNull class]] && ![pwd isEqualToString:@"<null>"]) {
         user.userPwd = [FBEncryptorAES decryptBase64String:pwd keyString:ENCRYPT_KEY];
     }
-    user.userWebURL = [jsonStr objectForKey:@"url"];
-    user.userDescrible = [jsonStr objectForKey:@"describle"];
+    
+    NSString *webURL = [jsonStr objectForKey:@"url"];
+    if (webURL && ![[webURL class] isSubclassOfClass:[NSNull class]] && ![webURL isEqualToString:@"<null>"]) {
+        user.userWebURL = webURL;
+    }
+    
+    NSString *describle = [jsonStr objectForKey:@"describle"];
+    if (describle && ![[describle class] isSubclassOfClass:[NSNull class]] && ![describle isEqualToString:@"<null>"]) {
+        user.userDescrible = describle;
+    }
+    
     if (user.userId == nil  && user.userName == nil) {
         return nil;
     }

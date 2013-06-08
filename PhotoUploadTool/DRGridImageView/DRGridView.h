@@ -22,6 +22,7 @@ typedef struct {int row;float offset;}GridViewCritical;
 - (DRGridViewCell *)dequeueReusableCellWithIdentifier: (NSString *)idStr;
 -(void)reloadData;
 -(void)jumpToCellIndex:(int)index;
+-(void)deleteSelectedCellAtLoadedIndex:(int)deleteIndex;
 @end
 
 @protocol DRGridViewDelegate <NSObject>
@@ -39,5 +40,6 @@ typedef struct {int row;float offset;}GridViewCritical;
 -(void)gridView:(DRGridView*)gridView prepareLoadNexPageIndex:(int)pageIndex;
 -(void)gridView:(DRGridView*)gridView didSelectedCellIndex:(int)index;
 -(void)gridView:(DRGridView*)gridView didDeleteCellIndex:(int)index;
+-(void)gridView:(DRGridView*)gridView shouldDeleteCellIndex:(int)index;
 -(void)prepareAddNewCellData;
 @end

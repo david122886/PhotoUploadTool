@@ -7,26 +7,13 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "PhotoUploadTool/thirty/MWPhotoBrowser/Classes/MWPhotoBrowser.m"
-         timestampString = "391671969.148801"
+         filePath = "PhotoUploadTool/thirty/MWPhotoBrowser/Classes/MWPhoto.m"
+         timestampString = "392272299.611881"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "898"
-         endingLineNumber = "898"
-         landmarkName = "-getCurrentIndex"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "PhotoUploadTool/thirty/MWPhotoBrowser/Classes/MWPhotoBrowser.m"
-         timestampString = "391671962.806626"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "820"
-         endingLineNumber = "820"
-         landmarkName = "-didStartDeletingPageAtIndex:"
+         startingLineNumber = "144"
+         endingLineNumber = "144"
+         landmarkName = "-loadImageFromFileAsync"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *pwdLabel;
 @property (weak, nonatomic) IBOutlet UIView *pwdCoverView;
 @property (weak, nonatomic) IBOutlet UILabel *webURLLabel;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityView;
 - (IBAction)publicItemSelected:(UIButton *)sender;
 - (IBAction)privateItemSelected:(UIButton *)sender;
 - (IBAction)settingItemSelected:(UIButton *)sender;

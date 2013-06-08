@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 typedef enum {PRIVATEPWDVIEW_SETTING = 100,PRIVATEPWDVIEW_MODIFY}SettingPrivatePwdViewType;
 @interface SettingPrivatePwdView : UIView
-+(SettingPrivatePwdView*)defaultSettingPrivatePwdViewType:(SettingPrivatePwdViewType)type withSuccess:(void(^)(NSString *password))success orFailure:(void(^)(NSError*error))failure orCancel:(void(^)())cancel;
++(SettingPrivatePwdView*)defaultSettingPrivatePwdViewType:(SettingPrivatePwdViewType)type  withAlbumPwd:(NSString*)albumPwd withSuccess:(void(^)(NSString *password))success orFailure:(void(^)(NSError*error))failure orCancel:(void(^)())cancel;
 @end

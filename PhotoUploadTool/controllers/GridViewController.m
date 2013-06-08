@@ -64,7 +64,8 @@
                 double delayInSeconds = 0.5;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [gridView.rootController dismissModalViewControllerAnimated:YES];
+//                    [gridView.rootController dismissModalViewControllerAnimated:YES];
+                    [gridView alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
                 });
             }
         }
@@ -107,10 +108,10 @@
     return 3;
 }
 -(float)heightOfGridViewCell{
-    return 100.0;
+    return 70.0;
 }
 -(int)cacheRowsOfGridView{
-    return 10;
+    return 20;
 }
 -(int)numberOfEachPageRows{
     return 20;
@@ -126,7 +127,7 @@
     if (!cell) {
         cell = [[DRGridViewCell alloc] initWithReuseIdentifier:@"CELL"];
     }
-    cell.backgroundColor = [UIColor redColor];
+    cell.backgroundColor = [UIColor clearColor];
     return cell;
 }
 -(DRGridViewData*)gridView:(DRGridView*)gridView dataAtIndex:(int)index{
@@ -153,9 +154,31 @@
     [self.summaryDataArr removeObjectAtIndex:(index)];
     [self.scanDataArr removeObjectAtIndex:index-1];
 }
+
+-(void)gridView:(DRGridView *)gridView shouldDeleteCellIndex:(int)index{
+    if (index >= [self.summaryDataArr count]) {
+        DRLOG(@"%@", @"delete index over all count");
+        return;
+    }
+    __block int deletedIndex = index;
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION object:nil];
+    GridViewController __weak *weakGridCtr = self;
+    DRGridViewData *deletedData = [self.summaryDataArr objectAtIndex:index];
+    [DRImageTool deleteDRImageDataWithDRImageDataID:deletedData.imageDataID withSuccess:^(NSString *success) {
+        GridViewController *gridCtr = weakGridCtr;
+        [gridCtr.gridView deleteSelectedCellAtLoadedIndex:deletedIndex];
+        [MBProgressHUD hideHUDForView:gridCtr.view animated:YES];
+        [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+    } withFailure:^(NSError *error) {
+         GridViewController *gridCtr = weakGridCtr;
+        [MBProgressHUD hideHUDForView:gridCtr.view animated:YES];
+        [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+        [gridCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
+    }];
+}
+
 #pragma mark --
-
-
 
 #pragma mark - MWPhotoBrowserDelegate
 
@@ -175,6 +198,30 @@
     if (index < self.scanDataArr.count)
         return [self.scanDataArr objectAtIndex:index];
     return nil;
+}
+
+-(void)photoBrowser:(MWPhotoBrowser *)photoBrowser shoulddeletedPhotoAtIndex:(NSUInteger)index{
+    if (index >= [self.scanDataArr count]) {
+        DRLOG(@"%@", @"delete index over all count");
+        return;
+    }
+    __block int deletedIndex = index;
+    [MBProgressHUD showHUDAddedTo:photoBrowser.view animated:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION object:nil];
+    MWPhotoBrowser __weak *weakCtr = photoBrowser;
+    MWPhoto *deletedData = [self.scanDataArr objectAtIndex:index];
+    [DRImageTool deleteDRImageDataWithDRImageDataID:deletedData.imageDataID withSuccess:^(NSString *success) {
+        MWPhotoBrowser *Ctr = weakCtr;
+        [Ctr deleteCellAtIndex:deletedIndex];
+        [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
+        [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+    } withFailure:^(NSError *error) {
+        MWPhotoBrowser *Ctr = weakCtr;
+        [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
+        [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[error.userInfo objectForKey:@"NSLocalizedDescription"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alert show];
+    }];
 }
 
 //- (MWCaptionView *)photoBrowser:(MWPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index {
@@ -234,6 +281,8 @@
 -(NSMutableArray *)summaryDataArr{
     if (!_summaryDataArr) {
         _summaryDataArr = [NSMutableArray arrayWithCapacity:1];
+    }
+    if ([_summaryDataArr count] <= 0) {
         DRGridViewData *firstData = [[DRGridViewData alloc] init];
         firstData.imageID = 0;
         firstData.imageURLStr = nil;

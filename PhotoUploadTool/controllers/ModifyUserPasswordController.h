@@ -13,7 +13,9 @@
 @property (weak, nonatomic) IBOutlet UITextField *oldPwdField;
 @property (weak, nonatomic) IBOutlet UITextField *reNewPwdField;
 @property (weak, nonatomic) IBOutlet UITextField *dNewPwdField;
+@property (weak, nonatomic) IBOutlet UILabel *tabbarTitleLabel;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 - (IBAction)okBtClicked:(id)sender;
+- (IBAction)backBtClicked:(id)sender;
 
 @end

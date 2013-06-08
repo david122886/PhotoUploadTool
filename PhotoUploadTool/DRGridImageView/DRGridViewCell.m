@@ -9,8 +9,8 @@
 #import "DRGridViewCell.h"
 #import "AFNetworking.h"
 #import "DRGridViewData.h"
-#define GRIDCELL_REMOVE_WIDTH 10.0
-#define GRIDCELL_REMOVE_HEIGHT 10.0
+#define GRIDCELL_REMOVE_WIDTH 30.0
+#define GRIDCELL_REMOVE_HEIGHT 30.0
 #define GRIDCELL_SPACE 2
 @interface DRGridViewCell()
 @property(nonatomic,assign) void (^successBlock)(DRGridViewCell *cell);
@@ -35,11 +35,11 @@
         self.frame = CGRectZero;
         
         self.imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        self.imageView.backgroundColor = [UIColor greenColor];
+        self.imageView.backgroundColor = [UIColor clearColor];
         [self addSubview:self.imageView];
         
         self.rmoveImage = [[UIImageView alloc] initWithFrame:CGRectZero];
-        self.rmoveImage.backgroundColor = [UIColor blackColor];
+        self.rmoveImage.image = [UIImage imageNamed:@"privatePwd_delete.png"];
         [self addSubview:self.rmoveImage];
         
         self.testLabel = [[UILabel alloc] init];

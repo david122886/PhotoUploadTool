@@ -8,13 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "TSLocateView.h"
-@interface SettingController : UIViewController<UIActionSheetDelegate>
+@interface SettingController : UIViewController<UIActionSheetDelegate,UITextViewDelegate,UIAlertViewDelegate>
 @property (weak, nonatomic) IBOutlet UITextView *infoTextView;
 @property (weak, nonatomic) IBOutlet UIView *userInfoView;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIView *settingView;
 @property (weak, nonatomic) IBOutlet UIButton *emailBt;
 @property (weak, nonatomic) IBOutlet UIButton *notificationBt;
+@property (weak, nonatomic) IBOutlet UIButton *tabBarRightBt;
+@property (weak, nonatomic) IBOutlet UILabel *tabBarTitleLabel;
 @property (weak, nonatomic) IBOutlet UIButton *locationBt;
 - (IBAction)emailBtClicked:(id)sender;
 - (IBAction)notificationBtClicked:(id)sender;
@@ -24,5 +26,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *locationTypeSwitch;
 - (IBAction)loginOutBtClicked:(UIButton *)sender;
 - (IBAction)cancelUserBtClicked:(UIButton *)sender;
+- (IBAction)backBtClicked:(UIButton *)sender;
+- (IBAction)tabBarRightBtClicked:(UIButton *)sender;
 
 @end

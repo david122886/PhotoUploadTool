@@ -8,11 +8,14 @@
 
 #import "DRTabBarController.h"
 #import "SettingPrivatePwdView.h"
+#import "AppDelegate.h"
+#import "UserObjDao.h"
+#import "AppDelegate.h"
+#define ALBUMPWD_TIP @"相册密码 :"
 typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 @interface DRTabBarController ()
 @property(nonatomic,strong) PublicGridController *publicController;
 @property(nonatomic,strong) PrivateGridController *privateController;
-@property(nonatomic,strong) NSString *privatePwdTip;
 @end
 
 @implementation DRTabBarController
@@ -31,7 +34,6 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadDataNotification) name:TABBAR_DOWNLOADDATA_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadDataNotificationFinished) name:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
     [super viewDidLoad];
-    self.privatePwdTip = @"相册密码 :"; 
     self.publicController = [[PublicGridController alloc] init];
     self.privateController = [[PrivateGridController alloc] init];
     self.privateController.view.backgroundColor = [UIColor clearColor];
@@ -43,9 +45,12 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     self.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"_bg.png"]];
     self.drtabBarView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tabbarbg.png"]];
     self.pwdCoverView.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:0.8];
-    self.pwdLabel.text = self.privatePwdTip;
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    self.webURLLabel.text = appDelegate.user.userWebURL==nil?@"":appDelegate.user.userWebURL;
+    self.pwdLabel.text = [NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,appDelegate.user.userAlbumPwd?:@""];
     self.publicController.rootController = self;
     self.privateController.rootController = self;
+    [self.activityView setHidden:YES];
     [self itemSelected:self.publicItemBt withType:PUBLICITEM];
     
     	// Do any additional setup after loading the view.
@@ -78,6 +83,7 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     self.publicController = nil;
     self.privateController = nil;
     [self setWebURLLabel:nil];
+    [self setActivityView:nil];
     [super viewDidUnload];
 }
 - (IBAction)publicItemSelected:(UIButton *)sender {
@@ -89,11 +95,15 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 }
 
 - (IBAction)settingItemSelected:(UIButton *)sender {
+    
 }
 
 - (IBAction)modifyBtClicked:(UIButton *)sender {
-    [SettingPrivatePwdView defaultSettingPrivatePwdViewType:PRIVATEPWDVIEW_MODIFY withSuccess:^(NSString *password) {
-        self.pwdLabel.text = password;
+    DRTabBarController __weak *weakTabBarCtr = self;
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    [SettingPrivatePwdView defaultSettingPrivatePwdViewType:PRIVATEPWDVIEW_MODIFY withAlbumPwd:appDelegate.user.userAlbumPwd==nil?@"":appDelegate.user.userAlbumPwd withSuccess:^(NSString *password) {
+        DRTabBarController *tabBarCtr = weakTabBarCtr;
+        [tabBarCtr modifyAlbumPassword:password];
     } orFailure:nil orCancel:nil];
 }
 
@@ -134,11 +144,41 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 }
 
 -(void)checkPrivatePassword{
-    if ([[self.pwdLabel.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:self.privatePwdTip]) {
-        [SettingPrivatePwdView defaultSettingPrivatePwdViewType:PRIVATEPWDVIEW_SETTING withSuccess:^(NSString *password) {
-            self.pwdLabel.text = password;
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    NSString *tempPwd = [self.pwdLabel.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *userAlbumPwd = @"";
+    if (appDelegate.user.userAlbumPwd) {
+        userAlbumPwd = [appDelegate.user.userAlbumPwd stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }
+     DRTabBarController __weak *weakTabBarCtr = self;
+    if ([tempPwd isEqualToString:ALBUMPWD_TIP] && !self.activityView.isAnimating) {
+        [SettingPrivatePwdView defaultSettingPrivatePwdViewType:PRIVATEPWDVIEW_SETTING withAlbumPwd:userAlbumPwd  withSuccess:^(NSString *password) {
+            DRTabBarController *tabBarCtr = weakTabBarCtr;
+            [tabBarCtr modifyAlbumPassword:password];
         } orFailure:nil orCancel:nil];
     }
+}
+
+-(void)modifyAlbumPassword:(NSString*)password{
+    DRTabBarController __weak *weakTabBarCtr = self;
+    [self.activityView startAnimating];
+    [self.activityView setHidden:NO];
+    self.pwdCoverView.userInteractionEnabled = NO;
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    [UserObjDao modifyAlbumPwdUserObjId:appDelegate.user.userId withAlbumPwd:password withSuccess:^(NSString *success) {
+        DRTabBarController *tabBarCtr = weakTabBarCtr;
+        tabBarCtr.pwdCoverView.userInteractionEnabled = YES;
+        tabBarCtr.pwdLabel.text = [NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,password];
+        [tabBarCtr.activityView stopAnimating];
+        [tabBarCtr.activityView setHidden:YES];
+    } withFailure:^(NSError *errror) {
+        DRTabBarController *tabBarCtr = weakTabBarCtr;
+        [tabBarCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        tabBarCtr.pwdCoverView.userInteractionEnabled = YES;
+        [tabBarCtr.activityView stopAnimating];
+        [tabBarCtr.activityView setHidden:YES];
+    }];
+    
 }
 
 -(void)dragUPCoverViewWthAnimation:(BOOL)animation{
@@ -164,6 +204,10 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     
 }
 
+-(void)alertErrorMessage:(NSString*)mes{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:mes delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alert show];
+}
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

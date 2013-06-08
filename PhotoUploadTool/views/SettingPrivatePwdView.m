@@ -17,6 +17,7 @@
 @property(nonatomic,copy) void(^successBlock)(NSString *password);
 @property(nonatomic,copy) void(^failureBlock)(NSError *error);
 @property(nonatomic,copy) void(^cancelBlock)();
+@property(nonatomic,strong) NSString *pwdStr;
 - (IBAction)okBt:(UIButton *)sender;
 - (IBAction)deleteBt:(id)sender;
 
@@ -42,6 +43,7 @@
 */
 
 +(SettingPrivatePwdView*)defaultSettingPrivatePwdViewType:(SettingPrivatePwdViewType)type
+                                             withAlbumPwd:(NSString*)albumPwd
                                               withSuccess:( void(^)(NSString *password))success
                                                 orFailure:(void(^)(NSError*error))failure
                                                  orCancel:(void(^)())cancel{
@@ -50,6 +52,7 @@
     settingView.successBlock = success;
     settingView.failureBlock = failure;
     settingView.cancelBlock = cancel;
+    settingView.pwdStr = albumPwd;
     [settingView setTipValue:type];
     [settingView show];
     return settingView;
@@ -111,14 +114,18 @@
 - (IBAction)okBt:(UIButton *)sender {
     if ([self checkInputStr]) {
         if (self.successBlock) {
-            self.successBlock([NSString stringWithFormat:@"相册密码 : %@",self.textField.text]);
+             NSString *password = [self.textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            self.successBlock(password);
         }
         [self dismiss];
     }
 }
 
 - (IBAction)deleteBt:(id)sender {
-    
+    if (!self.pwdStr || [self.pwdStr isEqualToString:@""]) {
+        self.tipLabel.text = @"提示 : 密码不为空";
+        return;
+    }
     if (self.cancelBlock) {
         self.cancelBlock();
     }

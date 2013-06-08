@@ -73,16 +73,18 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
     CGPoint cellPoint = [tapGesture locationInView:cell];
     if (CGRectContainsPoint(cell.rmoveImage.frame, cellPoint) && self.isAbleDelete) {
         //cell delete
-        NSLog(@"deleted bt clicked");
+        DRLOG(@"%@", @"deleted bt clicked");
         [self setScrollEnabled:NO];
         int loadedCellIndex = [self getCurrentloadedArrIndex:point];
         if (loadedCellIndex < 0) {
             return;
         }
-        [self deleteSelectedCellAtLoadedIndex:loadedCellIndex];
+//        [self deleteSelectedCellAtLoadedIndex:loadedCellIndex];
+        if (self.gridViewDelegate && [self.gridViewDelegate respondsToSelector:@selector(gridView:shouldDeleteCellIndex:)]) {
+            [self.gridViewDelegate gridView:self shouldDeleteCellIndex:loadedCellIndex];
+        }
     }else{
         //cell selected
-        NSLog(@"tap selected");
         if (_isAbleDelete) {
             _isAbleDelete = !_isAbleDelete;
             [self setFlowCellIsAbleDelete:_isAbleDelete];
@@ -142,6 +144,10 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
 //        }];
     }
     [self.loadedCells removeObjectAtIndex:deleteIndex];
+    
+    if ([self.loadedCells count] <= 1) {
+        self.isAbleDelete = NO;
+    }
     DRGridViewCell *lastCell = [self.loadedCells lastObject];
      self.contentBottomCrit = (GridViewCritical){[self getCurrentRowIndexWithCellIndex:lastCell.cellIndex],lastCell.frame.origin.y - GRIDVIEW_SPACE};
     if (self.gridViewDelegate && [self.gridViewDelegate respondsToSelector:@selector(gridView:didDeleteCellIndex:)]) {
@@ -591,6 +597,8 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
 #pragma mark EGORefreshTableDelegate
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
 	self.isloadingData = YES;
+    self.isAbleDelete = NO;
+    [self setFlowCellIsAbleDelete:NO];
     if (self.gridViewDelegate && [self.gridViewDelegate respondsToSelector:@selector(prepareReloadData:)]) {
         [self.gridViewDelegate prepareReloadData:self];
     }

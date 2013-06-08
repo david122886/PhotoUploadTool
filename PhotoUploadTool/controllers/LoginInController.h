@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LoginInController : UIViewController
+@interface LoginInController : UIViewController<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UIView *typeBackground;
 @property (weak, nonatomic) IBOutlet UITextField *userNameField;
 @property (weak, nonatomic) IBOutlet UIButton *forgotPwdBt;

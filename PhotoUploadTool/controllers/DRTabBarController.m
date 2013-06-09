@@ -34,8 +34,9 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadDataNotification) name:TABBAR_DOWNLOADDATA_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadDataNotificationFinished) name:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
     [super viewDidLoad];
-    self.publicController = [[PublicGridController alloc] init];
     self.privateController = [[PrivateGridController alloc] init];
+    self.publicController = [[PublicGridController alloc] init];
+    
     self.privateController.view.backgroundColor = [UIColor clearColor];
     self.publicController.view.backgroundColor = [UIColor clearColor];
     self.privateController.view.frame = (CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.height};
@@ -48,8 +49,8 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     self.webURLLabel.text = appDelegate.user.userWebURL==nil?@"":appDelegate.user.userWebURL;
     self.pwdLabel.text = [NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,appDelegate.user.userAlbumPwd?:@""];
-    self.publicController.rootController = self;
     self.privateController.rootController = self;
+    self.publicController.rootController = self;
     [self.activityView setHidden:YES];
     [self itemSelected:self.publicItemBt withType:PUBLICITEM];
     
@@ -57,7 +58,7 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 }
 
 -(void)downloadDataNotification{
-    [self.drtabBarView setUserInteractionEnabled:NO];
+//    [self.drtabBarView setUserInteractionEnabled:NO];
     [self.pwdCoverView setUserInteractionEnabled:NO];
 }
 

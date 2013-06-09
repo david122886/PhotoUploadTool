@@ -7,7 +7,8 @@
 //
 
 #import "AppDelegate.h"
-
+#import "UserObjDao.h"
+#define  DEFAULT_TOKEN @"default_token"
 @implementation AppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -69,6 +70,11 @@
 {
 	NSLog(@"My token is: %@", deviceToken);
     self.token = [[NSString alloc] initWithData:deviceToken encoding:NSUTF8StringEncoding];
+    NSString *defaultToken = [[NSUserDefaults standardUserDefaults] objectForKey:DEFAULT_TOKEN];
+    if (!defaultToken || ![defaultToken isEqualToString:self.token]) {
+        [UserObjDao setAPNSTokenUserObjId:self.user.userId withToken:self.token withSuccess:nil withFailure:nil];
+        [[NSUserDefaults standardUserDefaults] setObject:self.token forKey:DEFAULT_TOKEN];
+    }
 }
 
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error

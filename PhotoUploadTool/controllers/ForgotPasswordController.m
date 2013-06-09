@@ -38,6 +38,7 @@
     self.rePwdField.delegate = self;
     self.emailField.delegate = self;
     self.nameField.text = self.userName;
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"registerbg.png"]];
 	// Do any additional setup after loading the view.
 }
 

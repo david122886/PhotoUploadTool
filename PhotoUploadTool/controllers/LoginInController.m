@@ -12,6 +12,7 @@
 #import "AppDelegate.h"
 #import "ForgotPasswordController.h"
 #import "DRTabBarController.h"
+#define USERDEFAULT_NAME @"userdefault_name"
 @interface LoginInController ()
 @property (nonatomic,strong) DRTabBarController *drtabBarController;
 @property(nonatomic,assign) float selfViewCenterheight;
@@ -59,10 +60,18 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDown:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardUP:) name:UIKeyboardWillShowNotification object:nil];
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"_bg.png"]];
-    self.selfViewCenterheight = self.view.center.y;
+    self.selfViewCenterheight = self.view.center.y-20;
+    [self setDefaultUser];
 	// Do any additional setup after loading the view.
 }
 
+
+-(void)setDefaultUser{
+    NSString *name = [[NSUserDefaults standardUserDefaults] objectForKey:USERDEFAULT_NAME];
+    if (name) {
+        [self.userNameField setText:name];
+    }
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -80,9 +89,12 @@
 - (IBAction)LoginBtClicked:(id)sender {
     self.userNameField.text = @"dd";
     self.passwdField.text = @"dd";
-    if ([self checkInputField]) {        
+    if ([self checkInputField]) {
+        [self.userNameField resignFirstResponder];
+        [self.passwdField resignFirstResponder];
         NSString *name = [self.userNameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         NSString *passwd = [self.passwdField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        [[NSUserDefaults standardUserDefaults] setObject:name forKey:USERDEFAULT_NAME];
         AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
         AppDelegate __weak *weakAppDelegate = appDelegate;
         __weak LoginInController *weakCtr = self;

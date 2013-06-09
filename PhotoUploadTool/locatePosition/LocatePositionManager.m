@@ -10,8 +10,8 @@
 @interface LocatePositionManager()
 @property(nonatomic,strong) CLLocationManager *locationManager;
 @property(nonatomic,strong) CLGeocoder *geocoder;
-@property(copy) void(^successBlock)(NSString *locatitonName,CLLocationCoordinate2D locationg);
-@property(copy) void(^errorBlock)(NSError *error);
+@property(nonatomic,strong) void(^successBlock)(NSString *locatitonName,CLLocationCoordinate2D locationg);
+@property(nonatomic,strong) void(^errorBlock)(NSError *error);
 @end
 @implementation LocatePositionManager
 static LocatePositionManager *locateManager;

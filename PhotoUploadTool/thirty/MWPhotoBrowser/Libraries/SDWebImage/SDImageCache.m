@@ -292,7 +292,7 @@ static SDImageCache *instance;
     {
         [arguments setObject:info forKey:@"userInfo"];
     }
-    [cacheOutQueue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(queryDiskCacheOperation:) object:arguments] autorelease]];
+    [self queryDiskCacheOperation:arguments];
 }
 
 - (void)removeImageForKey:(NSString *)key

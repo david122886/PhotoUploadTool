@@ -51,6 +51,7 @@
         [self.summaryDataArr addObject:data];
 //        http://ww2.sinaimg.cn/bmiddle/acb53f76gw1e0d3m71gtdj.jpg
         MWPhoto *photo = [MWPhoto photoWithURL:[NSURL URLWithString:obj.bigImageURLStr]];
+        DRLOG(@"%@", obj.bigImageURLStr);
         photo.caption = obj.describle;
         photo.imageDataID = obj.imageDataID;
         [self.scanDataArr addObject:photo];

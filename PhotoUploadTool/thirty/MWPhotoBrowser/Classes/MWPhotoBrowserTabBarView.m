@@ -15,13 +15,13 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        self.leftBt = [[UIButton alloc] initWithFrame:(CGRect){10,10,20,20}];
+        self.leftBt = [[UIButton alloc] initWithFrame:(CGRect){7,7,30,30}];
         self.leftBt.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin ;
         [self.leftBt setBackgroundImage:[UIImage imageNamed:@"scan_back.png"] forState:UIControlStateNormal];
-        self.rightBt = [[UIButton alloc] initWithFrame:(CGRect){self.frame.size.width - 30,10,20,20}];
+        self.rightBt = [[UIButton alloc] initWithFrame:(CGRect){self.frame.size.width - 40,7,30,30}];
         self.rightBt.autoresizingMask = UIViewAutoresizingFlexibleRightMargin ;
         [self.rightBt setBackgroundImage:[UIImage imageNamed:@"scan_delete.png"] forState:UIControlStateNormal];
-        self.middleLabel = [[UILabel alloc] initWithFrame:(CGRect){40,10,self.frame.size.width - 40,self.frame.size.height - 20}];
+        self.middleLabel = [[UILabel alloc] initWithFrame:(CGRect){50,10,self.frame.size.width - 50,self.frame.size.height - 20}];
         self.leftBt.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin  | UIViewAutoresizingFlexibleRightMargin;
         self.middleLabel.backgroundColor = [UIColor clearColor];
         [self.middleLabel setTextColor:[UIColor whiteColor]];

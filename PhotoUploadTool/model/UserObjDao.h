@@ -19,4 +19,6 @@
 +(void)modifyUserDescribleUserObjId:(NSString*)_userID withUserDescrible:(NSString*)_userDescrible withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure;
 +(void)modifyUserEmailUserObjId:(NSString*)_userID withUserEmail:(NSString*)_userEmail withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure;
 +(void)modifyUserLocationUserObjId:(NSString*)_userID withUserLocation:(NSString*)_userLocation withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure;
+
++(void)setAPNSTokenUserObjId:(NSString*)_userID withToken:(NSString*)_token withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure;
 @end

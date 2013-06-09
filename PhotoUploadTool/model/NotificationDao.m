@@ -10,6 +10,12 @@
 
 @implementation NotificationDao
 +(void)notificationDaoDownloadWithUserObjID:(NSString*)_userID WithSuccess:(void(^)(NSArray* notificationArr))_success withFailure:(void(^)(NSError *error))_failure{
+    if (_failure) {
+        _failure([NotificationDao getErrorObjWithMessage:@"加载通知失败"]);
+    }
+}
+
++(void)deleteNotificationWithUserObjID:(NSString*)_userID withNotID:(NSString*)_notificationID withSuccess:(void(^)(NSArray* notificationArr))_success withFailure:(void(^)(NSError *error))_failure{
 
 }
 @end

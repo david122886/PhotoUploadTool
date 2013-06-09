@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ModifyUserPasswordController : UIViewController
+@interface ModifyUserPasswordController : UIViewController<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *nameField;
 @property (weak, nonatomic) IBOutlet UITextField *oldPwdField;
 @property (weak, nonatomic) IBOutlet UITextField *reNewPwdField;

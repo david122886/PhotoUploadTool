@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface NotificationObject : NSObject
+@property(nonatomic,strong) NSString *notificationID;
 @property(nonatomic,strong) NSString *date;
 @property(nonatomic,strong) NSString *deail;
 @property(nonatomic,strong) NSNumber *isExpand;

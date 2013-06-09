@@ -14,9 +14,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *tipLabel;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
-@property(nonatomic,copy) void(^successBlock)(NSString *password);
-@property(nonatomic,copy) void(^failureBlock)(NSError *error);
-@property(nonatomic,copy) void(^cancelBlock)();
+@property(nonatomic,strong) void(^successBlock)(NSString *password);
+@property(nonatomic,strong) void(^failureBlock)(NSError *error);
+@property(nonatomic,strong) void(^cancelBlock)();
 @property(nonatomic,strong) NSString *pwdStr;
 - (IBAction)okBt:(UIButton *)sender;
 - (IBAction)deleteBt:(id)sender;

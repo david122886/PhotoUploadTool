@@ -58,6 +58,8 @@
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if (appDelegate.user.locationType == LOCATION_AUTO_SET) {
         [self locatePosition];
+    }else{
+        [LocatePositionManager stopUpdate];
     }
 }
 
@@ -276,6 +278,7 @@
         SettingController *setting = weakSettingCtr;
         AppDelegate *delegate = weakDelegate;
         delegate.user.userLocation = locatitonName;
+        DRLOG(@"SettingController locate name:%@",locatitonName);
         [setting updateUserLocation:locatitonName];
     } failure:^(NSError *error) {
         SettingController *setting = weakSettingCtr;

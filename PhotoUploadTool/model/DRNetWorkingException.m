@@ -26,6 +26,11 @@
         _failure([DRNetWorkingException getErrorObjWithMessage:@"无法连接服务器"]);
         return YES;
     }
+    
+    if ([[error.userInfo objectForKey:@"NSLocalizedDescription"] isEqualToString:@"未能连接到服务器。"]) {
+        _failure([DRNetWorkingException getErrorObjWithMessage:@"未能连接到服务器"]);
+        return YES;
+    }
     return NO;
 }
 @end

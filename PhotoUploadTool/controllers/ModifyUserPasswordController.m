@@ -28,19 +28,33 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDown:) name:UIKeyboardWillHideNotification object:nil];
     self.tabbarTitleLabel.text = @"修改密码";
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userTapGesture:)];
     [self.scrollView addGestureRecognizer:tapGesture];
     self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height +300);
 	// Do any additional setup after loading the view.
+    [self setViewData];
+    self.scrollView.contentSize = (CGSize){self.scrollView.frame.size.width,self.scrollView.frame.size.height};
 }
 
+-(void)setViewData{
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    [self.nameField setText:appDelegate.user.userName];
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+
+-(void)keyboardDown:(id)sender{
+    float durationTime = [[[(NSNotification*)sender userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    [UIView animateWithDuration:durationTime animations:^{
+        self.scrollView.contentSize = (CGSize){self.scrollView.frame.size.width,self.scrollView.frame.size.height};
+    }];
+}
 - (void)viewDidUnload {
     [self setNameField:nil];
     [self setOldPwdField:nil];
@@ -52,6 +66,7 @@
 }
 - (IBAction)okBtClicked:(id)sender {
     if ([self checkInputStr]) {
+        [self userTapGesture:nil];
         NSString *dNewPwStr = [self.dNewPwdField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
@@ -111,4 +126,13 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:mes delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
     [alert show];
 }
+
+#pragma mark UITextFieldDelegate
+-(void)textFieldDidBeginEditing:(UITextField *)textField{
+    self.scrollView.contentSize = (CGSize){self.scrollView.frame.size.width,self.scrollView.frame.size.height + 200};
+    float y = [textField.superview frame].origin.y;
+    [self.scrollView setContentOffset:(CGPoint){0,y} animated:YES];
+}
+#pragma mark --
+
 @end

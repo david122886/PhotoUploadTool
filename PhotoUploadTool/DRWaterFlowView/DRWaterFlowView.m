@@ -389,7 +389,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
         [cell downLoadImageWithURLStr:cellData.imageURLStr withPlaceHolderImage:self.placeHolderImage withSuccess:^(DRWaterFlowCell *cell) {
             
         } failure:^(NSError *error) {
-            NSLog(@"error");
+            DRLOG(@"%@", @"DRGridViewCell download imaage error");
         }];
         [cell hiddenRemoveButton:!self.isAbleDelete];
         [self addSubview:cell];

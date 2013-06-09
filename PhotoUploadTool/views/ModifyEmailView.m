@@ -10,9 +10,9 @@
 #define INPUTVIEW_INTERVAL 0.5
 #define BORDERVIEW_HEIGHT 300
 @interface ModifyEmailView()
-@property(nonatomic,copy) void(^successBlock)(NSString *password);
-@property(nonatomic,copy) void(^failureBlock)(NSError *error);
-@property(nonatomic,copy) void(^cancelBlock)();
+@property(nonatomic,strong) void(^successBlock)(NSString *password);
+@property(nonatomic,strong) void(^failureBlock)(NSError *error);
+@property(nonatomic,strong) void(^cancelBlock)();
 @property(nonatomic,strong) NSString *emailString;
 @end
 @implementation ModifyEmailView

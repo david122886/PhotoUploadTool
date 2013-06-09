@@ -439,4 +439,45 @@
              }];
 }
 
+
++(void)setAPNSTokenUserObjId:(NSString*)_userID withToken:(NSString*)_token withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure{
+    AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    AFHTTPClient *client = appDelete.afhttpClient;
+//    http://192.168.3.106:3000/photos/edittoken?id=3&token=。。。。。
+    //    [client postPath:@"users/album_pwd"
+    [client getPath:@"photos/edittoken"
+         parameters:@{@"id":_userID,@"token":_token?:@""}
+            success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                if (responseStr) {
+                    if ([responseStr isEqualToString:@"error"]) {
+                        if (_failure) {
+                            _failure([UserObjDao getErrorObjWithMessage:@"设置Token失败"]);
+                        }
+                    }else
+                        if ([responseStr isEqualToString:@"success"]) {
+                            if (_success) {
+                                _success(@"设置Token失败成功");
+                            }
+                        }else{
+                            if (_failure) {
+                                _failure([UserObjDao getErrorObjWithMessage:@"设置Token失败"]);
+                            }
+                        }
+                }else{
+                    if (_failure) {
+                        _failure([UserObjDao getErrorObjWithMessage:@"设置Token失败"]);
+                    }
+                }
+                
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                DRLOG(@"setAPNSTokenUserObjId%@",error);
+                if ([UserObjDao judgeErrorTypeWithFailureBlock:_failure withError:error]) {
+                    
+                }else
+                    if (_failure) {
+                        _failure([UserObjDao getErrorObjWithMessage:@"设置Token失败失败"]);
+                    }
+            }];
+}
 @end

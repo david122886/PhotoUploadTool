@@ -13,8 +13,8 @@
 #define GRIDCELL_REMOVE_HEIGHT 30.0
 #define GRIDCELL_SPACE 2
 @interface DRGridViewCell()
-@property(nonatomic,assign) void (^successBlock)(DRGridViewCell *cell);
-@property(nonatomic,assign) void (^errorBlock)(NSError *error);
+@property(nonatomic,strong) void (^successBlock)(DRGridViewCell *cell);
+@property(nonatomic,strong) void (^errorBlock)(NSError *error);
 
 @end
 @implementation DRGridViewCell
@@ -113,6 +113,11 @@
  */
 -(void)hiddenRemoveButton:(BOOL)l{
     [self.rmoveImage setHidden:l];
+}
+
+-(void)removeFromSuperview{
+    [super removeFromSuperview];
+    [self.imageView cancelImageRequestOperation];
 }
 
 @end

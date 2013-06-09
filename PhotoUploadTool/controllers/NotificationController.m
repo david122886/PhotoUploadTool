@@ -8,13 +8,15 @@
 
 #import "NotificationController.h"
 #import "NotificationCell.h"
+#import "AppDelegate.h"
+#import "NotificationDao.h"
+#import "MBProgressHUD.h"
 #define NOTIFICATION_FONT_SIZE  15
 @interface NotificationController ()
 @property(nonatomic,strong) EGORefreshTableHeaderView *refreshView;
 @property(nonatomic,strong)NSMutableArray *notificationArr;
 @property(nonatomic,strong)UITableView *tableView;
 @property(nonatomic,assign) BOOL isloadingData;
-@property(nonatomic,assign) NSIndexPath *selectedPath;
 @end
 
 @implementation NotificationController
@@ -33,33 +35,83 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.tabbarTitleLabel.text = @"通知列表";
     [self.tabbarRightBt setTitle:@"编辑" forState:UIControlStateNormal];
     [self.tabbarRightBt setBackgroundColor:[UIColor blueColor]];
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"privatePwd_bg.png"]];
 	// Do any additional setup after loading the view.
-    for (int i = 0; i < 20; i++) {
-        [self.notificationArr addObject:[NotificationObject initNotificationWithDateStr:@"2012/01/01" withDetailStr:@"umhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9oniumhoiumh9s9s8g9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s98g9msoiihsoshhis vnyguiwh m0ws9ui ,s9u"]];
-    }
+//    for (int i = 0; i < 20; i++) {
+//        [self.notificationArr addObject:[NotificationObject initNotificationWithDateStr:@"2012/01/01" withDetailStr:@"umhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9oniumhoiumh9s9s8g9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s98g9msoiihsoshhis vnyguiwh m0ws9ui ,s9u"]];
+//    }
     [self.contentView addSubview:self.tableView];
+    [self downloadnotification];
+}
+
+-(void)downloadnotification{
+    if (self.notiArr && [self.notiArr count] > 0) {
+        [self.notificationArr removeAllObjects];
+        [self.notificationArr addObjectsFromArray:self.notiArr];
+        [self loadedData];
+        return;
+    }
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    NotificationController __weak *weakNotiCtr = self;
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [NotificationDao notificationDaoDownloadWithUserObjID:appDelegate.user.userId WithSuccess:^(NSArray *notificationArr) {
+        NotificationController *notiCtr = weakNotiCtr;
+        [MBProgressHUD hideHUDForView:notiCtr.view animated:YES];
+        [notiCtr.notificationArr removeAllObjects];
+        [notiCtr.notificationArr addObjectsFromArray:notificationArr];
+        [notiCtr loadedData];
+    } withFailure:^(NSError *error) {
+        NotificationController *notiCtr = weakNotiCtr;
+        [MBProgressHUD hideHUDForView:notiCtr.view animated:YES];
+        [notiCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
+        [notiCtr loadedData];
+    }];
+}
+
+-(void)deleteNotificationAtIndexPath:(NSIndexPath*)indexPath{
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    NotificationController __weak *weakNotiCtr = self;
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    NSIndexPath __weak *weakPath = indexPath;
+    NotificationObject *obj = [self.notificationArr objectAtIndex:indexPath.row];
+    [NotificationDao deleteNotificationWithUserObjID:appDelegate.user.userId withNotID:obj.notificationID withSuccess:^(NSArray *notificationArr) {
+        NotificationController *notiCtr = weakNotiCtr;
+        [MBProgressHUD hideHUDForView:notiCtr.view animated:YES];
+        NSIndexPath *path = weakPath;
+        [notiCtr deleteCellAtIndexPath:path];
+    } withFailure:^(NSError *error) {
+        NotificationController *notiCtr = weakNotiCtr;
+        [MBProgressHUD hideHUDForView:notiCtr.view animated:YES];
+        [notiCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
+    }];
+    
+}
+
+-(void)deleteCellAtIndexPath:(NSIndexPath*)indexPath{
+    [self.notificationArr removeObjectAtIndex:indexPath.row];
+    NSArray *indexPaths = [NSArray arrayWithObject:indexPath];
+    if (indexPath) {
+        [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+    }
+}
+
+-(void)alertErrorMessage:(NSString*)mes{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:mes delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alert show];
 }
 
 -(void)loadedData{
     self.isloadingData = NO;
-    self.selectedPath = nil;
     [self.tableView reloadData];
     [self.refreshView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
 
 //继承该方法时,左右滑动会出现删除按钮(自定义按钮),点击按钮时的操作
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    [self.notificationArr removeObjectAtIndex:indexPath.row];
-    NSArray *indexPaths = [NSArray arrayWithObject:indexPath];
-    if (indexPath) {
-        [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
-    }
-
-    
+    [self deleteNotificationAtIndexPath:indexPath];
 }
 
 
@@ -150,11 +202,27 @@
 }
 #pragma mark --
 
+-(void)refreshNotificationDatas{
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    NotificationController __weak *weakNotiCtr = self;
+    [NotificationDao notificationDaoDownloadWithUserObjID:appDelegate.user.userId WithSuccess:^(NSArray *notificationArr) {
+        NotificationController *notiCtr = weakNotiCtr;
+        [notiCtr.notificationArr removeAllObjects];
+        [notiCtr.notificationArr addObjectsFromArray:notificationArr];
+        [notiCtr loadedData];
+    } withFailure:^(NSError *error) {
+        NotificationController *notiCtr = weakNotiCtr;
+        [notiCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
+        [notiCtr loadedData];
+    }];
+}
+
 #pragma mark EGORefreshTableDelegate
 
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
 	self.isloadingData = YES;
-    [self performSelector:@selector(loadedData) withObject:nil afterDelay:3.0];
+//    [self performSelector:@selector(loadedData) withObject:nil afterDelay:3.0];
+    [self refreshNotificationDatas];
     
 }
 
@@ -195,7 +263,6 @@
 }
 - (IBAction)tabbarEditBtClicked:(UIButton *)sender {
     [self.tableView setEditing:!self.tableView.editing animated:YES];
-    self.selectedPath = nil;
     //    [self.tableView reloadData];
     if (self.tableView.editing) {
         [self.tabbarRightBt setTitle:@"取消" forState:UIControlStateNormal];

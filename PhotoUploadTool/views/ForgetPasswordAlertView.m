@@ -10,9 +10,9 @@
 #define INPUTVIEW_INTERVAL 0.5
 #define BORDERVIEW_HEIGHT 300
 @interface ForgetPasswordAlertView()
-@property(nonatomic,assign) void(^successBlock)();
-@property(nonatomic,assign) void(^failureBlock)(NSError *error);
-@property(nonatomic,assign) void(^cancelBlock)();
+@property(nonatomic,strong) void(^successBlock)();
+@property(nonatomic,strong) void(^failureBlock)(NSError *error);
+@property(nonatomic,strong) void(^cancelBlock)();
 @property(nonatomic,strong) NSString *emailStr;
 @property (weak, nonatomic) IBOutlet UIView *borderView;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;

@@ -8,7 +8,7 @@
 
 #import "MWPhoto.h"
 #import "MWPhotoBrowser.h"
-
+#import "AFNetworking.h"
 // Private
 @interface MWPhoto () {
 
@@ -92,6 +92,11 @@ caption = _caption;
 - (UIImage *)underlyingImage {
     return _underlyingImage;
 }
+/*
+ - (void)loadUnderlyingImageAndNotify {
+ [self performSelectorOnMainThread:@selector(downloadData) withObject:nil waitUntilDone:YES];
+ }
+ */
 
 - (void)loadUnderlyingImageAndNotify {
     NSAssert([[NSThread currentThread] isMainThread], @"This method must be called on the main thread.");
@@ -115,6 +120,37 @@ caption = _caption;
                 // Start an async download
                 [manager downloadWithURL:_photoURL delegate:self];
             }
+        } else {
+            // Failed - no source
+            self.underlyingImage = nil;
+            [self imageLoadingComplete];
+        }
+    }
+}
+
+
+-(void)downloadData{
+    NSAssert([[NSThread currentThread] isMainThread], @"This method must be called on the main thread.");
+    _loadingInProgress = YES;
+    if (self.underlyingImage) {
+        // Image already loaded
+        [self imageLoadingComplete];
+    } else {
+        if (_photoPath) {
+            // Load async from file
+            [self performSelectorInBackground:@selector(loadImageFromFileAsync) withObject:nil];
+        } else if (_photoURL) {
+            MWPhoto  *tempPhoto = [[self copy] autorelease];
+            [[AFHTTPClient clientWithBaseURL:_photoURL]  getPath:@"" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                if (responseObject) {
+                    tempPhoto.underlyingImage = [UIImage imageWithData:responseObject];
+                    [tempPhoto imageDidFinishLoadingSoDecompress];
+                }
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                self.underlyingImage = nil;
+                MWLog(@"SDWebImage failed to download image: %@", error);
+                [tempPhoto imageDidFinishLoadingSoDecompress];
+            }];
         } else {
             // Failed - no source
             self.underlyingImage = nil;

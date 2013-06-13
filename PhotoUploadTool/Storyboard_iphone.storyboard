@@ -519,7 +519,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" red="0.24562879183587227" green="0.91539996603260865" blue="0.25050926849403443" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.20940290180000001" green="0.061313546589999997" blue="0.018819360859999999" alpha="0.55000000000000004" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="设置相册密码：" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fCJ-ue-tYb" userLabel="textTipLabel">
@@ -527,7 +527,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" red="0.83937919139862061" green="0.45929076226617133" blue="0.21822882356909723" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.20940290180000001" green="0.061313546589999997" blue="0.018819360859999999" alpha="0.55000000000000004" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="privatePwd_textbg.png" id="P9f-AQ-tf0" userLabel="textImagebg">
@@ -538,6 +538,7 @@
                                         <rect key="frame" x="39" y="84" width="201" height="24"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="textColor" red="0.20940290180000001" green="0.061313546589999997" blue="0.018819360859999999" alpha="0.55000000000000004" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
@@ -663,12 +664,12 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="yr4-Ek-bXj">
-                                        <rect key="frame" x="270" y="7" width="30" height="30"/>
+                                        <rect key="frame" x="257" y="6" width="48" height="33"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" size="button"/>
-                                        <state key="normal" image="tabbarEdit.png">
-                                            <color key="titleColor" red="0.19607843137254902" green="0.30980392156862746" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                        <state key="normal">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <state key="highlighted">
@@ -1341,6 +1342,11 @@
                                                         <rect key="frame" x="254" y="14" width="15" height="15"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     </imageView>
+                                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" style="whiteLarge" id="T7c-K5-CP4">
+                                                        <rect key="frame" x="78" y="3" width="37" height="37"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </activityIndicatorView>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             </view>
@@ -1374,6 +1380,11 @@
                                                             <action selector="locationTypeChanged:" destination="DDN-qc-L28" eventType="valueChanged" id="mZ0-dg-7Lh"/>
                                                         </connections>
                                                     </switch>
+                                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" style="whiteLarge" id="RB0-mf-tZV">
+                                                        <rect key="frame" x="79" y="3" width="37" height="37"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </activityIndicatorView>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             </view>
@@ -1494,8 +1505,10 @@
                     <connections>
                         <outlet property="emailBt" destination="dt4-ji-fRA" id="Q1Z-49-liV"/>
                         <outlet property="infoTextView" destination="k9r-BM-MQO" id="T8d-GR-uza"/>
+                        <outlet property="locationActivityProgress" destination="RB0-mf-tZV" id="Ftp-6Y-JBX"/>
                         <outlet property="locationBt" destination="HEi-G5-nS6" id="qBl-cY-Qyy"/>
                         <outlet property="locationTypeSwitch" destination="uXN-Zp-02t" id="V3w-mI-jCW"/>
+                        <outlet property="notificationActivityProgress" destination="T7c-K5-CP4" id="c6U-1L-PFe"/>
                         <outlet property="notificationBt" destination="QnJ-ga-uFX" id="ft4-Ah-ozJ"/>
                         <outlet property="scrollView" destination="M54-xt-yPH" id="9d4-D6-Mwi"/>
                         <outlet property="settingView" destination="O51-bf-bkB" id="aWU-Du-rzb"/>
@@ -1753,7 +1766,6 @@
         <image name="privatePwd_ok.png" width="414" height="88"/>
         <image name="privatePwd_textbg.png" width="411" height="85"/>
         <image name="setting.png" width="48" height="48"/>
-        <image name="tabbarEdit.png" width="48" height="48"/>
     </resources>
     <classes>
         <class className="DRTabBarController" superclassName="UIViewController">
@@ -1892,8 +1904,10 @@
                 <relationship kind="action" name="tabBarRightBtClicked:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="emailBt" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="infoTextView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="locationActivityProgress" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="locationBt" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="locationTypeSwitch" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="notificationActivityProgress" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="notificationBt" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
                 <relationship kind="outlet" name="settingView" candidateClass="UIView"/>

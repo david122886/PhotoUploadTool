@@ -270,7 +270,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
                 [newCell downLoadImageWithURLStr:newData.imageURLStr withPlaceHolderImage:self.placeHolderImage withSuccess:^(DRGridViewCell *cell) {
                     
                 } failure:^(NSError *error) {
-                    DRLOG(@"%@", @"DRGridViewCell download imaage error");
+                    DRLOG(@"DRGridViewCell download imaage error:%@",error);
                 }];
             }
             
@@ -321,7 +321,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
             [cell downLoadImageWithURLStr:cellData.imageURLStr withPlaceHolderImage:self.placeHolderImage withSuccess:^(DRGridViewCell *cell) {
                 
             } failure:^(NSError *error) {
-                DRLOG(@"%@", @"DRGridViewCell download imaage error");
+                DRLOG(@"DRGridViewCell download imaage error:%@",error);
             }];
         }
         

@@ -36,6 +36,12 @@
 	// Do any additional setup after loading the view.
     [self setViewData];
     self.scrollView.contentSize = (CGSize){self.scrollView.frame.size.width,self.scrollView.frame.size.height};
+    
+    self.nameField.delegate = self;
+    self.oldPwdField.delegate = self;
+    self.reNewPwdField.delegate = self;
+    self.dNewPwdField.delegate = self;
+    
 }
 
 -(void)setViewData{

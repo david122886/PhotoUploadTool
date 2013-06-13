@@ -16,7 +16,7 @@
     if (!jsonStr) {
         return nil;
     }
-    NSLog(@"%@",jsonStr);
+    DRLOG(@"%@",jsonStr);
     NSString *userID = [NSString stringWithFormat:@"%@",[jsonStr objectForKey:@"id"]];
     if (!userID || [userID isEqualToString:@"<null>"]) {
         return nil;

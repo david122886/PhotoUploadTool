@@ -108,7 +108,7 @@
         } withFailure:^(NSError *errror) {
             LoginInController *ctr = weakCtr;
             [MBProgressHUD hideHUDForView:ctr.view animated:YES];
-            NSLog(@"%@",errror);
+            DRLOG(@"%@",errror);
             [ctr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
         }];
     }

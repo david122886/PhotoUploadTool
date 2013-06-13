@@ -37,8 +37,11 @@
     [super viewDidLoad];
     self.tabbarTitleLabel.text = @"通知列表";
     [self.tabbarRightBt setTitle:@"编辑" forState:UIControlStateNormal];
-    [self.tabbarRightBt setBackgroundColor:[UIColor blueColor]];
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"privatePwd_bg.png"]];
+    
+    [self.tabbarRightBt setBackgroundImage:[UIImage imageNamed:@"btn.png"] forState:UIControlStateNormal];
+    [self.tabbarRightBt setBackgroundImage:[UIImage imageNamed:@"out_btn.png"] forState:UIControlStateHighlighted];
+//    [self.tabbarRightBt setContentEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
 	// Do any additional setup after loading the view.
 //    for (int i = 0; i < 20; i++) {
 //        [self.notificationArr addObject:[NotificationObject initNotificationWithDateStr:@"2012/01/01" withDetailStr:@"umhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9oniumhoiumh9s9s8g9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s9msoiihsoshoniumhoiumh9s9s8g9msoiihsoshoniumhoiumh9s98g9msoiihsoshhis vnyguiwh m0ws9ui ,s9u"]];
@@ -266,10 +269,8 @@
     //    [self.tableView reloadData];
     if (self.tableView.editing) {
         [self.tabbarRightBt setTitle:@"取消" forState:UIControlStateNormal];
-        [self.tabbarRightBt setBackgroundColor:[UIColor redColor]];
     }else{
         [self.tabbarRightBt setTitle:@"编辑" forState:UIControlStateNormal];
-        [self.tabbarRightBt setBackgroundColor:[UIColor blueColor]];
     }
 }
 @end

@@ -40,6 +40,7 @@
     [self.notificationBt setTitle:NOTIFICATION_TIP forState:UIControlStateNormal];
     [self.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,user.userLocation == nil?@"":user.userLocation] forState:UIControlStateNormal];
     [self.locationTypeSwitch setOn:user.locationType == LOCATION_AUTO_SET?YES:NO];
+    [self downloadNotification];
 }
 - (void)viewDidLoad
 {
@@ -60,6 +61,7 @@
         [self locatePosition];
     }else{
         [LocatePositionManager stopUpdate];
+        [self.locationActivityProgress setHidden:YES];
     }
 }
 
@@ -84,6 +86,8 @@
     [self setLocationTypeSwitch:nil];
     [self setTabBarTitleLabel:nil];
     [self setTabBarRightBt:nil];
+    [self setLocationActivityProgress:nil];
+    [self setNotificationActivityProgress:nil];
     [super viewDidUnload];
 }
 - (IBAction)emailBtClicked:(id)sender {
@@ -165,6 +169,7 @@
     if ([info isEqualToString:@""]) {
         return;
     }
+    [self userTapGesture:nil];
     NSString __weak *WeakInfo = info;
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     SettingController __weak *weakSettingCtr = self;
@@ -248,43 +253,63 @@
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     SettingController __weak *weakSettingCtr = self;
     NSString __weak *weakCity = locationCity;
+    [self.locationActivityProgress startAnimating];
+    [self.locationActivityProgress setHidden:NO];
     [UserObjDao modifyUserLocationUserObjId:appDelegate.user.userId withUserLocation:locationCity withSuccess:^(NSString *success) {
         SettingController *setting = weakSettingCtr;
         NSString *city = weakCity;
 //        [MBProgressHUD hideHUDForView:setting.view animated:YES];
         [setting.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,city] forState:UIControlStateNormal];
+        [setting.locationActivityProgress stopAnimating];
+        [setting.locationActivityProgress setHidden:YES];
     } withFailure:^(NSError *errror) {
         SettingController *setting = weakSettingCtr;
 //        [MBProgressHUD hideHUDForView:setting.view animated:YES];
         [setting alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        [setting.locationActivityProgress stopAnimating];
+        [setting.locationActivityProgress setHidden:YES];
     }];
 }
 
 -(void)downloadNotification{
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     SettingController __weak *weakSettingCtr = self;
-    
+    [self.notificationActivityProgress startAnimating];
+    [self.notificationActivityProgress setHidden:NO];
     [NotificationDao notificationDaoDownloadWithUserObjID:appDelegate.user.userId WithSuccess:^(NSArray *notificationArr) {
         SettingController *setting = weakSettingCtr;
         setting.notificationArr = notificationArr;
-    } withFailure:nil];
+        [setting.notificationActivityProgress stopAnimating];
+        [setting.notificationActivityProgress setHidden:YES];
+    } withFailure:^(NSError *error) {
+        DRLOG(@"downloadNotification:%@",error);
+        SettingController *setting = weakSettingCtr;
+        [setting.notificationActivityProgress stopAnimating];
+        [setting.notificationActivityProgress setHidden:YES];
+    }];
 }
 
 -(void)locatePosition{
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     AppDelegate __weak *weakDelegate = appDelegate;
     SettingController __weak *weakSettingCtr = self;
+    [self.locationActivityProgress startAnimating];
+    [self.locationActivityProgress setHidden:NO];
     [LocatePositionManager locatePositionSuccess:^(NSString *locatitonName, CLLocationCoordinate2D locationg) {
         SettingController *setting = weakSettingCtr;
         AppDelegate *delegate = weakDelegate;
         delegate.user.userLocation = locatitonName;
         DRLOG(@"SettingController locate name:%@",locatitonName);
         [setting updateUserLocation:locatitonName];
+        [setting.locationActivityProgress stopAnimating];
+        [setting.locationActivityProgress setHidden:YES];
     } failure:^(NSError *error) {
         SettingController *setting = weakSettingCtr;
         [setting.locationBt setTitle:LOCATION_TIP forState:UIControlStateNormal];
         [setting.locationTypeSwitch setOn:YES];
         [setting alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
+        [setting.locationActivityProgress stopAnimating];
+        [setting.locationActivityProgress setHidden:YES];
     }];
 }
 #pragma mark property

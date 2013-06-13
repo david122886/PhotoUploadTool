@@ -31,7 +31,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.width+250);
+//    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.width);
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"registerbg.png"]];
     if (self.type == MODIFY_USER) {
         self.pwdLabel.text = @"新密码：";

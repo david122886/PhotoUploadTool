@@ -15,7 +15,9 @@
 @property (weak, nonatomic) IBOutlet UIView *settingView;
 @property (weak, nonatomic) IBOutlet UIButton *emailBt;
 @property (weak, nonatomic) IBOutlet UIButton *notificationBt;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *notificationActivityProgress;
 @property (weak, nonatomic) IBOutlet UIButton *tabBarRightBt;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *locationActivityProgress;
 @property (weak, nonatomic) IBOutlet UILabel *tabBarTitleLabel;
 @property (weak, nonatomic) IBOutlet UIButton *locationBt;
 - (IBAction)emailBtClicked:(id)sender;

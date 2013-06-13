@@ -34,9 +34,9 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadDataNotification) name:TABBAR_DOWNLOADDATA_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadDataNotificationFinished) name:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
     [super viewDidLoad];
-    self.privateController = [[PrivateGridController alloc] init];
+   
     self.publicController = [[PublicGridController alloc] init];
-    
+     self.privateController = [[PrivateGridController alloc] init];
     self.privateController.view.backgroundColor = [UIColor clearColor];
     self.publicController.view.backgroundColor = [UIColor clearColor];
     self.privateController.view.frame = (CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.height};
@@ -142,6 +142,7 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     {
     
     }
+    self.privateController.view.userInteractionEnabled = YES;
 }
 
 -(void)checkPrivatePassword{

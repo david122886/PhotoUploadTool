@@ -48,7 +48,7 @@
         self.testLabel.font = [UIFont systemFontOfSize:15.0];
         self.testLabel.frame = CGRectMake(0, 0, 100, 20);
         self.testLabel.backgroundColor = [UIColor clearColor];
-        [self addSubview:self.testLabel];
+//        [self addSubview:self.testLabel];
         
         self.activityView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
         self.activityView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
@@ -103,14 +103,22 @@
     self.rmoveImage.frame = CGRectMake(self.frame.size.width - GRIDCELL_REMOVE_WIDTH, 0, GRIDCELL_REMOVE_WIDTH, GRIDCELL_REMOVE_HEIGHT);
     self.activityView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
 }
-/*
+
  // Only override drawRect: if you perform custom drawing.
  // An empty implementation adversely affects performance during animation.
  - (void)drawRect:(CGRect)rect
  {
+     [super drawRect:rect];
+     CGContextRef context = UIGraphicsGetCurrentContext();
+     CGContextBeginPath(context);
+//     CGContextSetLineWidth(context, 2);
+     CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+     float lengths[] = {2,2};
+     CGContextSetLineDash(context, 0, lengths,2);
+     CGContextStrokeRectWithWidth(context, self.imageView.frame, 0.5);
  // Drawing code
  }
- */
+ 
 -(void)hiddenRemoveButton:(BOOL)l{
     [self.rmoveImage setHidden:l];
 }

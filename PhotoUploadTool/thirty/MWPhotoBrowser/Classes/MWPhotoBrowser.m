@@ -838,7 +838,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
             [_delegate photoBrowser:self deletedPhotoAtIndex:index];
         }
         [self scrollviewEnd];
-        [self cancelControlHiding];
+        [self setControlsHidden:NO animated:YES permanent:NO];
         [self updateNavigationWithCurrentIndex:_currentPageIndex];
     }
 }
@@ -957,7 +957,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 	if ([self numberOfPhotos] > 0) {
 		self.title = [NSString stringWithFormat:@"第%i张/共%i张", index+1, [self numberOfPhotos]];
 	} else {
-		self.title = nil;
+		self.title = [NSString stringWithFormat:@"第0张/共0张"];
 	}
 	mwTabView.middleLabel.text = self.title;
 	// Buttons

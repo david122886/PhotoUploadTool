@@ -32,6 +32,19 @@
     return self;
 }
 
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [self setSettingViewData];
+    
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.user.locationType == LOCATION_AUTO_SET) {
+        [self locatePosition];
+    }else{
+        [LocatePositionManager stopUpdate];
+        [self.locationActivityProgress setHidden:YES];
+    }
+}
+
 -(void)setSettingViewData{
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     UserObj *user = appDelegate.user;
@@ -54,15 +67,7 @@
     [self.scrollView addGestureRecognizer:tapGesture];
     [self.locationTypeSwitch setOnImage:[UIImage imageNamed:@"auto.png"]];
     [self.locationTypeSwitch setOffImage:[UIImage imageNamed:@"sd.png"]];
-    [self setSettingViewData];
-    
-    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    if (appDelegate.user.locationType == LOCATION_AUTO_SET) {
-        [self locatePosition];
-    }else{
-        [LocatePositionManager stopUpdate];
-        [self.locationActivityProgress setHidden:YES];
-    }
+
 }
 
 -(void)userTapGesture:(UITapGestureRecognizer*)tapGesture{

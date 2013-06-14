@@ -24,7 +24,7 @@
     UserObj *user = [[UserObj alloc] init];
     user.userId = userID;
     
-    NSString *location = [jsonStr objectForKey:@"city_id"];
+    NSString *location = [NSString stringWithFormat:@"%@",[jsonStr objectForKey:@"city_id"]];
     if (location && ![[location class] isSubclassOfClass:[NSNull class]] && ![location isEqualToString:@"<null>"]) {
          user.userLocation = location;
     }

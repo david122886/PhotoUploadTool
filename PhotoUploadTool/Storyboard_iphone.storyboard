@@ -276,7 +276,7 @@
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <color key="textColor" red="0.20940290180000001" green="0.061313546589999997" blue="0.018819360859999999" alpha="0.55000000000000004" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
+                                                        <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
                                                     </textField>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -308,10 +308,11 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="2RJ-ih-czj">
-                                        <rect key="frame" x="20" y="7" width="30" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="66" height="43"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" backgroundImage="back.png">
+                                        <inset key="contentEdgeInsets" minX="15" minY="10" maxX="26" maxY="9"/>
+                                        <state key="normal" image="back.png">
                                             <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -606,8 +607,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <progressView opaque="NO" contentMode="scaleToFill" progress="0.5" id="14r-u5-DGd">
-                                <rect key="frame" x="0.0" y="24" width="328" height="9"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="-3" y="191" width="325" height="9"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <color key="backgroundColor" red="0.88627457620000005" green="0.87058830259999997" blue="0.84313732389999996" alpha="1" colorSpace="deviceRGB"/>
                             </progressView>
                         </subviews>
@@ -645,10 +646,11 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Hrh-Bs-yWR">
-                                        <rect key="frame" x="20" y="7" width="30" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="61" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" backgroundImage="back.png">
+                                        <inset key="contentEdgeInsets" minX="18" minY="10" maxX="17" maxY="8"/>
+                                        <state key="normal" image="back.png">
                                             <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -873,10 +875,11 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="gZq-g6-6z7" userLabel="settingBt">
-                                        <rect key="frame" x="266" y="10" width="24" height="24"/>
+                                        <rect key="frame" x="245" y="0.0" width="75" height="42"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                        <inset key="contentEdgeInsets" minX="22" minY="12" maxX="31" maxY="8"/>
                                         <state key="normal" image="setting.png">
                                             <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -897,13 +900,6 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.18039216101169586" green="0.50196081399917603" blue="0.81568634510040283" alpha="1" colorSpace="deviceRGB"/>
                             </view>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="www.baidu.com" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QWy-mu-Hoq" userLabel="webURLLabel - www.baidu.com">
-                                <rect key="frame" x="0.0" y="528" width="320" height="21"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -917,7 +913,6 @@
                         <outlet property="pwdLabel" destination="D44-vp-Fm7" id="57a-ql-MSF"/>
                         <outlet property="settingItemBt" destination="gZq-g6-6z7" id="mkx-eD-ALB"/>
                         <outlet property="underLine" destination="d8B-XC-05v" id="fgL-D9-WcO"/>
-                        <outlet property="webURLLabel" destination="QWy-mu-Hoq" id="wBG-aY-HLf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qa1-pM-PiK" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -973,7 +968,7 @@
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <color key="textColor" red="0.20940290180000001" green="0.061313546589999997" blue="0.018819360859999999" alpha="0.55000000000000004" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="W2W-a3-7Nm" userLabel="okButton ">
                                         <rect key="frame" x="15" y="162" width="255" height="44"/>
@@ -1160,7 +1155,7 @@
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <color key="textColor" red="0.20940290180000001" green="0.061313546589999997" blue="0.018819360859999999" alpha="0.55000000000000004" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
+                                                        <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
                                                     </textField>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1191,10 +1186,11 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="cE2-Oj-TRd">
-                                        <rect key="frame" x="20" y="7" width="30" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="63" height="43"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" backgroundImage="back.png">
+                                        <inset key="contentEdgeInsets" minX="15" minY="10" maxX="21" maxY="8"/>
+                                        <state key="normal" image="back.png">
                                             <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -1457,10 +1453,12 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="iqV-9W-waE">
-                                        <rect key="frame" x="20" y="7" width="30" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="61" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" backgroundImage="back.png">
+                                        <inset key="contentEdgeInsets" minX="15" minY="2" maxX="20" maxY="2"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="7" maxX="0.0" maxY="7"/>
+                                        <state key="normal" image="back.png">
                                             <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -1689,10 +1687,11 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="smJ-TB-WzF">
-                                        <rect key="frame" x="20" y="7" width="30" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="61" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" backgroundImage="back.png">
+                                        <inset key="contentEdgeInsets" minX="16" minY="10" maxX="19" maxY="8"/>
+                                        <state key="normal" image="back.png">
                                             <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -1784,7 +1783,6 @@
                 <relationship kind="outlet" name="pwdLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="settingItemBt" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="underLine" candidateClass="UIView"/>
-                <relationship kind="outlet" name="webURLLabel" candidateClass="UILabel"/>
             </relationships>
         </class>
         <class className="DRWaterFlowViewController" superclassName="UIViewController">

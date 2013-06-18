@@ -41,7 +41,7 @@
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"registerbg.png"]];
 	// Do any additional setup after loading the view.
 }
-
+/*
 -(void)identifyEmail{
     [MBProgressHUD showHUDAddedTo:self.view.window animated:YES];
     ForgotPasswordController __weak *weakCtr= self;
@@ -56,17 +56,14 @@
         [forgotCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
     }];
 }
-
--(void)modifyPassword:(UserObj*)user{
+*/
+-(void)modifyPassword{
     NSString *pwStr = [self.pwdField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    AppDelegate __weak *weakDelegate = appDelegate;
-    __weak UserObj *weakUser = user;
+    NSString *nameStr = [self.nameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *emailStr = [self.emailField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     ForgotPasswordController __weak *weakCtr= self;
-    
-    user.userPwd = pwStr;
-    [UserObjDao modifyUserPwdUserObjId:user.userId withUserPwd:pwStr withSuccess:^(NSString *success) {
-        weakDelegate.user = weakUser;
+    [MBProgressHUD showHUDAddedTo:self.view.window animated:YES];
+    [UserObjDao modifyUserPwdUserObjName:nameStr withUserPwd:pwStr withEmail:emailStr withSuccess:^(NSString *success) {
         ForgotPasswordController *forgotCtr = weakCtr;
         [MBProgressHUD hideHUDForView:forgotCtr.view.window animated:YES];
         [forgotCtr modifyPwdSuccess];
@@ -145,7 +142,7 @@
 - (IBAction)OKBtClicked:(UIButton *)sender {
     if ([self checkInputStr]) {
         [self userTapGesture:nil];
-        [self identifyEmail];
+        [self modifyPassword];
     }
 }
 
@@ -174,6 +171,9 @@
 
 #pragma mark UIAlertViewDelegate
 -(void)alertViewCancel:(UIAlertView *)alertView{
+    
+}
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     [self.navigationController popViewControllerAnimated:YES];
 }
 #pragma mark --

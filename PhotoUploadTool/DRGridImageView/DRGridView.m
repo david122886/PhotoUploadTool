@@ -8,6 +8,7 @@
 
 #import "DRGridView.h"
 #define GRIDVIEW_SPACE 2
+#define PRIVATE_MODIFY_VIEW_HEIGHT 30
 @interface DRGridView()
 typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll content down,SCROLL_DOWN:scroll content up
 @property(nonatomic,assign) GridViewCritical contentTopCrit;
@@ -40,8 +41,16 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
         [longTap requireGestureRecognizerToFail:singleTap];
         [self addGestureRecognizer:singleTap];
         [self addGestureRecognizer:longTap];
+        
+//        [self.modifyPwdView.modifyPwdBt addTarget:self action:@selector(modifyPrivatePassword) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
+}
+
+-(void)modifyPrivatePassword{
+    if (self.gridViewDelegate && [self.gridViewDelegate respondsToSelector:@selector(gridView:modifyPrivatePwd:)]) {
+        [self.gridViewDelegate gridView:self modifyPrivatePwd:self.modifyPwdView.modifyPwdBt];
+    }
 }
 
 -(void)setFlowCellIsAbleDelete:(BOOL)isDelete{
@@ -191,6 +200,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
             [subview removeFromSuperview];
         }
     }
+    [self.modifyPwdView removeFromSuperview];
 }
 
 -(void)prepareLoad{
@@ -199,8 +209,15 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
     self.columnCount = [self getGridViewColumnCount];
     self.heightOfImageCell = [self getGridViewCellHeight];
     self.cellCountOfOnePage = [self getGridViewCellCountOfOnePage];
-    self.contentBottomCrit = (GridViewCritical){0,0.0};
+    if (self.isShowPrivateModifyPwdView) {
+        self.contentBottomCrit = (GridViewCritical){0,PRIVATE_MODIFY_VIEW_HEIGHT};
+    }else{
+        self.contentBottomCrit = (GridViewCritical){0,0};
+    }
     self.contentTopCrit = (GridViewCritical){0,0.0};
+    if (self.isShowPrivateModifyPwdView) {
+        [self addSubview:self.modifyPwdView];
+    }
 }
 
 -(void)loadData{
@@ -252,7 +269,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
                 break;
             }
             if (topCrit <= 0) {
-                
+//                DRLOG(@"top offset topcrit:%f>>>>>>>>>>", topCrit);
             }else{
                 float firstCellHeight = firstCell.frame.origin.y - GRIDVIEW_SPACE;
                 if (firstCellHeight < topCrit) {
@@ -400,7 +417,11 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
 }
 
 -(int)getCurrentRowIndexWithOffset:(float)offset{
-    return floor(offset/[self getRowHeight]);
+    if (self.isShowPrivateModifyPwdView) {
+        return floor((offset - PRIVATE_MODIFY_VIEW_HEIGHT)/[self getRowHeight]);
+    }else{
+        return floor((offset)/[self getRowHeight]);
+    }
 }
 
 -(int)getCurrentRowIndexWithCellIndex:(int)cellIndex{
@@ -436,7 +457,11 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
 }
 
 -(float)getCellOriginYWithCellIndex:(int)index{
-    return [self getCurrentRowIndexWithCellIndex:index]*[self getRowHeight] + GRIDVIEW_SPACE;
+    if (self.isShowPrivateModifyPwdView) {
+        return [self getCurrentRowIndexWithCellIndex:index]*[self getRowHeight] + GRIDVIEW_SPACE + PRIVATE_MODIFY_VIEW_HEIGHT;
+    }else{
+        return [self getCurrentRowIndexWithCellIndex:index]*[self getRowHeight] + GRIDVIEW_SPACE;
+    }
 }
 
 -(float)getColumnWidth{
@@ -590,6 +615,14 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
         _cellPool = [NSMutableDictionary dictionaryWithCapacity:0];
     }
     return _cellPool;
+}
+
+-(PrivatePwdmodifyView *)modifyPwdView{
+    if (!_modifyPwdView) {
+        _modifyPwdView = [[PrivatePwdmodifyView alloc] initWithFrame:(CGRect){0,0,self.frame.size.width,PRIVATE_MODIFY_VIEW_HEIGHT}];
+//        [self addSubview:_modifyPwdView];
+    }
+    return _modifyPwdView;
 }
 #pragma mark --
 

@@ -19,6 +19,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        self.isShowModifyPrivatePwdView = YES;
     }
     return self;
 }
@@ -26,7 +27,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self downloadDataISFirst:YES];
+//    [self downloadDataISFirst:YES];
 }
 
 -(void)prepareReloadData:(DRGridView *)gridView{
@@ -63,8 +64,14 @@
 }
 
 -(void)downloadDataISFirst:(BOOL)isFirst{
+    if (isFirst) {
+        if (self.isFirstDownloadData) {
+            return;
+        }else{
+            self.isFirstDownloadData = isFirst;
+        }
+    }
     PrivateGridController __weak *weakPublicGridCtr = self;
-    __block BOOL first = isFirst;
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if (!appDelegate.user || !appDelegate.user.userId) {
         [self stopRefreshView];
@@ -80,7 +87,7 @@
     [DRImageTool downLoadDRImageDataWithUserID:appDelegate.user.userId withType:PRIVATE_IMAGEDATA withSuccess:^(NSArray *drImageDataArr) {
         PrivateGridController *pubCtr = weakPublicGridCtr;
         [pubCtr stopRefreshView];
-        [pubCtr setImageData:drImageDataArr isFirst:first];
+        [pubCtr setImageData:drImageDataArr isFirst:isFirst];
     } withFailure:^(NSError *error) {
         PrivateGridController *pubCtr = weakPublicGridCtr;
         [pubCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
@@ -90,4 +97,7 @@
     }];
 }
 
+-(void)gridView:(DRGridView*)gridView modifyPrivatePwd:(UIButton*)_modifyBt{
+
+}
 @end

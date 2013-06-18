@@ -10,6 +10,7 @@
 #import "DRGridViewCell.h"
 #import "DRGridViewData.h"
 #import "EGORefreshTableHeaderView.h"
+#import "PrivatePwdmodifyView.h"
 typedef struct {int row;float offset;}GridViewCritical;
 @protocol DRGridViewDelegate;
 @interface DRGridView : UIScrollView<UIScrollViewDelegate,EGORefreshTableHeaderDelegate>
@@ -19,6 +20,8 @@ typedef struct {int row;float offset;}GridViewCritical;
 @property(nonatomic,strong) UIImage  *placeHolderImage;
 @property(nonatomic,assign) BOOL isAbleDelete;
 @property(nonatomic,assign) BOOL isloadingData;
+@property(nonatomic,assign) BOOL isShowPrivateModifyPwdView;
+@property(nonatomic,strong) PrivatePwdmodifyView *modifyPwdView;
 - (DRGridViewCell *)dequeueReusableCellWithIdentifier: (NSString *)idStr;
 -(void)reloadData;
 -(void)jumpToCellIndex:(int)index;
@@ -35,6 +38,7 @@ typedef struct {int row;float offset;}GridViewCritical;
 -(int)totalCellCount;
 -(DRGridViewCell*)gridView:(DRGridView*)gridView cellAtIndex:(int)index;
 -(DRGridViewData*)gridView:(DRGridView*)gridView dataAtIndex:(int)index;
+-(void)gridView:(DRGridView*)gridView modifyPrivatePwd:(UIButton*)_modifyBt;
 
 -(void)prepareReloadData:(DRGridView*)gridView;
 -(void)gridView:(DRGridView*)gridView prepareLoadNexPageIndex:(int)pageIndex;

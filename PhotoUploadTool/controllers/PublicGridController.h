@@ -12,5 +12,5 @@
 //#import "DRGridView.h"
 //@protocol GridViewControllerDelegate;
 @interface PublicGridController : GridViewController
-
+-(void)downloadDataISFirst:(BOOL)isFirst;
 @end

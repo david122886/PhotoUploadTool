@@ -46,14 +46,23 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     self.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"_bg.png"]];
     self.drtabBarView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tabbarbg.png"]];
     self.pwdCoverView.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:0.8];
+    [self.pwdCoverView setHidden:YES];//hidden coverView
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    self.webURLLabel.text = appDelegate.user.userWebURL==nil?@"":appDelegate.user.userWebURL;
+    NSString *userWeb = appDelegate.user.userWebURL;
+    if (userWeb) {
+        NSString *webUrl = [userWeb stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+        NSString *ipUrl = [webUrl stringByReplacingOccurrencesOfString:@"localhost:3000" withString:LIUYUSERVER_URL];
+        [self.webURLLabel setText:[NSString stringWithFormat:@"<a href='%@'><font size=12>%@</font></a> ",ipUrl,ipUrl]];
+    }
+    self.webURLLabel.delegate = self;
     self.pwdLabel.text = [NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,appDelegate.user.userAlbumPwd?:@""];
+    [self.privateController.gridView.modifyPwdView.pwdLabel setText:[NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,appDelegate.user.userAlbumPwd?:@""]];
     self.privateController.rootController = self;
     self.publicController.rootController = self;
     [self.activityView setHidden:YES];
     [self itemSelected:self.publicItemBt withType:PUBLICITEM];
     
+    [self.privateController.gridView.modifyPwdView.modifyPwdBt addTarget:self action:@selector(modifyBtClicked:) forControlEvents:UIControlEventTouchUpInside];
     	// Do any additional setup after loading the view.
 }
 
@@ -128,6 +137,7 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 //            self.publicController.view.center = center;
 //        }];
         [self.contentView addSubview:self.publicController.view];
+        [self.publicController downloadDataISFirst:YES];
     }else
     if (type == PRIVATEITEM) {
         [self.publicItemBt setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -138,6 +148,7 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
         
         [self.contentView addSubview:self.privateController.view];
         [self checkPrivatePassword];
+        [self.privateController downloadDataISFirst:YES];
     }else
     {
     
@@ -147,13 +158,20 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 
 -(void)checkPrivatePassword{
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    NSString *tempPwd = [self.pwdLabel.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//    NSString *tempPwd = [self.pwdLabel.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *userAlbumPwd = @"";
     if (appDelegate.user.userAlbumPwd) {
         userAlbumPwd = [appDelegate.user.userAlbumPwd stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
      DRTabBarController __weak *weakTabBarCtr = self;
-    if ([tempPwd isEqualToString:ALBUMPWD_TIP] && !self.activityView.isAnimating) {
+//    if ([tempPwd isEqualToString:ALBUMPWD_TIP] && !self.activityView.isAnimating) {
+//        [SettingPrivatePwdView defaultSettingPrivatePwdViewType:PRIVATEPWDVIEW_SETTING withAlbumPwd:userAlbumPwd  withSuccess:^(NSString *password) {
+//            DRTabBarController *tabBarCtr = weakTabBarCtr;
+//            [tabBarCtr modifyAlbumPassword:password];
+//        } orFailure:nil orCancel:nil];
+//    }
+     NSString *albumPwd = [self.privateController.gridView.modifyPwdView.pwdLabel.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if ([albumPwd isEqualToString:ALBUMPWD_TIP] && !self.privateController.gridView.modifyPwdView.activityView.isAnimating) {
         [SettingPrivatePwdView defaultSettingPrivatePwdViewType:PRIVATEPWDVIEW_SETTING withAlbumPwd:userAlbumPwd  withSuccess:^(NSString *password) {
             DRTabBarController *tabBarCtr = weakTabBarCtr;
             [tabBarCtr modifyAlbumPassword:password];
@@ -166,6 +184,8 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     [self.activityView startAnimating];
     [self.activityView setHidden:NO];
     self.pwdCoverView.userInteractionEnabled = NO;
+    [self.privateController.gridView.modifyPwdView setUserInteractionEnabled:NO];
+    [self.privateController.gridView.modifyPwdView.activityView startAnimating];
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     [UserObjDao modifyAlbumPwdUserObjId:appDelegate.user.userId withAlbumPwd:password withSuccess:^(NSString *success) {
         DRTabBarController *tabBarCtr = weakTabBarCtr;
@@ -173,12 +193,19 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
         tabBarCtr.pwdLabel.text = [NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,password];
         [tabBarCtr.activityView stopAnimating];
         [tabBarCtr.activityView setHidden:YES];
+        
+        [tabBarCtr.privateController.gridView.modifyPwdView setUserInteractionEnabled:YES];
+        [tabBarCtr.privateController.gridView.modifyPwdView.activityView stopAnimating];
+        [tabBarCtr.privateController.gridView.modifyPwdView.pwdLabel setText:[NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,password]];
     } withFailure:^(NSError *errror) {
         DRTabBarController *tabBarCtr = weakTabBarCtr;
         [tabBarCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
         tabBarCtr.pwdCoverView.userInteractionEnabled = YES;
         [tabBarCtr.activityView stopAnimating];
         [tabBarCtr.activityView setHidden:YES];
+        
+        [tabBarCtr.privateController.gridView.modifyPwdView setUserInteractionEnabled:YES];
+        [tabBarCtr.privateController.gridView.modifyPwdView.activityView stopAnimating];
     }];
     
 }
@@ -215,6 +242,23 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 }
 
 #pragma mark property
+-(RTLabel *)webURLLabel{
+    if (!_webURLLabel) {
+        _webURLLabel = [[RTLabel alloc] initWithFrame:(CGRect){0,self.view.frame.size.height - 20,self.view.frame.size.width,25}];
+        _webURLLabel.backgroundColor = [UIColor clearColor];
+        _webURLLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
+        [self.view addSubview:_webURLLabel];
+    }
+    return _webURLLabel;
+}
+#pragma mark --
 
+#pragma RTLabelDelegate
+-(void)rtLabel:(id)rtLabel didSelectLinkWithURL:(NSURL *)url{
+    DRLOG(@"%@",url);
+    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+        [[UIApplication sharedApplication] openURL:url];
+    }
+}
 #pragma mark --
 @end

@@ -107,6 +107,7 @@ static char kAFImageRequestOperationUploadObjectKey;
                        success:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image))success
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
+    DRLOG(@"UIImageView AFnetworking setImageWithURL%@",[urlRequest description]);
     [self cancelImageRequestOperation];
 
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
@@ -120,31 +121,37 @@ static char kAFImageRequestOperationUploadObjectKey;
         self.af_imageRequestOperation = nil;
     } else {
         self.image = placeholderImage;
-
+        UIImageView __weak *weakSelf = self;
         AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
-                if (success) {
-                    success(operation.request, operation.response, responseObject);
-                } else if (responseObject) {
-                    self.image = responseObject;
+            if (weakSelf) {
+                if ([urlRequest isEqual:[weakSelf.af_imageRequestOperation request]]) {
+                    if (success) {
+                        success(operation.request, operation.response, responseObject);
+                    } else if (responseObject) {
+                        weakSelf.image = responseObject;
+                    }
+                    
+                    if (weakSelf.af_imageRequestOperation == operation) {
+                        weakSelf.af_imageRequestOperation = nil;
+                    }
                 }
+                
+                [[[weakSelf class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
 
-                if (self.af_imageRequestOperation == operation) {
-                    self.af_imageRequestOperation = nil;
-                }
             }
-
-            [[[self class] af_sharedImageCache] cacheImage:responseObject forRequest:urlRequest];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
-                if (failure) {
-                    failure(operation.request, operation.response, error);
+            if (weakSelf) {
+                if ([urlRequest isEqual:[weakSelf.af_imageRequestOperation request]]) {
+                    if (failure) {
+                        failure(operation.request, operation.response, error);
+                    }
+                    
+                    if (weakSelf.af_imageRequestOperation == operation) {
+                        weakSelf.af_imageRequestOperation = nil;
+                    }
                 }
 
-                if (self.af_imageRequestOperation == operation) {
-                    self.af_imageRequestOperation = nil;
-                }
             }
         }];
 
@@ -187,34 +194,39 @@ static char kAFImageRequestOperationUploadObjectKey;
     NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"POST" path:@"photos/upload" parameters:parameters constructingBodyWithBlock: ^(id <AFMultipartFormData>formData) {
         [formData appendPartWithFileData:imageData name:@"img" fileName:@"MainMedia.jpeg" mimeType:@"image/jpeg"];
     }];
-    
+    UIImageView __weak *weakSelf = self;
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     [operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
         NSLog(@"%d,%lld,%lld",bytesRead,totalBytesRead,totalBytesExpectedToRead);
     }];
     
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        if ([request isEqual:[self.upload_imageRequestOperation request]]) {
-            if (success) {
-                success(operation.responseString);
-            } else if (responseObject) {
-                success(responseObject);
-            }
-            NSLog(@"upload success");
-            if (self.upload_imageRequestOperation == operation) {
-                self.upload_imageRequestOperation = nil;
+        if (weakSelf) {
+            if ([request isEqual:[weakSelf.upload_imageRequestOperation request]]) {
+                if (success) {
+                    success(operation.responseString);
+                } else if (responseObject) {
+                    success(responseObject);
+                }
+                NSLog(@"upload success");
+                if (weakSelf.upload_imageRequestOperation == operation) {
+                    weakSelf.upload_imageRequestOperation = nil;
+                }
             }
         }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if ([request isEqual:[self.upload_imageRequestOperation request]]) {
-            if (failure) {
-                failure(error);
+        if (weakSelf) {
+            if ([request isEqual:[weakSelf.upload_imageRequestOperation request]]) {
+                if (failure) {
+                    failure(error);
+                }
+                NSLog(@"upload error:%@",error);
+                if (weakSelf.upload_imageRequestOperation == operation) {
+                    weakSelf.upload_imageRequestOperation = nil;
+                }
             }
-            NSLog(@"upload error:%@",error);
-            if (self.upload_imageRequestOperation == operation) {
-                self.upload_imageRequestOperation = nil;
-            }
+
         }
     }];
     self.upload_imageRequestOperation = operation;

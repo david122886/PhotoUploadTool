@@ -31,7 +31,7 @@
 {
     [super viewDidLoad];
     self.view.center = (CGPoint){self.view.center.x,-self.view.frame.size.height};
-    self.view.backgroundColor = [UIColor clearColor];
+    self.view.backgroundColor = [UIColor yellowColor];
     self.titleLabel.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
 	// Do any additional setup after loading the view.
 }
@@ -121,7 +121,7 @@
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hiddenTitleLabelUploadAnimation) object:nil];
     [self performSelector:@selector(hiddenTitleLabelUploadAnimation) withObject:nil afterDelay:PROGRESSVIEW_HIDDEN_AFTERTIME];
     [UIView animateWithDuration:HIDDEN_ANIMATION_TIME animations:^{
-        self.view.center = (CGPoint){self.view.center.x,[self getCenterY]*2+5};
+        self.view.center = (CGPoint){self.view.center.x,[self getCenterY]};
     }];
 }
 -(void)hiddenTitleLabelUploadAnimation{
@@ -138,7 +138,7 @@
 }
 
 -(float)getCenterY{
-    return self.titleLabel.frame.size.height/2-5;//(self.titleLabel.frame.size.height+ self.progressBar.frame.size.height)/2;
+    return self.titleLabel.frame.size.height/2;//(self.titleLabel.frame.size.height+ self.progressBar.frame.size.height)/2;
 }
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     if (!self.isUploadFinished) {

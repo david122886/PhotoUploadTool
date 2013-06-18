@@ -78,10 +78,10 @@
         AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
         ModifyUserPasswordController __weak *weakCtr = self;
         
-        [UserObjDao modifyUserPwdUserObjId:appDelegate.user.userId withUserPwd:dNewPwStr withSuccess:^(NSString *success) {
+        [UserObjDao modifyUserPwdUserObjName:appDelegate.user.userName withUserPwd:dNewPwStr withEmail:appDelegate.user.userEmail withSuccess:^(NSString *success) {
             ModifyUserPasswordController *modifyCtr = weakCtr;
             [MBProgressHUD hideHUDForView:modifyCtr.view animated:YES];
-            [modifyCtr.navigationController popToRootViewControllerAnimated:YES];
+            [modifyCtr.navigationController popViewControllerAnimated:YES];
         } withFailure:^(NSError *errror) {
             ModifyUserPasswordController *modifyCtr = weakCtr;
             [MBProgressHUD hideHUDForView:modifyCtr.view animated:YES];
@@ -121,7 +121,7 @@
         return NO;
     }
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    if (![oldpwStr isEqualToString:@""] || ![oldpwStr isEqualToString:appDelegate.user.userPwd]) {
+    if ([oldpwStr isEqualToString:@""] || ![oldpwStr isEqualToString:appDelegate.user.userPwd]) {
         [self alertErrorMessage:@"原始密码不正确"];
         return NO;
     }

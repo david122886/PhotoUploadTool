@@ -75,16 +75,14 @@
 }
 
 -(void)deleteNotificationAtIndexPath:(NSIndexPath*)indexPath{
-    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     NotificationController __weak *weakNotiCtr = self;
+    NotificationObject *deletedObj = [self.notificationArr objectAtIndex:indexPath.row];
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    NSIndexPath __weak *weakPath = indexPath;
     NotificationObject *obj = [self.notificationArr objectAtIndex:indexPath.row];
-    [NotificationDao deleteNotificationWithUserObjID:appDelegate.user.userId withNotID:obj.notificationID withSuccess:^(NSArray *notificationArr) {
+    [NotificationDao deleteNotificationWithNotificationID:deletedObj.notificationID withNotID:obj.notificationID withSuccess:^(NSString *success){
         NotificationController *notiCtr = weakNotiCtr;
         [MBProgressHUD hideHUDForView:notiCtr.view animated:YES];
-        NSIndexPath *path = weakPath;
-        [notiCtr deleteCellAtIndexPath:path];
+        [notiCtr deleteCellAtIndexPath:indexPath];
     } withFailure:^(NSError *error) {
         NotificationController *notiCtr = weakNotiCtr;
         [MBProgressHUD hideHUDForView:notiCtr.view animated:YES];
@@ -151,7 +149,9 @@
     NotificationObject *obj = [self.notificationArr objectAtIndex:indexPath.row];
     if ([obj.isExpand boolValue]) {
         CGSize detailSize = [obj.deail sizeWithFont:[UIFont systemFontOfSize:NOTIFICATION_FONT_SIZE] constrainedToSize:CGSizeMake(279, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
-        return detailSize.height +41;
+        if (detailSize.width > tableView.frame.size.width) {
+            return detailSize.height +41;
+        }
     }
     return 60;
 }

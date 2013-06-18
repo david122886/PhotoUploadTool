@@ -17,6 +17,8 @@
 #define NOTIFICATION_TIP @"通知列表 :"
 #define EMAIL_TIP @"邮箱 :"
 #define LOCATION_TIP @"所在地方 :"
+#define LOCATION_VALUE @"DefaultLocationValue"
+#define LOCATE_POSITION_TYPE @"locate_position_type"
 @interface SettingController ()
 @property(nonatomic,strong) NSArray *notificationArr;
 @end
@@ -41,7 +43,7 @@
         [self locatePosition];
     }else{
         [LocatePositionManager stopUpdate];
-        [self.locationActivityProgress setHidden:YES];
+//        [self.locationActivityProgress setHidden:YES];
     }
 }
 
@@ -51,13 +53,18 @@
     [self.infoTextView setText:user.userDescrible];
     [self.emailBt setTitle:[NSString stringWithFormat:@"%@ %@",EMAIL_TIP,user.userEmail==nil?@"":user.userEmail] forState:UIControlStateNormal];
     [self.notificationBt setTitle:NOTIFICATION_TIP forState:UIControlStateNormal];
-    [self.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,user.userLocation == nil?@"":user.userLocation] forState:UIControlStateNormal];
+    NSString *defaultLocation = @"";
+    defaultLocation = [[NSUserDefaults standardUserDefaults] objectForKey:LOCATION_VALUE]?:@"";
+    [self.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,defaultLocation] forState:UIControlStateNormal];
+    NSNumber *locatePosionType = [[NSUserDefaults standardUserDefaults] objectForKey:LOCATE_POSITION_TYPE];
+    user.locationType = [locatePosionType boolValue]?LOCATION_AUTO_SET:LOCATION_USER_SET;
     [self.locationTypeSwitch setOn:user.locationType == LOCATION_AUTO_SET?YES:NO];
     [self downloadNotification];
 }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self.locationActivityProgress setHidden:YES];
     self.tabBarTitleLabel.text = @"设置";
     [self.tabBarRightBt setHidden:YES];
     self.infoTextView.delegate = self;
@@ -105,7 +112,6 @@
 }
 
 -(void)modifyUserEmail:(NSString*)email{
-    NSString __weak *WeakEmail = email;
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     SettingController __weak *weakSettingCtr = self;
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
@@ -113,10 +119,9 @@
     [UserObjDao modifyUserEmailUserObjId:appDelegate.user.userId withUserEmail:email withSuccess:^(NSString *success) {
         SettingController *setting = weakSettingCtr;
         AppDelegate *delegate = weakDelegate;
-        NSString *emailStr = WeakEmail;
         [MBProgressHUD hideHUDForView:setting.view animated:YES];
-        delegate.user.userEmail = emailStr;
-        [setting.emailBt setTitle:[NSString stringWithFormat:@"%@ %@",EMAIL_TIP,emailStr] forState:UIControlStateNormal];
+        delegate.user.userEmail = email;
+        [setting.emailBt setTitle:[NSString stringWithFormat:@"%@ %@",EMAIL_TIP,email] forState:UIControlStateNormal];
     } withFailure:^(NSError *errror) {
         SettingController *setting = weakSettingCtr;
         [MBProgressHUD hideHUDForView:setting.view animated:YES];
@@ -133,10 +138,12 @@
     if (sender.isOn) {
         //LocateManager set location
         appDelegate.user.locationType = LOCATION_AUTO_SET;
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
         [self locatePosition];
     }else{
     //user set location by self
         appDelegate.user.locationType = LOCATION_USER_SET;
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:LOCATE_POSITION_TYPE];
         [LocatePositionManager stopUpdate];
         TSLocateView *locateView = [[TSLocateView alloc] initWithTitle:@"定位城市" delegate:self];
         [locateView showInView:self.view];
@@ -175,7 +182,6 @@
         return;
     }
     [self userTapGesture:nil];
-    NSString __weak *WeakInfo = info;
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     SettingController __weak *weakSettingCtr = self;
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
@@ -183,7 +189,6 @@
     [UserObjDao modifyUserDescribleUserObjId:appDelegate.user.userId withUserDescrible:info withSuccess:^(NSString *success) {
         SettingController *setting = weakSettingCtr;
         AppDelegate *delegate = weakDelegate;
-        NSString *info = WeakInfo;
         [MBProgressHUD hideHUDForView:setting.view animated:YES];
         delegate.user.userDescrible = info;
     } withFailure:^(NSError *errror) {
@@ -257,14 +262,13 @@
 //    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     SettingController __weak *weakSettingCtr = self;
-    NSString __weak *weakCity = locationCity;
     [self.locationActivityProgress startAnimating];
     [self.locationActivityProgress setHidden:NO];
     [UserObjDao modifyUserLocationUserObjId:appDelegate.user.userId withUserLocation:locationCity withSuccess:^(NSString *success) {
         SettingController *setting = weakSettingCtr;
-        NSString *city = weakCity;
 //        [MBProgressHUD hideHUDForView:setting.view animated:YES];
-        [setting.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,city] forState:UIControlStateNormal];
+        [setting.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,locationCity] forState:UIControlStateNormal];
+        [[NSUserDefaults standardUserDefaults] setObject:locationCity forKey:LOCATION_VALUE];
         [setting.locationActivityProgress stopAnimating];
         [setting.locationActivityProgress setHidden:YES];
     } withFailure:^(NSError *errror) {
@@ -303,11 +307,15 @@
     [LocatePositionManager locatePositionSuccess:^(NSString *locatitonName, CLLocationCoordinate2D locationg) {
         SettingController *setting = weakSettingCtr;
         AppDelegate *delegate = weakDelegate;
-        delegate.user.userLocation = locatitonName;
-        DRLOG(@"SettingController locate name:%@",locatitonName);
-        [setting updateUserLocation:locatitonName];
-        [setting.locationActivityProgress stopAnimating];
-        [setting.locationActivityProgress setHidden:YES];
+        NSString *city = nil;
+        if (locatitonName) {
+            city = [locatitonName stringByReplacingOccurrencesOfString:@"市" withString:@""];
+        }
+        delegate.user.userLocation = city;
+        DRLOG(@"SettingController locate name:%@",city);
+        [setting updateUserLocation:city];
+//        [setting.locationActivityProgress stopAnimating];
+//        [setting.locationActivityProgress setHidden:YES];
     } failure:^(NSError *error) {
         SettingController *setting = weakSettingCtr;
         [setting.locationBt setTitle:LOCATION_TIP forState:UIControlStateNormal];

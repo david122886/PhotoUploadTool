@@ -44,7 +44,7 @@
          user.userAlbumPwd = [FBEncryptorAES decryptBase64String:albumPwd keyString:ENCRYPT_KEY];
     }
     NSString *pwd = [jsonStr objectForKey:@"password"];
-    if (pwd && ![[albumPwd class] isSubclassOfClass:[NSNull class]] && ![pwd isEqualToString:@"<null>"]) {
+    if (pwd && ![[pwd class] isSubclassOfClass:[NSNull class]] && ![pwd isEqualToString:@"<null>"]) {
         user.userPwd = [FBEncryptorAES decryptBase64String:pwd keyString:ENCRYPT_KEY];
     }
     
@@ -85,7 +85,12 @@
                                 _failure([UserObjDao getErrorObjWithMessage:@"注册的城市不存在"]);
                             }
                      }else
-                     if ([responseStr isEqualToString:@"error"]) {
+                     if ([responseStr isEqualToString:@"emailerror"]) {
+                         if (_failure) {
+                             _failure([UserObjDao getErrorObjWithMessage:@"用户名或者邮箱地址已经存在"]);
+                         }
+                     }else
+                     if ([responseStr isEqualToString:@"nameerror"]) {
                          if (_failure) {
                              _failure([UserObjDao getErrorObjWithMessage:@"用户名或者邮箱地址已经存在"]);
                          }
@@ -243,18 +248,23 @@
              }];
     
 }
-+(void)modifyUserPwdUserObjId:(NSString*)_userID withUserPwd:(NSString*)_userPwd withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure{
++(void)modifyUserPwdUserObjName:(NSString*)_userName withUserPwd:(NSString*)_userPwd withEmail:(NSString *)_email withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure{
     AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     AFHTTPClient *client = appDelete.afhttpClient;
 //    [client postPath:@"users/change_pwd"
     [client getPath:@"users/change_pwd"
-          parameters:@{@"id":_userID,@"password":[FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO]}
+         parameters:@{@"name":_userName,@"email":_email?:@"",@"password":[FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO]}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                  NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                  if (responseStr) {
                      if ([responseStr isEqualToString:@"error"]) {
                          if (_failure) {
                              _failure([UserObjDao getErrorObjWithMessage:@"修改密码失败"]);
+                         }
+                     }else
+                     if ([responseStr isEqualToString:@"emailerror"]) {
+                         if (_failure) {
+                             _failure([UserObjDao getErrorObjWithMessage:@"邮箱地址和用户名不匹配"]);
                          }
                      }else
                     if ([responseStr isEqualToString:@"success"]) {
@@ -369,6 +379,11 @@
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                  NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                  if (responseStr) {
+                     if ([responseStr isEqualToString:@"emailerror"]) {
+                         if (_failure) {
+                             _failure([UserObjDao getErrorObjWithMessage:@"邮箱地址已被使用"]);
+                         }
+                     }else
                      if ([responseStr isEqualToString:@"error"]) {
                          if (_failure) {
                              _failure([UserObjDao getErrorObjWithMessage:@"修改用户邮箱失败"]);

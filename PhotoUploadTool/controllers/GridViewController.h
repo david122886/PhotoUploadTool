@@ -22,6 +22,8 @@
 @property(nonatomic,strong) UIViewController *rootController;
 @property(nonatomic,strong) UPLoadImageController *uploadCtr;
 @property(nonatomic,strong) DRGridView *gridView;
+@property(nonatomic,assign) BOOL isShowModifyPrivatePwdView;
+@property(nonatomic,assign) BOOL isFirstDownloadData;
 -(void)alertErrorMessage:(NSString*)mes;
 -(void)stopRefreshView;
 @end

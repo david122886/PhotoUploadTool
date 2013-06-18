@@ -35,6 +35,7 @@
     
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     return YES;
 }
 
@@ -86,7 +87,8 @@
 }
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
-    DRLOG(@"%@", userInfo);
+    DRLOG(@"idReceiveRemoteNotification::%@", userInfo);
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 - (void)saveContext
 {

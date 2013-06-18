@@ -55,6 +55,7 @@
     UIStatusBarStyle _previousStatusBarStyle;
     UIBarButtonItem *_previousViewControllerBackButton;
     MWPhotoBrowserTabBarView *mwTabView;
+    MWPhotoBrowserTabBarView *mwToolBarView;
     // Misc
     BOOL _displayActionButton;
 	BOOL _performingLayout;
@@ -242,7 +243,10 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     mwTabView = [[MWPhotoBrowserTabBarView alloc] initWithFrame:(CGRect){0,0,self.view.frame.size.width,44}];
     mwTabView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     
-    
+    mwToolBarView = [[MWPhotoBrowserTabBarView alloc] initWithFrame:(CGRect){0,self.view.frame.size.height - 44,self.view.frame.size.width,44}];
+    mwToolBarView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
+    [mwToolBarView.rightBt setImage:[UIImage imageNamed:@"trash.png"] forState:UIControlStateNormal];
+    [mwToolBarView.rightBt setBackgroundImage:nil forState:UIControlStateNormal];
     // Toolbar
     _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
     _toolbar.tintColor = nil;
@@ -289,10 +293,10 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     UIBarButtonItem *flexSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil] autorelease];
     NSMutableArray *items = [[NSMutableArray alloc] init];
     if (_displayActionButton) [items addObject:fixedLeftSpace];
-    [items addObject:flexSpace];
-    if (numberOfPhotos > 1) [items addObject:_previousButton];
-    [items addObject:flexSpace];
-    if (numberOfPhotos > 1) [items addObject:_nextButton];
+//    [items addObject:flexSpace];
+//    if (numberOfPhotos > 1) [items addObject:_previousButton];
+//    [items addObject:flexSpace];
+//    if (numberOfPhotos > 1) [items addObject:_nextButton];
     [items addObject:flexSpace];
     if (_displayActionButton) [items addObject:_actionButton];
     [_toolbar setItems:items];
@@ -301,8 +305,13 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     
     
     [self.view addSubview:mwTabView];
+    
     [mwTabView.leftBt addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [mwTabView.rightBt addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+//    [mwTabView.rightBt addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [mwTabView.rightBt addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.view addSubview:mwToolBarView];
+    [mwToolBarView.rightBt addTarget:self action:@selector(actionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     /*
     UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"scan_back.png"] landscapeImagePhone:[UIImage imageNamed:@"scan_back.png"] style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonPressed:)] autorelease];
     UIBarButtonItem *deleteButton = [[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"scan_delete.png"] landscapeImagePhone:[UIImage imageNamed:@"scan_delete.png"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteButtonPressed:)] autorelease];
@@ -378,6 +387,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [_nextButton release], _nextButton = nil;
     self.progressHUD = nil;
     [mwTabView release];mwTabView = nil;
+    [mwToolBarView release];mwToolBarView = nil;
     [super viewDidUnload];
 }
 
@@ -497,7 +507,9 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 	
 	// Toolbar
 	_toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
-	
+	mwToolBarView.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
+    
+    
 	// Remember index
 	NSUInteger indexPriorToLayout = _currentPageIndex;
 	
@@ -838,7 +850,8 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
             [_delegate photoBrowser:self deletedPhotoAtIndex:index];
         }
         [self scrollviewEnd];
-        [self setControlsHidden:NO animated:YES permanent:NO];
+        [self cancelControlHiding];
+        [self setControlsHidden:NO animated:YES permanent:YES];
         [self updateNavigationWithCurrentIndex:_currentPageIndex];
     }
 }
@@ -1039,6 +1052,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 	[self.navigationController.navigationBar setAlpha:alpha];
 	[_toolbar setAlpha:alpha];
     mwTabView.alpha = alpha;
+    mwToolBarView.alpha = alpha;
     for (UIView *v in captionViews) v.alpha = alpha;
 	if (animated) [UIView commitAnimations];
 	
@@ -1111,6 +1125,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
             [self setControlsHidden:NO animated:YES permanent:YES];
             
             // Sheet
+            /*
             if ([MFMailComposeViewController canSendMail]) {
                 self.actionsSheet = [[[UIActionSheet alloc] initWithTitle:nil delegate:self
                                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil
@@ -1120,6 +1135,11 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
                                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil
                                                         otherButtonTitles:NSLocalizedString(@"Save", nil),NSLocalizedString(@"Copy",nil),NSLocalizedString(@"Delete", nil), nil] autorelease];
             }
+            */
+            
+            self.actionsSheet = [[[UIActionSheet alloc] initWithTitle:nil delegate:self
+                                                    cancelButtonTitle:NSLocalizedString(@"取消", nil) destructiveButtonTitle:nil
+                                                    otherButtonTitles:NSLocalizedString(@"删除照片", nil),nil] autorelease];
             _actionsSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 [_actionsSheet showFromBarButtonItem:sender animated:YES];
@@ -1128,12 +1148,19 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
             }
             
         }
+        
+        if ([self numberOfPhotos] > 0 && ![photo underlyingImage]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"正在下载照片，请稍候再试" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+            
+        }
     }
 }
 
 #pragma mark - Action Sheet Delegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    /*
     if (actionSheet == _actionsSheet) {           
         // Actions 
         self.actionsSheet = nil;
@@ -1158,7 +1185,17 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
             }
         }
     }
-    [self hideControlsAfterDelay]; // Continue as normal...
+    */
+    
+    if (actionSheet == _actionsSheet) {
+        // Actions
+        self.actionsSheet = nil;
+        if (buttonIndex != actionSheet.cancelButtonIndex) {
+//            [self didStartDeletingPageAtIndex:[self getCurrentIndex]];
+            [self deleteButtonPressed:nil];
+        }
+    }
+//    [self hideControlsAfterDelay]; // Continue as normal...
 }
 
 #pragma mark - MBProgressHUD

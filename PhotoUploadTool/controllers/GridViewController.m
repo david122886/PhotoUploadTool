@@ -32,14 +32,31 @@
     [super viewDidLoad];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:nil action:nil];
     self.gridView = [[DRGridView alloc] initWithFrame:(CGRect){0,0,self.view.frame.size.width,self.view.frame.size.height}];
+    self.gridView.isShowPrivateModifyPwdView = self.isShowModifyPrivatePwdView;
     self.gridView.gridViewDelegate = self;
     self.gridView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.gridView];
     [self.gridView reloadData];
 	// Do any additional setup after loading the view.
     [self.view addSubview:self.uploadCtr.view];
-    self.uploadCtr.view.frame = (CGRect){0,-44,self.view.frame.size.width,44};
+    self.uploadCtr.view.frame = (CGRect){0,-44,self.view.frame.size.width,30};
     [self setSelectPhotoBlock];
+    
+    [self testGridView];
+}
+
+-(void)testGridView{
+    for (int index = 0;index < 10;index++) {
+        DRGridViewData *data = [[DRGridViewData alloc] init];
+        data.imageID = index;
+        data.imageURLStr = @"http://ww2.sinaimg.cn/bmiddle/acb53f76gw1e0d3m71gtdj.jpg";
+        [self.summaryDataArr addObject:data];
+        //        http://ww2.sinaimg.cn/bmiddle/acb53f76gw1e0d3m71gtdj.jpg
+        MWPhoto *photo = [MWPhoto photoWithURL:[NSURL URLWithString:@"http://ww2.sinaimg.cn/bmiddle/acb53f76gw1e0d3m71gtdj.jpg"]];
+        photo.imageDataID = @"1";
+        [self.scanDataArr addObject:photo];
+    }
+    [self.gridView reloadData];
 }
 
 -(void)setSelectPhotoBlock{
@@ -188,6 +205,9 @@
 -(void)photoBrowser:(MWPhotoBrowser *)photoBrowser deletedPhotoAtIndex:(NSUInteger)index{
     [self.scanDataArr removeObjectAtIndex:index];
     [self.summaryDataArr removeObjectAtIndex:index+1];
+    if ([self.summaryDataArr count] <= 0) {
+        [photoBrowser dismissModalViewControllerAnimated:YES];
+    }
 }
 
 - (NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser {

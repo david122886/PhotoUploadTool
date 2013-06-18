@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "DRNetWorkingException.h"
+#import "NotificationObject.h"
 @interface NotificationDao : DRNetWorkingException
 
 +(void)notificationDaoDownloadWithUserObjID:(NSString*)_userID WithSuccess:(void(^)(NSArray* notificationArr))_success withFailure:(void(^)(NSError *error))_failure;
 
-+(void)deleteNotificationWithUserObjID:(NSString*)_userID withNotID:(NSString*)_notificationID withSuccess:(void(^)(NSArray* notificationArr))_success withFailure:(void(^)(NSError *error))_failure;
++(void)deleteNotificationWithNotificationID:(NSString*)_userID withNotID:(NSString*)_notificationID withSuccess:(void(^)(NSString* success))_success withFailure:(void(^)(NSError *error))_failure;
 @end

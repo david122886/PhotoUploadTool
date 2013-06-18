@@ -118,6 +118,7 @@ caption = _caption;
                 [self imageDidFinishLoadingSoDecompress];
             } else {
                 // Start an async download
+                DRLOG(@"%@", _photoURL);
                 [manager downloadWithURL:_photoURL delegate:self];
             }
         } else {

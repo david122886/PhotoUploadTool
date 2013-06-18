@@ -21,14 +21,14 @@
         self.rightBt = [[UIButton alloc] initWithFrame:(CGRect){self.frame.size.width - 40,7,30,30}];
         self.rightBt.autoresizingMask = UIViewAutoresizingFlexibleRightMargin ;
         [self.rightBt setBackgroundImage:[UIImage imageNamed:@"scan_delete.png"] forState:UIControlStateNormal];
-        self.middleLabel = [[UILabel alloc] initWithFrame:(CGRect){50,10,self.frame.size.width - 50,self.frame.size.height - 20}];
+        self.middleLabel = [[UILabel alloc] initWithFrame:(CGRect){50,10,self.frame.size.width - 50*2,self.frame.size.height - 20}];
         self.leftBt.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin  | UIViewAutoresizingFlexibleRightMargin;
         self.middleLabel.backgroundColor = [UIColor clearColor];
         [self.middleLabel setTextColor:[UIColor whiteColor]];
         self.middleLabel.textAlignment = UITextAlignmentCenter;
         self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
         
-        [self addSubview:self.leftBt];
+//        [self addSubview:self.leftBt];
         [self addSubview:self.rightBt];
         [self addSubview:self.middleLabel];
         

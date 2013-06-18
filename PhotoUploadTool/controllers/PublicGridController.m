@@ -26,7 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self downloadDataISFirst:YES];
+//    [self downloadDataISFirst:YES];
 }
 
 -(void)prepareReloadData:(DRGridView *)gridView{
@@ -63,8 +63,15 @@
 }
 
 -(void)downloadDataISFirst:(BOOL)isFirst{
+    if (isFirst) {
+        if (self.isFirstDownloadData) {
+            return;
+        }else{
+            self.isFirstDownloadData = isFirst;
+        }
+    }
+
     PublicGridController __weak *weakPublicGridCtr = self;
-    __block BOOL first = isFirst;
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if (!appDelegate.user || !appDelegate.user.userId) {
         [self stopRefreshView];
@@ -83,7 +90,7 @@
             DRLOG(@"%@", @"????????????????pubCtr is nill");
         }
         [pubCtr stopRefreshView];
-        [pubCtr setImageData:drImageDataArr isFirst:first];
+        [pubCtr setImageData:drImageDataArr isFirst:isFirst];
     } withFailure:^(NSError *error) {
         PublicGridController *pubCtr = weakPublicGridCtr;
         [pubCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];

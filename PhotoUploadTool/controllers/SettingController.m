@@ -36,15 +36,7 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self setSettingViewData];
-    
-    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    if (appDelegate.user.locationType == LOCATION_AUTO_SET) {
-        [self locatePosition];
-    }else{
-        [LocatePositionManager stopUpdate];
-//        [self.locationActivityProgress setHidden:YES];
-    }
+
 }
 
 -(void)setSettingViewData{
@@ -75,6 +67,15 @@
     [self.locationTypeSwitch setOnImage:[UIImage imageNamed:@"auto.png"]];
     [self.locationTypeSwitch setOffImage:[UIImage imageNamed:@"sd.png"]];
 
+    [self setSettingViewData];
+    
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.user.locationType == LOCATION_AUTO_SET) {
+        [self locatePosition];
+    }else{
+        [LocatePositionManager stopUpdate];
+        //        [self.locationActivityProgress setHidden:YES];
+    }
 }
 
 -(void)userTapGesture:(UITapGestureRecognizer*)tapGesture{
@@ -107,7 +108,10 @@
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     [ModifyEmailView defaultModifyEmailViewWithEmail:appDelegate.user.userEmail WithSuccess:^(NSString *emailStr) {
         SettingController *setting = weakSettingCtr;
-        [setting modifyUserEmail:emailStr];
+        if (setting) {
+            [setting modifyUserEmail:emailStr];
+        }
+     
     } orFailure:nil orCancel:nil];
 }
 
@@ -118,14 +122,20 @@
     AppDelegate __weak *weakDelegate = appDelegate;
     [UserObjDao modifyUserEmailUserObjId:appDelegate.user.userId withUserEmail:email withSuccess:^(NSString *success) {
         SettingController *setting = weakSettingCtr;
-        AppDelegate *delegate = weakDelegate;
-        [MBProgressHUD hideHUDForView:setting.view animated:YES];
-        delegate.user.userEmail = email;
-        [setting.emailBt setTitle:[NSString stringWithFormat:@"%@ %@",EMAIL_TIP,email] forState:UIControlStateNormal];
+        if (setting) {
+            AppDelegate *delegate = weakDelegate;
+            [MBProgressHUD hideHUDForView:setting.view animated:YES];
+            delegate.user.userEmail = email;
+            [setting.emailBt setTitle:[NSString stringWithFormat:@"%@ %@",EMAIL_TIP,email] forState:UIControlStateNormal];
+        }
+       
     } withFailure:^(NSError *errror) {
         SettingController *setting = weakSettingCtr;
-        [MBProgressHUD hideHUDForView:setting.view animated:YES];
-        [setting alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        if (setting) {
+            [MBProgressHUD hideHUDForView:setting.view animated:YES];
+            [setting alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        }
+        
     }];
     
 }
@@ -188,13 +198,19 @@
     AppDelegate __weak *weakDelegate = appDelegate;
     [UserObjDao modifyUserDescribleUserObjId:appDelegate.user.userId withUserDescrible:info withSuccess:^(NSString *success) {
         SettingController *setting = weakSettingCtr;
-        AppDelegate *delegate = weakDelegate;
-        [MBProgressHUD hideHUDForView:setting.view animated:YES];
-        delegate.user.userDescrible = info;
+        if (setting) {
+            AppDelegate *delegate = weakDelegate;
+            [MBProgressHUD hideHUDForView:setting.view animated:YES];
+            delegate.user.userDescrible = info;
+        }
+       
     } withFailure:^(NSError *errror) {
          SettingController *setting = weakSettingCtr;
-        [MBProgressHUD hideHUDForView:setting.view animated:YES];
-        [setting alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        if (setting) {
+            [MBProgressHUD hideHUDForView:setting.view animated:YES];
+            [setting alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        }
+        
     }];
 }
 
@@ -249,12 +265,18 @@
     SettingController __weak *weakSettingCtr = self;
     [UserObjDao destroyUserObjID:appDelegate.user.userId withSuccess:^(NSString *success) {
         SettingController *setting = weakSettingCtr;
-        [MBProgressHUD hideHUDForView:setting.view animated:YES];
-        [setting.navigationController popToRootViewControllerAnimated:YES];
+        if (setting) {
+            [MBProgressHUD hideHUDForView:setting.view animated:YES];
+            [setting.navigationController popToRootViewControllerAnimated:YES];
+        }
+        
     } withFailure:^(NSError *errror) {
         SettingController *setting = weakSettingCtr;
-        [MBProgressHUD hideHUDForView:setting.view animated:YES];
-        [setting alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        if (setting) {
+            [MBProgressHUD hideHUDForView:setting.view animated:YES];
+            [setting alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        }
+        
     }];
 }
 
@@ -266,17 +288,23 @@
     [self.locationActivityProgress setHidden:NO];
     [UserObjDao modifyUserLocationUserObjId:appDelegate.user.userId withUserLocation:locationCity withSuccess:^(NSString *success) {
         SettingController *setting = weakSettingCtr;
-//        [MBProgressHUD hideHUDForView:setting.view animated:YES];
-        [setting.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,locationCity] forState:UIControlStateNormal];
-        [[NSUserDefaults standardUserDefaults] setObject:locationCity forKey:LOCATION_VALUE];
-        [setting.locationActivityProgress stopAnimating];
-        [setting.locationActivityProgress setHidden:YES];
+        if (setting) {
+            //        [MBProgressHUD hideHUDForView:setting.view animated:YES];
+            [setting.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,locationCity] forState:UIControlStateNormal];
+            [[NSUserDefaults standardUserDefaults] setObject:locationCity forKey:LOCATION_VALUE];
+            [setting.locationActivityProgress stopAnimating];
+            [setting.locationActivityProgress setHidden:YES];
+        }
+
     } withFailure:^(NSError *errror) {
         SettingController *setting = weakSettingCtr;
-//        [MBProgressHUD hideHUDForView:setting.view animated:YES];
-        [setting alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
-        [setting.locationActivityProgress stopAnimating];
-        [setting.locationActivityProgress setHidden:YES];
+        if (setting) {
+            //        [MBProgressHUD hideHUDForView:setting.view animated:YES];
+            [setting alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+            [setting.locationActivityProgress stopAnimating];
+            [setting.locationActivityProgress setHidden:YES];
+        }
+
     }];
 }
 
@@ -287,14 +315,21 @@
     [self.notificationActivityProgress setHidden:NO];
     [NotificationDao notificationDaoDownloadWithUserObjID:appDelegate.user.userId WithSuccess:^(NSArray *notificationArr) {
         SettingController *setting = weakSettingCtr;
-        setting.notificationArr = notificationArr;
-        [setting.notificationActivityProgress stopAnimating];
-        [setting.notificationActivityProgress setHidden:YES];
+        if (setting) {
+            setting.notificationArr = notificationArr;
+            [setting.notificationActivityProgress stopAnimating];
+            [setting.notificationActivityProgress setHidden:YES];
+            [setting.notificationBt setTitle:[NSString stringWithFormat:@"%@ 你有%d条通知",NOTIFICATION_TIP,[_notificationArr count]] forState:UIControlStateNormal];
+        }
+        
     } withFailure:^(NSError *error) {
         DRLOG(@"downloadNotification:%@",error);
         SettingController *setting = weakSettingCtr;
-        [setting.notificationActivityProgress stopAnimating];
-        [setting.notificationActivityProgress setHidden:YES];
+        if (setting) {
+            [setting.notificationActivityProgress stopAnimating];
+            [setting.notificationActivityProgress setHidden:YES];
+        }
+        
     }];
 }
 
@@ -306,32 +341,36 @@
     [self.locationActivityProgress setHidden:NO];
     [LocatePositionManager locatePositionSuccess:^(NSString *locatitonName, CLLocationCoordinate2D locationg) {
         SettingController *setting = weakSettingCtr;
-        AppDelegate *delegate = weakDelegate;
-        NSString *city = nil;
-        if (locatitonName) {
-            city = [locatitonName stringByReplacingOccurrencesOfString:@"市" withString:@""];
+        if (setting) {
+            AppDelegate *delegate = weakDelegate;
+            NSString *city = nil;
+            if (locatitonName) {
+                city = [locatitonName stringByReplacingOccurrencesOfString:@"市" withString:@""];
+            }
+            delegate.user.userLocation = city;
+            DRLOG(@"SettingController locate name:%@",city);
+            [setting updateUserLocation:city];
+            
+            //        [setting.locationActivityProgress stopAnimating];
+            //        [setting.locationActivityProgress setHidden:YES];
         }
-        delegate.user.userLocation = city;
-        DRLOG(@"SettingController locate name:%@",city);
-        [setting updateUserLocation:city];
-//        [setting.locationActivityProgress stopAnimating];
-//        [setting.locationActivityProgress setHidden:YES];
+
     } failure:^(NSError *error) {
         SettingController *setting = weakSettingCtr;
-        [setting.locationBt setTitle:LOCATION_TIP forState:UIControlStateNormal];
-        [setting.locationTypeSwitch setOn:YES];
-        [setting alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
-        [setting.locationActivityProgress stopAnimating];
-        [setting.locationActivityProgress setHidden:YES];
+        if (setting) {
+            //        [setting.locationBt setTitle:LOCATION_TIP forState:UIControlStateNormal];
+            [setting.locationTypeSwitch setOn:YES];
+            [setting alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
+            [setting.locationActivityProgress stopAnimating];
+            [setting.locationActivityProgress setHidden:YES];
+        }
+
     }];
 }
 #pragma mark property
 -(NSArray *)notificationArr{
     if (!_notificationArr) {
         _notificationArr = [NSArray array];
-    }
-    if ([_notificationArr count] > 0) {
-        [self.notificationBt setTitle:[NSString stringWithFormat:@"%@ 你有%d条通知",NOTIFICATION_TIP,[_notificationArr count]] forState:UIControlStateNormal];
     }
     return _notificationArr;
 }

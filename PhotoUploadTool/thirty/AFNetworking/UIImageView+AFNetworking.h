@@ -73,18 +73,6 @@
  */
 - (void)cancelImageRequestOperation;
 
-- (void)cancelUploadRequestOperation;
--(void)uploadImageWithURL:(NSURL*)url
-           withParameters:(NSDictionary*)parameters
-                  success:(void (^)(NSString *success))success
-                    error:(void (^)(NSError *error))failure;
-
--(void)uploadImageWithURL:(NSURL*)url
-           withParameters:(NSDictionary*)parameters
-                  success:(void (^)(NSString *success))success
-                    error:(void (^)(NSError *error))failure
-            progressBlock:(void (^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress;
-
 
 @end
 

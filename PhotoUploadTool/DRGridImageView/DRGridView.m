@@ -531,7 +531,13 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
 }
 
 -(void)jumpToCellIndex:(int)index{
-
+    float celloffset = [self getCellOriginYWithCellIndex:index];
+    if (celloffset < self.contentOffset.y) {
+        self.contentOffset = (CGPoint){0,[self getCellOriginYWithCellIndex:index] - GRIDVIEW_SPACE};
+    }else
+    if (celloffset >= self.contentOffset.y + self.frame.size.height) {
+        self.contentOffset = (CGPoint){0,[self getCellOriginYWithCellIndex:index] + [self getRowHeight] - self.frame.size.height};
+    }
 }
 #pragma mark --
 

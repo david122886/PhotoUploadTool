@@ -86,14 +86,20 @@
     [self.gridView.refreshView refreshLastUpdatedDate];
     [DRImageTool downLoadDRImageDataWithUserID:appDelegate.user.userId withType:PRIVATE_IMAGEDATA withSuccess:^(NSArray *drImageDataArr) {
         PrivateGridController *pubCtr = weakPublicGridCtr;
-        [pubCtr stopRefreshView];
-        [pubCtr setImageData:drImageDataArr isFirst:isFirst];
+        if (pubCtr) {
+            [pubCtr stopRefreshView];
+            [pubCtr setImageData:drImageDataArr isFirst:isFirst];
+        }
+        
     } withFailure:^(NSError *error) {
         PrivateGridController *pubCtr = weakPublicGridCtr;
-        [pubCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
-        [pubCtr stopRefreshView];
-        [MBProgressHUD hideHUDForView:pubCtr.view animated:YES];
-        [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+        if (pubCtr) {
+            [pubCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
+            [pubCtr stopRefreshView];
+            [MBProgressHUD hideHUDForView:pubCtr.view animated:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+        }
+        
     }];
 }
 

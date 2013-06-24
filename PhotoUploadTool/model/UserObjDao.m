@@ -170,7 +170,7 @@
     AFHTTPClient *client = appDelete.afhttpClient;
 //    [client postPath:@"users/user_signin"
     [client getPath:@"users/user_signin"
-          parameters:@{@"name":_userName,@"password":[FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO],@"token":_token==nil?@"":_token}
+         parameters:@{@"name":_userName,@"password":[FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO],@"token":_token==nil?@"":_token,@"type":@"0"}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                   NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];;
                  if (responseStr) {

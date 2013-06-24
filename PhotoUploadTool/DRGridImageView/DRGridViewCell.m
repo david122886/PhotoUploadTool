@@ -48,12 +48,11 @@
         self.testLabel.font = [UIFont systemFontOfSize:15.0];
         self.testLabel.frame = CGRectMake(0, 0, 100, 20);
         self.testLabel.backgroundColor = [UIColor clearColor];
-//        [self addSubview:self.testLabel];
+        [self addSubview:self.testLabel];
         DRLOG(@"initWithReuseIdentifier activityView test%@", @"");
         self.activityView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
         self.activityView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
         [self addSubview:self.activityView];
-        
     }
     return self;
 }
@@ -117,11 +116,12 @@
      CGContextRef context = UIGraphicsGetCurrentContext();
      CGContextBeginPath(context);
 //     CGContextSetLineWidth(context, 2);
-     CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+     CGContextSetStrokeColorWithColor(context, [UIColor grayColor].CGColor);
      float lengths[] = {2,2};
      CGContextSetLineDash(context, 0, lengths,2);
      CGContextStrokeRectWithWidth(context, self.imageView.frame, 0.5);
  // Drawing code
+     
  }
  
 -(void)hiddenRemoveButton:(BOOL)l{

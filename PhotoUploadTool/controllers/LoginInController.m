@@ -49,7 +49,13 @@
 -(void)keyboardUP:(id)sender{
     float durationTime = [[[(NSNotification*)sender userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     [UIView animateWithDuration:durationTime animations:^{
-        self.view.center = (CGPoint){self.view.center.x,100};
+        if (self.view.frame.size.height == 460) {
+            self.view.center = (CGPoint){self.view.center.x,100};
+        }else{
+          self.view.center = (CGPoint){self.view.center.x,250};
+        }
+        
+        DRLOG(@"%@", NSStringFromCGRect(self.view.frame));
     }];
 }
 

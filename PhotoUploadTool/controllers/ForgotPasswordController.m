@@ -65,12 +65,18 @@
     [MBProgressHUD showHUDAddedTo:self.view.window animated:YES];
     [UserObjDao modifyUserPwdUserObjName:nameStr withUserPwd:pwStr withEmail:emailStr withSuccess:^(NSString *success) {
         ForgotPasswordController *forgotCtr = weakCtr;
-        [MBProgressHUD hideHUDForView:forgotCtr.view.window animated:YES];
-        [forgotCtr modifyPwdSuccess];
+        if (forgotCtr) {
+            [MBProgressHUD hideHUDForView:forgotCtr.view.window animated:YES];
+            [forgotCtr modifyPwdSuccess];
+        }
+        
     } withFailure:^(NSError *errror) {
         ForgotPasswordController *forgotCtr = weakCtr;
-        [MBProgressHUD hideHUDForView:forgotCtr.view.window animated:YES];
-        [forgotCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        if (forgotCtr) {
+            [MBProgressHUD hideHUDForView:forgotCtr.view.window animated:YES];
+            [forgotCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+        }
+        
     }];
 }
 

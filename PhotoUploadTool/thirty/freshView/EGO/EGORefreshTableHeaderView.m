@@ -143,7 +143,7 @@
 		[formatter setAMSymbol:@"AM"];
 		[formatter setPMSymbol:@"PM"];
 		[formatter setDateFormat:@"MM/dd/yyyy hh:mm:a"];
-		_lastUpdatedLabel.text = [NSString stringWithFormat:@"Last Updated: %@", [formatter stringFromDate:date]];
+		_lastUpdatedLabel.text = [NSString stringWithFormat:@"上一次更新时间: %@", [formatter stringFromDate:date]];
 		[[NSUserDefaults standardUserDefaults] setObject:_lastUpdatedLabel.text forKey:@"EGORefreshTableView_LastRefresh"];
 		[[NSUserDefaults standardUserDefaults] synchronize];
 		[formatter release];
@@ -161,7 +161,7 @@
 	switch (aState) {
 		case EGOOPullRefreshPulling:
 			
-			_statusLabel.text = NSLocalizedString(@"Release to refresh...", @"Release to refresh status");
+			_statusLabel.text = NSLocalizedString(@"松开手指重新下载...", @"Release to refresh status");
 			[CATransaction begin];
 			[CATransaction setAnimationDuration:FLIP_ANIMATION_DURATION];
 			_arrowImage.transform = CATransform3DMakeRotation((M_PI / 180.0) * 180.0f, 0.0f, 0.0f, 1.0f);
@@ -177,9 +177,9 @@
 				[CATransaction commit];
 			}
 			if (_pullDirection == EGOPullingDown) {
-                _statusLabel.text = NSLocalizedString(@"Pull down to refresh...", @"Pull down to refresh status");
+                _statusLabel.text = NSLocalizedString(@"往下拉重新下载...", @"Pull down to refresh status");
             } else {
-                _statusLabel.text = NSLocalizedString(@"Pull up to load more...", @"Pull down to refresh status");
+                _statusLabel.text = NSLocalizedString(@"往上拉下载更多...", @"Pull down to refresh status");
             }
 			[_activityView stopAnimating];
 			[CATransaction begin];
@@ -194,7 +194,7 @@
 			break;
 		case EGOOPullRefreshLoading:
 			
-			_statusLabel.text = NSLocalizedString(@"Loading...", @"Loading Status");
+			_statusLabel.text = NSLocalizedString(@"下载中，请稍后...", @"Loading Status");
 			[_activityView startAnimating];
 			[CATransaction begin];
 			[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions]; 

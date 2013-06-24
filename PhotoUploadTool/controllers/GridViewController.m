@@ -26,12 +26,19 @@
     return self;
 }
 
-
+-(id)initWithContentFrame:(CGRect)frame{
+    self = [super init];
+    if (self) {
+        self.contentRect = frame;
+    }
+    return self;
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:nil action:nil];
-    self.gridView = [[DRGridView alloc] initWithFrame:(CGRect){0,0,self.view.frame.size.width,self.view.frame.size.height}];
+    self.gridView = [[DRGridView alloc] initWithFrame:(CGRect){0,0,self.contentRect.size.width,self.contentRect.size.height}];
+    DRLOG(@"gridview frame:%@", NSStringFromCGRect(self.gridView.frame));
     self.gridView.isShowPrivateModifyPwdView = self.isShowModifyPrivatePwdView;
     self.gridView.gridViewDelegate = self;
     self.gridView.backgroundColor = [UIColor clearColor];
@@ -39,14 +46,15 @@
     [self.gridView reloadData];
 	// Do any additional setup after loading the view.
     [self.view addSubview:self.uploadCtr.view];
-    self.uploadCtr.view.frame = (CGRect){0,-44,self.view.frame.size.width,30};
+//    self.uploadCtr.view.frame = (CGRect){0,-30,self.view.frame.size.width,30};
     [self setSelectPhotoBlock];
     
-    [self testGridView];
+//    [self testGridView];
+    self.view.frame = self.contentRect;
 }
 
 -(void)testGridView{
-    for (int index = 0;index < 10;index++) {
+    for (int index = 0;index < 30;index++) {
         DRGridViewData *data = [[DRGridViewData alloc] init];
         data.imageID = index;
         data.imageURLStr = @"http://ww2.sinaimg.cn/bmiddle/acb53f76gw1e0d3m71gtdj.jpg";
@@ -184,14 +192,20 @@
     DRGridViewData *deletedData = [self.summaryDataArr objectAtIndex:index];
     [DRImageTool deleteDRImageDataWithDRImageDataID:deletedData.imageDataID withSuccess:^(NSString *success) {
         GridViewController *gridCtr = weakGridCtr;
-        [gridCtr.gridView deleteSelectedCellAtLoadedIndex:deletedIndex];
-        [MBProgressHUD hideHUDForView:gridCtr.view animated:YES];
-        [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+        if (gridCtr) {
+            [gridCtr.gridView deleteSelectedCellAtLoadedIndex:deletedIndex];
+            [MBProgressHUD hideHUDForView:gridCtr.view animated:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+        }
+        
     } withFailure:^(NSError *error) {
          GridViewController *gridCtr = weakGridCtr;
-        [MBProgressHUD hideHUDForView:gridCtr.view animated:YES];
-        [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
-        [gridCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
+        if (gridCtr) {
+            [MBProgressHUD hideHUDForView:gridCtr.view animated:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+            [gridCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
+        }
+        
     }];
 }
 
@@ -200,12 +214,13 @@
 #pragma mark - MWPhotoBrowserDelegate
 
 -(void)photoBrowser:(MWPhotoBrowser *)photoBrowser backAtIndex:(NSUInteger)index{
-    [self.gridView reloadData];
+//    [self.gridView reloadData];
+    [self.gridView jumpToCellIndex:index];
 }
 -(void)photoBrowser:(MWPhotoBrowser *)photoBrowser deletedPhotoAtIndex:(NSUInteger)index{
     [self.scanDataArr removeObjectAtIndex:index];
     [self.summaryDataArr removeObjectAtIndex:index+1];
-    if ([self.summaryDataArr count] <= 0) {
+    if ([self.scanDataArr count] <= 0) {
         [photoBrowser dismissModalViewControllerAnimated:YES];
     }
 }
@@ -232,15 +247,21 @@
     MWPhoto *deletedData = [self.scanDataArr objectAtIndex:index];
     [DRImageTool deleteDRImageDataWithDRImageDataID:deletedData.imageDataID withSuccess:^(NSString *success) {
         MWPhotoBrowser *Ctr = weakCtr;
-        [Ctr deleteCellAtIndex:deletedIndex];
-        [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
-        [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+        if (Ctr) {
+            [Ctr deleteCellAtIndex:deletedIndex];
+            [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+        }
+        
     } withFailure:^(NSError *error) {
         MWPhotoBrowser *Ctr = weakCtr;
-        [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
-        [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[error.userInfo objectForKey:@"NSLocalizedDescription"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
-        [alert show];
+        if (Ctr) {
+            [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[error.userInfo objectForKey:@"NSLocalizedDescription"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+        }
+        
     }];
 }
 
@@ -319,11 +340,13 @@
 }
 
 -(AGImagePickerController *)agImagePicker{
-    _agImagePicker = [[AGImagePickerController alloc] initWithFailureBlock:_selectPhotoFailBlock  andSuccessBlock:_selectPhotoFinishBlock];
-    _agImagePicker.delegate = self;
-    _agImagePicker.shouldChangeStatusBarStyle = YES;
-    _agImagePicker.shouldShowSavedPhotosOnTop = NO;
-    _agImagePicker.maximumNumberOfPhotosToBeSelected = 4;
+    if (!_agImagePicker) {
+        _agImagePicker = [[AGImagePickerController alloc] initWithFailureBlock:_selectPhotoFailBlock  andSuccessBlock:_selectPhotoFinishBlock];
+        _agImagePicker.delegate = self;
+        _agImagePicker.shouldChangeStatusBarStyle = YES;
+        _agImagePicker.shouldShowSavedPhotosOnTop = NO;
+        _agImagePicker.maximumNumberOfPhotosToBeSelected = 4;
+    }
     return _agImagePicker;
 }
 #pragma mark --
@@ -335,7 +358,8 @@
     }
     int status = [self isKindOfClass:[PublicGridController class]]?1:0;
     DRLOG(@"%@",@">>>>>>>>>>>");
-    [self.uploadCtr uploadImages:info withParmeters:@{@"id":appDelegate.user.userId,@"status":[NSString stringWithFormat:@"%d",status]}];
+   [self.uploadCtr uploadImages:info withParmeters:@{@"id":appDelegate.user.userId,@"status":[NSString stringWithFormat:@"%d",status]}];
+    
 }
 -(void)alertErrorMessage:(NSString*)mes{
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:mes delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];

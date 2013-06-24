@@ -139,6 +139,7 @@
 		63A37A9817460CE600EC53EB /* DRWaterFlowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A37A9717460CE600EC53EB /* DRWaterFlowCell.m */; };
 		63A37A9B17460FED00EC53EB /* DRImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A37A9A17460FED00EC53EB /* DRImageData.m */; };
 		63A37A9E174615BC00EC53EB /* DRWaterFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A37A9D174615BC00EC53EB /* DRWaterFlowView.m */; };
+		63A57BB31771A6B9007977D6 /* UIImage+AFNetWorking.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A57BB21771A6B9007977D6 /* UIImage+AFNetWorking.m */; };
 		63A80C2B1764545500A2EC32 /* tabbarEdit.png in Resources */ = {isa = PBXBuildFile; fileRef = 63A80C2A1764545500A2EC32 /* tabbarEdit.png */; };
 		63B3F39717616D5B00DBF223 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63B3F39517616D5B00DBF223 /* Icon.png */; };
 		63B3F39817616D5B00DBF223 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63B3F39617616D5B00DBF223 /* Icon@2x.png */; };
@@ -368,6 +369,8 @@
 		63A37A9C174615BC00EC53EB /* DRWaterFlowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRWaterFlowView.h; sourceTree = "<group>"; };
 		63A37A9D174615BC00EC53EB /* DRWaterFlowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRWaterFlowView.m; sourceTree = "<group>"; };
 		63A3DD0117544399008C0E86 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		63A57BB11771A6B9007977D6 /* UIImage+AFNetWorking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+AFNetWorking.h"; sourceTree = "<group>"; };
+		63A57BB21771A6B9007977D6 /* UIImage+AFNetWorking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+AFNetWorking.m"; sourceTree = "<group>"; };
 		63A80C2A1764545500A2EC32 /* tabbarEdit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tabbarEdit.png; sourceTree = "<group>"; };
 		63B3F39517616D5B00DBF223 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		63B3F39617616D5B00DBF223 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
@@ -523,6 +526,8 @@
 				632A8C4A17422351002A81DF /* AFXMLRequestOperation.m */,
 				632A8C4B17422351002A81DF /* UIImageView+AFNetworking.h */,
 				632A8C4C17422351002A81DF /* UIImageView+AFNetworking.m */,
+				63A57BB11771A6B9007977D6 /* UIImage+AFNetWorking.h */,
+				63A57BB21771A6B9007977D6 /* UIImage+AFNetWorking.m */,
 			);
 			path = AFNetworking;
 			sourceTree = "<group>";
@@ -1064,6 +1069,7 @@
 				639F03411762BC28009F5FE4 /* LocatePositionManager.m in Sources */,
 				63CFD133176EEBA6007119FF /* RTLabel.m in Sources */,
 				63CFD138176F1395007119FF /* PrivatePwdmodifyView.m in Sources */,
+				63A57BB31771A6B9007977D6 /* UIImage+AFNetWorking.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -104,6 +104,21 @@
     [alert show];
 }
 
+-(NSString*)convertDateFormat:(NSString*)dateStr{
+    if (!dateStr) {
+        return @"";
+    }
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+    NSDate *date = [formatter dateFromString:dateStr];
+    
+    [formatter setAMSymbol:@"上午"];
+    [formatter setPMSymbol:@"下午"];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    return [formatter stringFromDate:date];
+}
+
 -(void)loadedData{
     self.isloadingData = NO;
     [self.tableView reloadData];
@@ -129,7 +144,7 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NotificationCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NotificationCell"];
     NotificationObject *obj = [self.notificationArr objectAtIndex:indexPath.row];
-    cell.dateLabel.text = obj.date;
+    cell.dateLabel.text = [self convertDateFormat:obj.date];
     cell.summaryLabel.text = obj.deail;
     cell.backImageView.image = [[UIImage imageNamed:@"input_bg.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(20, 20, 20, 20)];
     cell.detalLabel.text = obj.deail;

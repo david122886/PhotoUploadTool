@@ -88,15 +88,20 @@
         PublicGridController *pubCtr = weakPublicGridCtr;
         if (!pubCtr) {
             DRLOG(@"%@", @"????????????????pubCtr is nill");
+        }else{
+            [pubCtr stopRefreshView];
+            [pubCtr setImageData:drImageDataArr isFirst:isFirst];
         }
-        [pubCtr stopRefreshView];
-        [pubCtr setImageData:drImageDataArr isFirst:isFirst];
+        
     } withFailure:^(NSError *error) {
         PublicGridController *pubCtr = weakPublicGridCtr;
-        [pubCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
-        [pubCtr stopRefreshView];
-        [MBProgressHUD hideHUDForView:pubCtr.view animated:YES];
-        [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+        if (pubCtr) {
+            [pubCtr alertErrorMessage:[error.userInfo objectForKey:@"NSLocalizedDescription"]];
+            [pubCtr stopRefreshView];
+            [MBProgressHUD hideHUDForView:pubCtr.view animated:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
+        }
+        
     }];
 }
 

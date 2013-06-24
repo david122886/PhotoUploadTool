@@ -80,12 +80,18 @@
         
         [UserObjDao modifyUserPwdUserObjName:appDelegate.user.userName withUserPwd:dNewPwStr withEmail:appDelegate.user.userEmail withSuccess:^(NSString *success) {
             ModifyUserPasswordController *modifyCtr = weakCtr;
-            [MBProgressHUD hideHUDForView:modifyCtr.view animated:YES];
-            [modifyCtr.navigationController popViewControllerAnimated:YES];
+            if (modifyCtr) {
+                [MBProgressHUD hideHUDForView:modifyCtr.view animated:YES];
+                [modifyCtr.navigationController popViewControllerAnimated:YES];
+            }
+            
         } withFailure:^(NSError *errror) {
             ModifyUserPasswordController *modifyCtr = weakCtr;
-            [MBProgressHUD hideHUDForView:modifyCtr.view animated:YES];
-            [modifyCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+            if (modifyCtr) {
+                [MBProgressHUD hideHUDForView:modifyCtr.view animated:YES];
+                [modifyCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+            }
+            
         }];
     }
 }

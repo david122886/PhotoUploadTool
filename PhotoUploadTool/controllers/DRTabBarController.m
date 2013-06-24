@@ -35,12 +35,10 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadDataNotificationFinished) name:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
     [super viewDidLoad];
    
-    self.publicController = [[PublicGridController alloc] init];
-     self.privateController = [[PrivateGridController alloc] init];
+    self.publicController = [[PublicGridController alloc] initWithContentFrame:(CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.height}];
+     self.privateController = [[PrivateGridController alloc] initWithContentFrame:(CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.height}];
     self.privateController.view.backgroundColor = [UIColor clearColor];
     self.publicController.view.backgroundColor = [UIColor clearColor];
-    self.privateController.view.frame = (CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.height};
-    self.publicController.view.frame = (CGRect){0,0,self.contentView.frame.size.width,self.contentView.frame.size.height};
     self.underLine.frame = CGRectMake(self.publicItemBt.frame.origin.x + self.publicItemBt.contentEdgeInsets.left, self.underLine.frame.origin.y, self.publicItemBt.frame.size.width, self.underLine.frame.size.height);
     
     self.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"_bg.png"]];
@@ -112,8 +110,9 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     DRTabBarController __weak *weakTabBarCtr = self;
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     [SettingPrivatePwdView defaultSettingPrivatePwdViewType:PRIVATEPWDVIEW_MODIFY withAlbumPwd:appDelegate.user.userAlbumPwd==nil?@"":appDelegate.user.userAlbumPwd withSuccess:^(NSString *password) {
-        DRTabBarController *tabBarCtr = weakTabBarCtr;
-        [tabBarCtr modifyAlbumPassword:password];
+        if (weakTabBarCtr) {
+            [weakTabBarCtr modifyAlbumPassword:password];
+        }
     } orFailure:nil orCancel:nil];
 }
 
@@ -174,7 +173,10 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     if ([albumPwd isEqualToString:ALBUMPWD_TIP] && !self.privateController.gridView.modifyPwdView.activityView.isAnimating) {
         [SettingPrivatePwdView defaultSettingPrivatePwdViewType:PRIVATEPWDVIEW_SETTING withAlbumPwd:userAlbumPwd  withSuccess:^(NSString *password) {
             DRTabBarController *tabBarCtr = weakTabBarCtr;
-            [tabBarCtr modifyAlbumPassword:password];
+            if (tabBarCtr) {
+                [tabBarCtr modifyAlbumPassword:password];
+            }
+         
         } orFailure:nil orCancel:nil];
     }
 }
@@ -189,23 +191,29 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     [UserObjDao modifyAlbumPwdUserObjId:appDelegate.user.userId withAlbumPwd:password withSuccess:^(NSString *success) {
         DRTabBarController *tabBarCtr = weakTabBarCtr;
-        tabBarCtr.pwdCoverView.userInteractionEnabled = YES;
-        tabBarCtr.pwdLabel.text = [NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,password];
-        [tabBarCtr.activityView stopAnimating];
-        [tabBarCtr.activityView setHidden:YES];
+        if (tabBarCtr) {
+            tabBarCtr.pwdCoverView.userInteractionEnabled = YES;
+            tabBarCtr.pwdLabel.text = [NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,password];
+            [tabBarCtr.activityView stopAnimating];
+            [tabBarCtr.activityView setHidden:YES];
+            
+            [tabBarCtr.privateController.gridView.modifyPwdView setUserInteractionEnabled:YES];
+            [tabBarCtr.privateController.gridView.modifyPwdView.activityView stopAnimating];
+            [tabBarCtr.privateController.gridView.modifyPwdView.pwdLabel setText:[NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,password]];
+        }
         
-        [tabBarCtr.privateController.gridView.modifyPwdView setUserInteractionEnabled:YES];
-        [tabBarCtr.privateController.gridView.modifyPwdView.activityView stopAnimating];
-        [tabBarCtr.privateController.gridView.modifyPwdView.pwdLabel setText:[NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,password]];
     } withFailure:^(NSError *errror) {
         DRTabBarController *tabBarCtr = weakTabBarCtr;
-        [tabBarCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
-        tabBarCtr.pwdCoverView.userInteractionEnabled = YES;
-        [tabBarCtr.activityView stopAnimating];
-        [tabBarCtr.activityView setHidden:YES];
+        if (tabBarCtr) {
+            [tabBarCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
+            tabBarCtr.pwdCoverView.userInteractionEnabled = YES;
+            [tabBarCtr.activityView stopAnimating];
+            [tabBarCtr.activityView setHidden:YES];
+            
+            [tabBarCtr.privateController.gridView.modifyPwdView setUserInteractionEnabled:YES];
+            [tabBarCtr.privateController.gridView.modifyPwdView.activityView stopAnimating];
+        }
         
-        [tabBarCtr.privateController.gridView.modifyPwdView setUserInteractionEnabled:YES];
-        [tabBarCtr.privateController.gridView.modifyPwdView.activityView stopAnimating];
     }];
     
 }

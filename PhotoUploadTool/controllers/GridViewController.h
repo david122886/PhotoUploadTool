@@ -24,8 +24,10 @@
 @property(nonatomic,strong) DRGridView *gridView;
 @property(nonatomic,assign) BOOL isShowModifyPrivatePwdView;
 @property(nonatomic,assign) BOOL isFirstDownloadData;
+@property(nonatomic,assign) CGRect contentRect;
 -(void)alertErrorMessage:(NSString*)mes;
 -(void)stopRefreshView;
+-(id)initWithContentFrame:(CGRect)frame;
 @end
 
 @protocol GridViewControllerDelegate <NSObject>

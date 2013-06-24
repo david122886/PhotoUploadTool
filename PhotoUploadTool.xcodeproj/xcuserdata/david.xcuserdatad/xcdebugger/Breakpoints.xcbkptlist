@@ -59,32 +59,6 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "PhotoUploadTool/locatePosition/LocatePositionManager.m"
-         timestampString = "393131513.580737"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "85"
-         endingLineNumber = "85"
-         landmarkName = "-locationManager:didFailWithError:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "PhotoUploadTool/locatePosition/LocatePositionManager.m"
-         timestampString = "393131535.851519"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "31"
-         endingLineNumber = "31"
-         landmarkName = "+locatePositionSuccess:failure:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "PhotoUploadTool/thirty/MWPhotoBrowser/Classes/MWPhotoBrowser.m"
          timestampString = "393236517.010791"
          startingColumnNumber = "9223372036854775807"
@@ -131,6 +105,32 @@
          startingLineNumber = "1118"
          endingLineNumber = "1118"
          landmarkName = "-actionButtonPressed:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "PhotoUploadTool/thirty/AFNetworking/AFHTTPClient.m"
+         timestampString = "393734393.444768"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "833"
+         endingLineNumber = "833"
+         landmarkName = "-appendPartWithFileURL:name:error:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "PhotoUploadTool/thirty/AFNetworking/AFHTTPClient.m"
+         timestampString = "393734398.198044"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "848"
+         endingLineNumber = "848"
+         landmarkName = "-appendPartWithFileURL:name:fileName:mimeType:error:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

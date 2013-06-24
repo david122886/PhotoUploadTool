@@ -91,16 +91,22 @@
     [self.activityView startAnimating];
     DRWaterFlowCell __weak *selfCell = self;
     [self.imageView setImageWithURLRequest:request placeholderImage:holderImage success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-        [selfCell.activityView stopAnimating];
-        [selfCell.imageView setImage:image];
-        if (selfCell.successBlock) {
-            selfCell.successBlock(selfCell);
+        if (selfCell) {
+            [selfCell.activityView stopAnimating];
+            [selfCell.imageView setImage:image];
+            if (selfCell.successBlock) {
+                selfCell.successBlock(selfCell);
+            }
         }
+        
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-        [selfCell.activityView stopAnimating];
-        if (selfCell.errorBlock) {
-            selfCell.errorBlock(error);
+        if (selfCell) {
+            [selfCell.activityView stopAnimating];
+            if (selfCell.errorBlock) {
+                selfCell.errorBlock(error);
+            }
         }
+        
     }];
 }
 - (void)singleTapGestureCaptured:(UITapGestureRecognizer *)gesture {

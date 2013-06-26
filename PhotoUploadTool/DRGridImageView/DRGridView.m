@@ -227,7 +227,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
         [self deleteGridViewTopCells];
         [self deleteGridViewBottomCells];
         [self setGridViewContentSize];
-    }
+    } 
     
     
 }

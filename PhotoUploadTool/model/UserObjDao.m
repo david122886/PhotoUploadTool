@@ -41,11 +41,15 @@
     
     NSString *albumPwd = [jsonStr objectForKey:@"photo_password"];
     if (albumPwd && ![[albumPwd class] isSubclassOfClass:[NSNull class]] && ![albumPwd isEqualToString:@"<null>"]) {
-         user.userAlbumPwd = [FBEncryptorAES decryptBase64String:albumPwd keyString:ENCRYPT_KEY];
+//         user.userAlbumPwd = [FBEncryptorAES decryptBase64String:albumPwd keyString:ENCRYPT_KEY];
+//        user.userAlbumPwd = [FBEncryptorAES decryptString:albumPwd key:ENCRYPT_KEY iv:nil];
+        user.userAlbumPwd = albumPwd;
     }
     NSString *pwd = [jsonStr objectForKey:@"password"];
     if (pwd && ![[pwd class] isSubclassOfClass:[NSNull class]] && ![pwd isEqualToString:@"<null>"]) {
-        user.userPwd = [FBEncryptorAES decryptBase64String:pwd keyString:ENCRYPT_KEY];
+//        user.userPwd = [FBEncryptorAES decryptBase64String:pwd keyString:ENCRYPT_KEY];
+//        user.userPwd = [FBEncryptorAES decryptString:pwd key:ENCRYPT_KEY iv:nil];
+        user.userPwd = pwd;
     }
     
     NSString *webURL = [jsonStr objectForKey:@"url"];
@@ -68,10 +72,11 @@
 +(void)registerUserObj:(UserObj*)_user withSuccess:(void(^)(UserObj *userObj))_success withFailure:(void(^)(NSError *errror))_failure{
     AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     AFHTTPClient *client = appDelete.afhttpClient;
-    NSString *pwd = [FBEncryptorAES encryptBase64String:_user.userPwd keyString:ENCRYPT_KEY separateLines:NO];
+//    NSString *pwd = [FBEncryptorAES encryptBase64String:_user.userPwd keyString:ENCRYPT_KEY separateLines:NO];
+//    [FBEncryptorAES encryptString:_user.userPwd key:ENCRYPT_KEY iv:nil]
        [client getPath:@"users/register"
 //    [client postPath:@"users/register"
-          parameters:@{@"name":_user.userName,@"password":pwd,@"email":_user.userEmail}
+          parameters:@{@"name":_user.userName,@"password":_user.userPwd,@"email":_user.userEmail}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                  NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                  if (responseStr) {
@@ -168,9 +173,12 @@
 +(void)loginInUserObjName:(NSString*)_userName withUserPwd:(NSString*)_userPwd withToken:(NSString*)_token withSuccess:(void(^)(UserObj *userObj))_success withFailure:(void(^)(NSError *errror))_failure{
     AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     AFHTTPClient *client = appDelete.afhttpClient;
+    
+//    [FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO]
+//    [FBEncryptorAES encryptString:_userPwd key:ENCRYPT_KEY iv:nil]
 //    [client postPath:@"users/user_signin"
     [client getPath:@"users/user_signin"
-         parameters:@{@"name":_userName,@"password":[FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO],@"token":_token==nil?@"":_token,@"type":@"0"}
+         parameters:@{@"name":_userName,@"password":_userPwd,@"token":_token==nil?@"":_token,@"type":@"0"}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                   NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];;
                  if (responseStr) {
@@ -251,9 +259,11 @@
 +(void)modifyUserPwdUserObjName:(NSString*)_userName withUserPwd:(NSString*)_userPwd withEmail:(NSString *)_email withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure{
     AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     AFHTTPClient *client = appDelete.afhttpClient;
+//    [FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO]
+//    [FBEncryptorAES encryptString:_userPwd key:ENCRYPT_KEY iv:nil]
 //    [client postPath:@"users/change_pwd"
     [client getPath:@"users/change_pwd"
-         parameters:@{@"name":_userName,@"email":_email?:@"",@"password":[FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO]}
+         parameters:@{@"name":_userName,@"email":_email?:@"",@"password":_userPwd}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                  NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                  if (responseStr) {
@@ -295,9 +305,11 @@
 +(void)modifyAlbumPwdUserObjId:(NSString*)_userID withAlbumPwd:(NSString*)_albumPwd withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure{
     AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     AFHTTPClient *client = appDelete.afhttpClient;
+//    [FBEncryptorAES encryptBase64String:_albumPwd keyString:ENCRYPT_KEY separateLines:NO]
+//    [FBEncryptorAES encryptString:_albumPwd key:ENCRYPT_KEY iv:nil]
 //    [client postPath:@"users/album_pwd"
     [client getPath:@"users/album_pwd"
-          parameters:@{@"id":_userID,@"photo_password":[FBEncryptorAES encryptBase64String:_albumPwd keyString:ENCRYPT_KEY separateLines:NO]}
+          parameters:@{@"id":_userID,@"photo_password":_albumPwd}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                  NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                  if (responseStr) {

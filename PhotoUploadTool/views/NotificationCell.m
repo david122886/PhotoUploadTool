@@ -7,7 +7,7 @@
 //
 
 #import "NotificationCell.h"
-
+#define CELLSPACE 3
 @implementation NotificationCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -34,4 +34,16 @@
 //    
 //    self.detailTextLabel.frame = CGRectMake(detailRect.origin.x, detailRect.origin.y, detailRect.size.width, detailSize.height);
 //}
+
+//-(void)layoutSubviews{
+//    [super layoutSubviews];
+//    self.dateLabel.frame = (CGRect){8,0,280,21};
+//    self.detalLabel.frame = (CGRect){8,22,280,39};
+//    self.summaryLabel.frame = (CGRect){8,22,280,39};
+//}
+
+-(UILabel *)detalLabel{
+    _detalLabel.frame = (CGRect){8,23,280,39};
+    return _detalLabel;
+}
 @end

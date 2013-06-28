@@ -164,9 +164,8 @@
     NotificationObject *obj = [self.notificationArr objectAtIndex:indexPath.row];
     if ([obj.isExpand boolValue]) {
         CGSize detailSize = [obj.deail sizeWithFont:[UIFont systemFontOfSize:NOTIFICATION_FONT_SIZE] constrainedToSize:CGSizeMake(279, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
-        if (detailSize.width > tableView.frame.size.width) {
-            return detailSize.height +41;
-        }
+        NSLog(@"%@,%@",NSStringFromCGSize(detailSize),NSStringFromCGRect(tableView.frame));
+        return detailSize.height +41;
     }
     return 60;
 }

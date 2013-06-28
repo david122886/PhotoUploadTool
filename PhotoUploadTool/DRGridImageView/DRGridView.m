@@ -7,6 +7,7 @@
 //
 
 #import "DRGridView.h"
+#import "ImageHelper-Files.h"
 #define GRIDVIEW_SPACE 2
 #define PRIVATE_MODIFY_VIEW_HEIGHT 30
 @interface DRGridView()
@@ -83,7 +84,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
     if (CGRectContainsPoint(cell.rmoveImage.frame, cellPoint) && self.isAbleDelete) {
         //cell delete
         DRLOG(@"%@", @"deleted bt clicked");
-        [self setScrollEnabled:NO];
+//        [self setScrollEnabled:NO];
         int loadedCellIndex = [self getCurrentloadedArrIndex:point];
         if (loadedCellIndex < 0) {
             return;
@@ -290,7 +291,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
                     DRLOG(@"DRGridViewCell download imaage error:%@",error);
                 }];
             }
-            
+//            [newCell.imageView setImage:[ImageHelper cutImage:newCell.imageView.image cutRect:newCell.frame]];
             [newCell hiddenRemoveButton:!self.isAbleDelete];
             [self addSubview:newCell];
             [self.loadedCells insertObject:newCell atIndex:0];
@@ -346,6 +347,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
         cell.frame = CGRectMake([self getCellOriginXWithCellIndex:startIndex], [self getCellOriginYWithCellIndex:startIndex], [self getGridViewCellWidth], self.heightOfImageCell);
         [cell hiddenRemoveButton:!self.isAbleDelete];
         [self addSubview:cell];
+//        [cell.imageView setImage:[ImageHelper cutImage:cell.imageView.image cutRect:cell.frame]];
         [self.loadedCells addObject:cell];
         
         self.contentBottomCrit = (GridViewCritical){[self getCurrentRowIndexWithCellIndex:startIndex],cell.frame.origin.y + cell.frame.size.height+GRIDVIEW_SPACE};
@@ -625,7 +627,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
 
 -(PrivatePwdmodifyView *)modifyPwdView{
     if (!_modifyPwdView) {
-        _modifyPwdView = [[PrivatePwdmodifyView alloc] initWithFrame:(CGRect){0,0,self.frame.size.width,PRIVATE_MODIFY_VIEW_HEIGHT}];
+        _modifyPwdView = [[PrivatePwdmodifyView alloc] initWithFrame:(CGRect){0,0,self.frame.size.width-10,PRIVATE_MODIFY_VIEW_HEIGHT}];
 //        [self addSubview:_modifyPwdView];
     }
     return _modifyPwdView;
@@ -638,9 +640,13 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
 	self.isloadingData = YES;
     self.isAbleDelete = NO;
     [self setFlowCellIsAbleDelete:NO];
-    if (self.gridViewDelegate && [self.gridViewDelegate respondsToSelector:@selector(prepareReloadData:)]) {
-        [self.gridViewDelegate prepareReloadData:self];
-    }
+    DRGridView __weak *weakSelf =self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        if (weakSelf && weakSelf.gridViewDelegate && [weakSelf.gridViewDelegate respondsToSelector:@selector(prepareReloadData:)]) {
+            [weakSelf.gridViewDelegate prepareReloadData:weakSelf];
+        }
+    });
+    
 }
 
 - (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{

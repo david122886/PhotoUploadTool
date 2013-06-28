@@ -93,8 +93,8 @@
     [super viewDidUnload];
 }
 - (IBAction)LoginBtClicked:(id)sender {
-    self.userNameField.text = @"dd";
-    self.passwdField.text = @"dd";
+//    self.userNameField.text = @"dd";
+//    self.passwdField.text = @"dd";
     if ([self checkInputField]) {
         [self.userNameField resignFirstResponder];
         [self.passwdField resignFirstResponder];

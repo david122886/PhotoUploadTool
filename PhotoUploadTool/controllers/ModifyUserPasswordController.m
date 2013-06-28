@@ -73,7 +73,7 @@
 - (IBAction)okBtClicked:(id)sender {
     if ([self checkInputStr]) {
         [self userTapGesture:nil];
-        NSString *dNewPwStr = [self.dNewPwdField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        __block NSString *dNewPwStr = [self.dNewPwdField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
         ModifyUserPasswordController __weak *weakCtr = self;
@@ -82,7 +82,8 @@
             ModifyUserPasswordController *modifyCtr = weakCtr;
             if (modifyCtr) {
                 [MBProgressHUD hideHUDForView:modifyCtr.view animated:YES];
-                [modifyCtr.navigationController popViewControllerAnimated:YES];
+                [modifyCtr modifyPwdSuccess];
+                appDelegate.user.userPwd = dNewPwStr;
             }
             
         } withFailure:^(NSError *errror) {
@@ -94,6 +95,11 @@
             
         }];
     }
+}
+
+-(void)modifyPwdSuccess{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"修改密码成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alert show];
 }
 
 - (IBAction)backBtClicked:(id)sender {
@@ -144,6 +150,14 @@
     self.scrollView.contentSize = (CGSize){self.scrollView.frame.size.width,self.scrollView.frame.size.height + 200};
     float y = [textField.superview frame].origin.y;
     [self.scrollView setContentOffset:(CGPoint){0,y} animated:YES];
+}
+#pragma mark --
+
+#pragma mark UIAlertViewDelegate
+
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 #pragma mark --
 

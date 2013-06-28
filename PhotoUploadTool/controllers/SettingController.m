@@ -141,6 +141,7 @@
 }
 
 - (IBAction)notificationBtClicked:(id)sender {
+    [self.infoTextView resignFirstResponder];
 }
 
 - (IBAction)locationTypeChanged:(UISwitch *)sender {
@@ -165,9 +166,11 @@
         TSLocateView *locateView = [[TSLocateView alloc] initWithTitle:@"定位城市" delegate:self];
         [locateView showInView:self.view];
     }
+    [self.infoTextView resignFirstResponder];
 }
 
 - (IBAction)modifyPwdBtClicked:(UIButton *)sender {
+    [self.infoTextView resignFirstResponder];
 }
 - (IBAction)loginOutBtClicked:(UIButton *)sender {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"确认退出用户" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
@@ -227,6 +230,9 @@
 #pragma mark --
 
 -(void)alertErrorMessage:(NSString*)mes{
+    if ([mes isEqualToString:@"error"]) {
+        return;
+    }
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:mes delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
     [alert show];
 }

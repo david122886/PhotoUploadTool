@@ -12,6 +12,7 @@
 
 @interface DRGridViewCell : UIView
 @property(nonatomic,strong) UILabel *testLabel;
+@property(nonatomic,strong) UIImage *cachImage;
 @property(nonatomic,strong) NSString *identifier;
 @property(nonatomic,strong) UIImageView *imageView;
 @property(nonatomic,strong) UIActivityIndicatorView *activityView;

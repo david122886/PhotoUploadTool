@@ -9,6 +9,7 @@
 #import "DRGridViewCell.h"
 #import "AFNetworking.h"
 #import "DRGridViewData.h"
+#import "ImageHelper-Files.h"
 #define GRIDCELL_REMOVE_WIDTH 30.0
 #define GRIDCELL_REMOVE_HEIGHT 30.0
 #define GRIDCELL_SPACE 2
@@ -41,14 +42,14 @@
         self.rmoveImage = [[UIImageView alloc] initWithFrame:CGRectZero];
         self.rmoveImage.image = [UIImage imageNamed:@"privatePwd_delete.png"];
         [self addSubview:self.rmoveImage];
-        
+//        self.imageView.contentMode = UIViewContentModeTop|UIViewContentModeLeft|UIViewContentModeRight;
         self.testLabel = [[UILabel alloc] init];
         self.testLabel.textColor = [UIColor blackColor];
         self.testLabel.textAlignment = UITextAlignmentCenter;
         self.testLabel.font = [UIFont systemFontOfSize:15.0];
         self.testLabel.frame = CGRectMake(0, 0, 100, 20);
         self.testLabel.backgroundColor = [UIColor clearColor];
-        [self addSubview:self.testLabel];
+//        [self addSubview:self.testLabel];
         DRLOG(@"initWithReuseIdentifier activityView test%@", @"");
         self.activityView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
         self.activityView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
@@ -85,7 +86,15 @@
     [self.imageView setImageWithURLRequest:request placeholderImage:holderImage success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
         if (selfCell) {
             [selfCell.activityView stopAnimating];
-            [selfCell.imageView setImage:image];
+            if (!image) {
+                if (selfCell.errorBlock) {
+                    selfCell.errorBlock(nil);
+                }
+                return ;
+            }
+            selfCell.cachImage = [UIImage imageWithData:UIImagePNGRepresentation(image)];
+            [selfCell.imageView setImage:[ImageHelper cutImage:selfCell.cachImage cutRect:selfCell.imageView.frame]];
+//            [selfCell setImageData];
             if (selfCell.successBlock) {
                 selfCell.successBlock(selfCell);
             }
@@ -106,6 +115,11 @@
     self.imageView.frame = CGRectMake(GRIDCELL_SPACE, GRIDCELL_SPACE, self.frame.size.width - GRIDCELL_SPACE*2, self.frame.size.height - GRIDCELL_SPACE*2);
     self.rmoveImage.frame = CGRectMake(self.frame.size.width - GRIDCELL_REMOVE_WIDTH, 0, GRIDCELL_REMOVE_WIDTH, GRIDCELL_REMOVE_HEIGHT);
     self.activityView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
+    
+    if (self.cachImage) {
+        [self.imageView setImage:[ImageHelper cutImage:self.cachImage cutRect:self.imageView.frame]];
+//        [self setImageData];
+    }
 }
 
  // Only override drawRect: if you perform custom drawing.
@@ -128,9 +142,19 @@
     [self.rmoveImage setHidden:l];
 }
 
+
+-(void)setImageData{
+    DRGridViewCell __weak *weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        if (weakSelf && weakSelf.cachImage) {
+            [weakSelf.imageView setImage:[ImageHelper cutImage:weakSelf.cachImage cutRect:weakSelf.imageView.frame]];
+        }
+    });
+}
 -(void)removeFromSuperview{
     [super removeFromSuperview];
     [self.imageView cancelImageRequestOperation];
+    self.cachImage = nil;
 }
 
 @end

@@ -31,7 +31,7 @@
 
 -(void)prepareReloadData:(DRGridView *)gridView{
     [self downloadDataISFirst:NO];
-    [gridView reloadData];
+//    [gridView reloadData];
 }
 - (void)didReceiveMemoryWarning
 {

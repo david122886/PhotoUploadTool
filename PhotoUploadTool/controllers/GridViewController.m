@@ -133,7 +133,7 @@
     return 3;
 }
 -(float)heightOfGridViewCell{
-    return 70.0;
+    return 120.0;
 }
 -(int)cacheRowsOfGridView{
     return 20;
@@ -214,7 +214,7 @@
 #pragma mark - MWPhotoBrowserDelegate
 
 -(void)photoBrowser:(MWPhotoBrowser *)photoBrowser backAtIndex:(NSUInteger)index{
-//    [self.gridView reloadData];
+    [self.gridView reloadData];
     [self.gridView jumpToCellIndex:index];
 }
 -(void)photoBrowser:(MWPhotoBrowser *)photoBrowser deletedPhotoAtIndex:(NSUInteger)index{
@@ -345,7 +345,7 @@
         _agImagePicker.delegate = self;
         _agImagePicker.shouldChangeStatusBarStyle = YES;
         _agImagePicker.shouldShowSavedPhotosOnTop = NO;
-        _agImagePicker.maximumNumberOfPhotosToBeSelected = 4;
+        _agImagePicker.maximumNumberOfPhotosToBeSelected = 100;
     }
     return _agImagePicker;
 }

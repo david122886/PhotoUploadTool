@@ -15,7 +15,6 @@
 @property(nonatomic,assign) id<NotificationCellDelegate> delegate;
 @property (weak, nonatomic) IBOutlet UILabel *summaryLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backImageView;
-
 @end
 
 @protocol NotificationCellDelegate <NSObject>

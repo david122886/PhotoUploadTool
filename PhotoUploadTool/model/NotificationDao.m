@@ -11,7 +11,7 @@
 @implementation NotificationDao
 
 +(NSArray*)convertNotificationObjFromJsonArr:(NSArray*)jsonStr{
-    if (!jsonStr || [jsonStr count] <= 0) {
+    if (!jsonStr) {
         return nil;
     }
     DRLOG(@"%@",jsonStr);

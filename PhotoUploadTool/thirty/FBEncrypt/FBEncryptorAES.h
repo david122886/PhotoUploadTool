@@ -38,7 +38,8 @@
 + (NSData*)encryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
 + (NSData*)decryptData:(NSData*)data key:(NSData*)key iv:(NSData*)iv;
 
-
++ (NSString*)encryptString:(NSString*)data key:(NSString*)key iv:(NSString*)iv;
++ (NSString*)decryptString:(NSString*)data key:(NSString*)key iv:(NSString*)iv;
 //-----------------
 // API (base64)
 //-----------------

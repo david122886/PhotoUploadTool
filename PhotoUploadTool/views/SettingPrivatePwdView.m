@@ -69,7 +69,7 @@
 - (void)show{
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     self.frame = window.bounds;
-    self.backgroundColor = [UIColor colorWithRed:0.6 green:0.2 blue:0.4 alpha:0.6];
+    self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
     [window addSubview:self];
     self.borderView.center = CGPointMake(self.borderView.center.x, - BORDERVIEW_HEIGHT/2);
     [UIView animateWithDuration:INPUTVIEW_INTERVAL delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^(){

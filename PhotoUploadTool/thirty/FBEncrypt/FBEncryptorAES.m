@@ -146,6 +146,39 @@
     }
 }
 
++ (NSString*)encryptString:(NSString*)data key:(NSString*)key iv:(NSString*)iv{
+    if (!data || !key) {
+        NSLog(@"encryptString error");
+        return nil;
+    }
+    NSData *encryData = [FBEncryptorAES encryptData:[data dataUsingEncoding:NSUTF8StringEncoding] key:[key dataUsingEncoding:NSUTF8StringEncoding] iv:nil];
+    NSString *encryStr = [[NSString alloc] initWithData:encryData encoding:NSUTF8StringEncoding];
+    return encryStr;
+}
++ (NSString*)decryptString:(NSString*)data key:(NSString*)key iv:(NSString*)iv{
+    if (!data || !key) {
+        NSLog(@"decryptString error");
+        return nil;
+    }
+NSString *decryStr = [[NSString alloc] initWithData:[FBEncryptorAES decryptData:[data dataUsingEncoding:NSUTF8StringEncoding] key:[key dataUsingEncoding:NSUTF8StringEncoding] iv:nil] encoding:NSUTF8StringEncoding];
+return decryStr;
+}
+
+//+ (NSString*)encryptString:(NSString*)data key:(NSString*)key iv:(NSString*)iv{
+//    if (!data || !key) {
+//        NSLog(@"encryptString error");
+//        return nil;
+//    }
+//    NSData *encryData = [FBEncryptorAES encryptData:[FBEncryptorAES dataForHexString:data] key:[FBEncryptorAES dataForHexString:key] iv:nil];
+//    return [FBEncryptorAES hexStringForData:encryData];
+//}
+//+ (NSString*)decryptString:(NSString*)data key:(NSString*)key iv:(NSString*)iv{
+//    if (!data || !key) {
+//        NSLog(@"decryptString error");
+//        return nil;
+//    }
+//    return [FBEncryptorAES hexStringForData:[FBEncryptorAES decryptData:[FBEncryptorAES dataForHexString:data] key:[FBEncryptorAES dataForHexString:key] iv:nil]];
+//}
 
 #define FBENCRYPT_IV_HEX_LEGNTH (FBENCRYPT_BLOCK_SIZE*2)
 

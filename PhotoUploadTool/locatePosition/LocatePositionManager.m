@@ -58,7 +58,9 @@ static LocatePositionManager *locateManager;
     [self.geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
         DRLOG(@"%@", error);
         if (error) {
-            
+            if (self.errorBlock) {
+                self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"error"]);
+            }
         }else{
             if ([[placemarks lastObject] isKindOfClass:[CLPlacemark class]]) {
                 CLPlacemark *place = [placemarks lastObject];

@@ -50,7 +50,8 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     if (userWeb) {
         NSString *webUrl = [userWeb stringByReplacingOccurrencesOfString:@"http://" withString:@""];
         NSString *ipUrl = [webUrl stringByReplacingOccurrencesOfString:@"localhost:3000" withString:LIUYUSERVER_URL];
-        [self.webURLLabel setText:[NSString stringWithFormat:@"<a href='%@'><font size=12>%@</font></a> ",ipUrl,ipUrl]];
+        self.webURLLabel.text = ipUrl;
+        [self.webURLLabel addLinkToURL:[NSURL URLWithString:ipUrl] withRange:NSMakeRange(0, ipUrl.length)];
     }
     self.webURLLabel.delegate = self;
     self.pwdLabel.text = [NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,appDelegate.user.userAlbumPwd?:@""];
@@ -250,23 +251,25 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 }
 
 #pragma mark property
--(RTLabel *)webURLLabel{
+
+
+-(TTTAttributedLabel *)webURLLabel{
     if (!_webURLLabel) {
-        _webURLLabel = [[RTLabel alloc] initWithFrame:(CGRect){0,self.view.frame.size.height - 20,self.view.frame.size.width,25}];
+        _webURLLabel = [[TTTAttributedLabel alloc] initWithFrame:(CGRect){0,self.view.frame.size.height - 25,self.view.frame.size.width,25}];
         _webURLLabel.backgroundColor = [UIColor clearColor];
-        _webURLLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
+        _webURLLabel.dataDetectorTypes = NSTextCheckingTypeLink; // Automatically detect links when the label text is subsequently changed
+        _webURLLabel.delegate = self; // Delegate methods are called when the user taps on a link (see `TTTAttributedLabelDelegate` protocol)
+         _webURLLabel.linkAttributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:(__bridge NSString *)kCTUnderlineStyleAttributeName];
         [self.view addSubview:_webURLLabel];
     }
     return _webURLLabel;
 }
+
 #pragma mark --
 
-#pragma RTLabelDelegate
--(void)rtLabel:(id)rtLabel didSelectLinkWithURL:(NSURL *)url{
-    DRLOG(@"%@",url);
-    if ([[UIApplication sharedApplication] canOpenURL:url]) {
-        [[UIApplication sharedApplication] openURL:url];
-    }
+#pragma TTTAttributedLabelDelegate
+-(void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url{
+    [[UIApplication sharedApplication] openURL:url];
 }
 #pragma mark --
 @end

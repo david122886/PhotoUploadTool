@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "PublicGridController.h"
 #import "PrivateGridController.h"
-#import "RTLabel.h"
-@interface DRTabBarController : UIViewController<RTLabelDelegate>
+#import "TTTAttributedLabel.h"
+@interface DRTabBarController : UIViewController<TTTAttributedLabelDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *publicItemBt;
 @property (weak, nonatomic) IBOutlet UIButton *privateItemBt;
 @property (weak, nonatomic) IBOutlet UIButton *settingItemBt;
@@ -19,7 +19,7 @@
 @property (weak, nonatomic) IBOutlet UIView *drtabBarView;
 @property (weak, nonatomic) IBOutlet UILabel *pwdLabel;
 @property (weak, nonatomic) IBOutlet UIView *pwdCoverView;
-@property (strong, nonatomic)  RTLabel *webURLLabel;
+@property (strong, nonatomic)  TTTAttributedLabel *webURLLabel;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityView;
 - (IBAction)publicItemSelected:(UIButton *)sender;
 - (IBAction)privateItemSelected:(UIButton *)sender;

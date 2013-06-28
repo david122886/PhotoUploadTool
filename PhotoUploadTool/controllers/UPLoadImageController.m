@@ -85,6 +85,7 @@
              }
              UIImage *image = [UIImage imageWithCGImage:representation.fullScreenImage];
              NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+//            NSData *imageData = UIImagePNGRepresentation(image);
             [formData appendPartWithFileData:imageData name:@"img" fileName:@"imag.png" mimeType:@"image/jpeg"];
 
         }];

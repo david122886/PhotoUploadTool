@@ -14,16 +14,16 @@
     #import <CoreData/CoreData.h>
 #endif
 
-//#define LIUYUSERVER_URL @"http://192.168.1.12:3000"
+//#define LIUYUSERVER_URL @"http://localhost:3000"
 #define LIUYUSERVER_URL @"http://192.168.0.250:3004"
 #define TABBAR_DOWNLOADDATA_NOTIFICATION @"TABBAR_DOWNLOADDATA_NOTIFICATION"
 #define TABBAR_DOWNLOADDATA_NOTIFICATION_OK @"TABBAR_DOWNLOADDATA_NOTIFICATION_OK"
 #define debug 1
-#ifdef debug
+#if debug
 #define DRLOG(x,y) (NSLog((x),(y)))
 #else
 #define DRLOG(x,y) 
 #endif
 
-#define ENCRYPT_KEY @"liuyun_encrypt_key"
-#import "FBEncryptorAES.h"
+#define ENCRYPT_KEY @"liuyun_encrypt_keyliuyun_encrypt"
+

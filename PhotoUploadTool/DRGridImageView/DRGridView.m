@@ -116,7 +116,11 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
 -(void)longTapGestureCaptured:(UILongPressGestureRecognizer*)longPress{
     if (longPress.state == UIGestureRecognizerStateBegan) {
         CGPoint point = [longPress locationInView:longPress.view];
-        DRGridViewCell *cell = [self.loadedCells objectAtIndex:[self getCurrentloadedArrIndex:point]];
+        int selectedIndex = [self getCurrentloadedArrIndex:point];
+        if (selectedIndex < 0) {
+            return;
+        }
+        DRGridViewCell *cell = [self.loadedCells objectAtIndex:selectedIndex];
         if (cell.cellIndex == 0) {
             return;
         }
@@ -547,38 +551,27 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
     if (self.isloadingData) {
         return;
     }
-    if (self.lastCacheOffset.y > self.contentOffset.y) {
-        self.scrollViewDirection = SCROLL_DOWN;
-    }else{
-        self.scrollViewDirection = SCROLL_UP;
+    if (abs(self.lastCacheOffset.y - self.contentOffset.y) >= [self getGridViewCellHeight] || self.contentOffset.y <= 0) {
+        if (self.lastCacheOffset.y > self.contentOffset.y) {
+            self.scrollViewDirection = SCROLL_DOWN;
+        }else{
+            self.scrollViewDirection = SCROLL_UP;
+        }
+        [self loadData];
     }
     self.lastCacheOffset = self.contentOffset;
-    [self loadData];
 }
 
 #pragma mark UIScrollDelegate
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    [self loadData];
-    NSLog(@"scrollViewDidEndDecelerating?????????????????");
-    if (self.isloadingData) {
-        return;
-    }
+    [self scrollViewScrollEnd];
 }
 
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     
 //    [self.footFreshView egoRefreshScrollViewDidEndDragging:scrollView];
     [self.refreshView egoRefreshScrollViewDidEndDragging:scrollView];
-    if (self.isloadingData) {
-        return;
-    }
-    if (decelerate) {
-        
-    }else{
-        NSLog(@"scrollViewDidEndDragging>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    }
-    [self loadData];
-    
+    [self scrollViewScrollEnd];    
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
@@ -627,7 +620,7 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
 
 -(PrivatePwdmodifyView *)modifyPwdView{
     if (!_modifyPwdView) {
-        _modifyPwdView = [[PrivatePwdmodifyView alloc] initWithFrame:(CGRect){0,0,self.frame.size.width-10,PRIVATE_MODIFY_VIEW_HEIGHT}];
+        _modifyPwdView = [[PrivatePwdmodifyView alloc] initWithFrame:(CGRect){0,0,self.frame.size.width,PRIVATE_MODIFY_VIEW_HEIGHT}];
 //        [self addSubview:_modifyPwdView];
     }
     return _modifyPwdView;

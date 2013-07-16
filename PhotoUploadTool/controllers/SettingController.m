@@ -249,6 +249,8 @@
         if (buttonIndex == 1) {
             //ok
             [self.navigationController popToRootViewControllerAnimated:YES];
+            AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+            appDelegate.user = nil;
         }else{
             //cancel
             
@@ -274,6 +276,7 @@
         if (setting) {
             [MBProgressHUD hideHUDForView:setting.view animated:YES];
             [setting.navigationController popToRootViewControllerAnimated:YES];
+            appDelegate.user = nil;
         }
         
     } withFailure:^(NSError *errror) {

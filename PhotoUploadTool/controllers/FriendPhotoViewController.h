@@ -7,7 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface FriendPhotoViewController : UIViewController
-
+#import "GridView.h"
+#import "DRImageTool.h"
+#import "AppDelegate.h"
+#import "DRImageObj.h"
+#import "MWPhotoBrowser.h"
+#import "AppDelegate.h"
+#import "FriendObjDao.h"
+@interface FriendPhotoViewController : UIViewController<GridViewDelegate,MWPhotoBrowserDelegate>
+@property (nonatomic,strong) NSString *friendID;
+@property (weak, nonatomic) IBOutlet UIView *contentView;
+@property (nonatomic,assign) BOOL isLocked;
+- (IBAction)backBtClicked:(UIButton *)sender;
+- (void)downloadFriendsPhotosWithImageType:(ImageDataType)type;
 @end

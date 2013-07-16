@@ -12,5 +12,6 @@
 @property(nonatomic,strong) NSString *smallImageURLStr;
 @property(nonatomic,strong) NSString *bigImageURLStr;
 @property(nonatomic,strong) NSString *describle;
-@property(nonatomic,assign) NSString *imageDataID;
+@property(nonatomic,strong) NSString *imageDataID;
+@property(nonatomic,assign) BOOL isLocked;
 @end

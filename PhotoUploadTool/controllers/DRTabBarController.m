@@ -50,8 +50,8 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     if (userWeb) {
         NSString *webUrl = [userWeb stringByReplacingOccurrencesOfString:@"http://" withString:@""];
         NSString *ipUrl = [webUrl stringByReplacingOccurrencesOfString:@"localhost:3000" withString:LIUYUSERVER_URL];
-        self.webURLLabel.text = ipUrl;
-        [self.webURLLabel addLinkToURL:[NSURL URLWithString:ipUrl] withRange:NSMakeRange(0, ipUrl.length)];
+        self.webURLLabel.text = [NSString stringWithFormat:@" 预览:%@",ipUrl];
+        [self.webURLLabel addLinkToURL:[NSURL URLWithString:ipUrl] withRange:NSMakeRange(4, ipUrl.length)];
     }
     self.webURLLabel.delegate = self;
     self.pwdLabel.text = [NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,appDelegate.user.userAlbumPwd?:@""];
@@ -115,6 +115,10 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
             [weakTabBarCtr modifyAlbumPassword:password];
         }
     } orFailure:nil orCancel:nil];
+}
+
+- (IBAction)backBtClicked:(id)sender {
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 -(void)itemSelected:(UIButton*)item withType:(TabBarItem)type{
@@ -220,8 +224,6 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 }
 
 -(void)dragUPCoverViewWthAnimation:(BOOL)animation{
-    
-    
     if (animation) {
         [UIView animateWithDuration:0.5 animations:^{
             self.pwdCoverView.frame = CGRectMake(0, 0, self.view.frame.size.width, 40);
@@ -256,7 +258,9 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 -(TTTAttributedLabel *)webURLLabel{
     if (!_webURLLabel) {
         _webURLLabel = [[TTTAttributedLabel alloc] initWithFrame:(CGRect){0,self.view.frame.size.height - 25,self.view.frame.size.width,25}];
-        _webURLLabel.backgroundColor = [UIColor clearColor];
+        _webURLLabel.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"tabbarbg.png"]];
+        [_webURLLabel setFont:[UIFont systemFontOfSize:12]];
+        [_webURLLabel setTextAlignment:NSTextAlignmentCenter];
         _webURLLabel.dataDetectorTypes = NSTextCheckingTypeLink; // Automatically detect links when the label text is subsequently changed
         _webURLLabel.delegate = self; // Delegate methods are called when the user taps on a link (see `TTTAttributedLabelDelegate` protocol)
          _webURLLabel.linkAttributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:(__bridge NSString *)kCTUnderlineStyleAttributeName];
@@ -269,7 +273,43 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
 
 #pragma TTTAttributedLabelDelegate
 -(void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url{
-    [[UIApplication sharedApplication] openURL:url];
+    UIMenuController *menuCtr = [UIMenuController sharedMenuController];
+    UIMenuItem *shareItem = [[UIMenuItem alloc] initWithTitle:@"预览" action:@selector(menuShareItemClicked)];
+     UIMenuItem *copyItem = [[UIMenuItem alloc] initWithTitle:@"复制" action:@selector(menuCopyItemClicked)];
+    [menuCtr setMenuItems:@[shareItem,copyItem]];
+    [self becomeFirstResponder];
+    [menuCtr setTargetRect:self.webURLLabel.frame inView:self.view];
+    [menuCtr setMenuVisible:YES animated:YES];    
 }
 #pragma mark --
+
+#pragma mark UImenuItems method
+-(void)menuShareItemClicked{
+    NSLog(@"%@",self.webURLLabel.links);
+    NSTextCheckingResult *result = [self.webURLLabel.links count] >0 ? [self.webURLLabel.links objectAtIndex:0]:nil;
+    if (result) {
+        [[UIApplication sharedApplication] openURL:result.URL];
+    }
+}
+
+-(void)menuCopyItemClicked{
+    NSTextCheckingResult *result = [self.webURLLabel.links count] >0 ? [self.webURLLabel.links objectAtIndex:0]:nil;
+    if (result) {
+        [[UIPasteboard generalPasteboard] setURL:result.URL];
+    }
+    
+}
+
+-(BOOL)canBecomeFirstResponder{
+    return YES;
+}
+
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender{
+    if (action == @selector(menuShareItemClicked) || action == @selector(menuCopyItemClicked)) {
+        return YES;
+    }
+    return NO;
+}
+#pragma mark --
+
 @end

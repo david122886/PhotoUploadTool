@@ -85,7 +85,7 @@ typedef struct {
 - (NSInteger)numberOfRowsInGridView;
 - (NSInteger)numberOfColumnsInGridView;
 - (GridCell *)cellForGridAtGridIndex:(GridIndex)index;
-
+- (unsigned int)numberOfCellsInGridView;
 @optional
 
 - (CGFloat)heightForCellInGridView;
@@ -95,6 +95,7 @@ typedef struct {
 - (void)cellDidSelectedAtGridIndex:(GridIndex)index;
 - (void)cellDidDoubleTappedAtGridIndex:(GridIndex)index;
 
+- (void)contentSizeChangeInGridView;
 @end
 
 

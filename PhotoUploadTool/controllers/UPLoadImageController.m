@@ -71,11 +71,7 @@
     NSMutableArray *mutableRequests = [NSMutableArray arrayWithCapacity:[assertArr count]];
     for (ALAsset *asset in assertArr) {
         NSMutableURLRequest *request = [client multipartFormRequestWithMethod:@"POST" path:@"photos/upload" parameters:parmeters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-            ALAssetRepresentation *representation = asset.defaultRepresentation;
-            if (!representation) {
-                DRLOG(@"%@", @"upload error>>>>>>>");
-            }
-            
+            ALAssetRepresentation *representation = asset.defaultRepresentation;            
              if (!representation) {
              DRLOG(@"%@", @"ALAssetRepresentation is null");
              
@@ -101,7 +97,15 @@
         if (weakUpoadCtr) {
             [weakUpoadCtr endUploadAnimation];
             weakUpoadCtr.isUploadFinished = YES;
-            DRLOG(@"complete upload:%@", operations);
+            DRLOG(@"%@", operations);
+            NSString *status = [parmeters objectForKey:@"status"];
+            if (status) {
+                if ([status isEqualToString:@"1"]) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:UPLOAD_IMAGES_POST_RELOADDATAS_PUBLIC object:nil];
+                }else{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:UPLOAD_IMAGES_POST_RELOADDATAS_PRIVATE object:nil];
+                }
+            }
         }
     }];
 }

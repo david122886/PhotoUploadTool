@@ -23,6 +23,7 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 #import "AFHTTPClient.h"
+#import "ImageHelper-Files.h"
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 #import "UIImageView+AFNetworking.h"
 
@@ -169,19 +170,19 @@ static char kAFImageRequestOperationObjectKey;
                        failure:(void (^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     [self cancelImageRequestOperation];
-    
     UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
     if (cachedImage) {
         if (success) {
             success(nil, nil, cachedImage);
         } else {
-            self.image = cachedImage;
+            self.image = [ImageHelper cutImage:cachedImage cutRect:self.frame];
+            [self setImageViewContentCenter];
         }
         
         self.af_imageRequestOperation = nil;
     } else {
         self.image = placeholderImage;
-        
+        [self setImageViewContentCenter];
         AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:urlRequest];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             if ([urlRequest isEqual:[self.af_imageRequestOperation request]]) {
@@ -189,7 +190,8 @@ static char kAFImageRequestOperationObjectKey;
                     success(operation.request, operation.response, responseObject);
                 } else if (responseObject) {
                     if (self) {
-                        self.image = responseObject;
+                        self.image =  [ImageHelper cutImage:responseObject cutRect:self.frame];;
+                        [self setImageViewContentCenter];
                     }
                 
                 }
@@ -218,6 +220,12 @@ static char kAFImageRequestOperationObjectKey;
     }
 }
 
+- (void)setImageViewContentCenter{
+    self.contentMode = UIViewContentModeScaleAspectFill ;
+//    self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    self.clipsToBounds = YES;
+    [self setContentScaleFactor:[[UIScreen mainScreen] scale]];
+}
 - (void)cancelImageRequestOperation {
     [self.af_imageRequestOperation cancel];
     self.af_imageRequestOperation = nil;

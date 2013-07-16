@@ -12,6 +12,7 @@
 @property(nonatomic,strong) CLGeocoder *geocoder;
 @property(nonatomic,strong) void(^successBlock)(NSString *locatitonName,CLLocationCoordinate2D locationg);
 @property(nonatomic,strong) void(^errorBlock)(NSError *error);
+@property(nonatomic,assign) BOOL isAlertError;
 @end
 @implementation LocatePositionManager
 static LocatePositionManager *locateManager;
@@ -30,17 +31,34 @@ static LocatePositionManager *locateManager;
     }
     CLLocationManager *manager = [[LocatePositionManager defaultLocatePosition] locationManager];
     LocatePositionManager *myPositionManager = [LocatePositionManager defaultLocatePosition];
+    myPositionManager.isAlertError = NO;
     if ([CLLocationManager locationServicesEnabled]) {
-        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
-//        manager.distanceFilter = kCLDistanceFilterNone;
-        manager.distanceFilter = 500.0;
-        [manager startUpdatingLocation];
+        CLAuthorizationStatus locationStatus = [CLLocationManager authorizationStatus];
+        switch (locationStatus) {
+            case kCLAuthorizationStatusNotDetermined:
+                ;
+            case kCLAuthorizationStatusAuthorized:
+                manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
+                //        manager.distanceFilter = kCLDistanceFilterNone;
+                manager.distanceFilter = 500.0;
+                [manager startUpdatingLocation];
+                break;
+            case kCLAuthorizationStatusDenied:
+                if (myPositionManager.errorBlock && !myPositionManager.isAlertError) {
+                    myPositionManager.errorBlock([LocatePositionManager getErrorObjWithMessage:@"系统禁用定位服务"]);
+                    myPositionManager.isAlertError = YES;
+                }
+                break;
+            default:
+                break;
+        }
 //        myPositionManager.myLocation = manager.location.coordinate;
 //        [myPositionManager getLocationNameWithCoordinate2D:myPositionManager.myLocation];
         
     }else{
-        if (myPositionManager.errorBlock) {
-            myPositionManager.errorBlock([LocatePositionManager getErrorObjWithMessage:@"系统禁用定位服务"]);
+        if (myPositionManager.errorBlock && !myPositionManager.isAlertError) {
+            myPositionManager.errorBlock([LocatePositionManager getErrorObjWithMessage:@"系统不支持定位服务"]);
+            myPositionManager.isAlertError = YES;
         }
     }
 }
@@ -58,8 +76,9 @@ static LocatePositionManager *locateManager;
     [self.geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
         DRLOG(@"%@", error);
         if (error) {
-            if (self.errorBlock) {
-                self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"error"]);
+            if (self.errorBlock && !self.isAlertError) {
+                self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"获取地理位置失败"]);
+                self.isAlertError = YES;
             }
         }else{
             if ([[placemarks lastObject] isKindOfClass:[CLPlacemark class]]) {
@@ -84,8 +103,35 @@ static LocatePositionManager *locateManager;
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
-    if (self.errorBlock) {
-        self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"系统定位失败"]);
+    NSLog(@"%@",error);
+   
+    if ([error domain] == kCLErrorDomain) {
+        
+        // We handle CoreLocation-related errors here
+        switch ([error code]) {
+                // "Don't Allow" on two successive app launches is the same as saying "never allow". The user
+                // can reset this for all apps by going to Settings > General > Reset > Reset Location Warnings.
+            case kCLErrorDenied:
+                if (self.errorBlock && !self.isAlertError) {
+                    self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"流云相册没有权限启动定位服务，到手机设置中开启"]);
+                    self.isAlertError = YES;
+                }
+                break;
+            case kCLErrorRegionMonitoringDenied:
+                if (self.errorBlock && !self.isAlertError) {
+                    self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"流云相册没有权限启动定位服务，到手机设置中开启"]);
+                    self.isAlertError = YES;
+                }
+                break;
+            default:
+                if (self.errorBlock && !self.isAlertError) {
+                    self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"系统定位失败"]);
+                    self.isAlertError = YES;
+                }
+                break;
+        }
+    } else {
+        // We handle all non-CoreLocation errors here
     }
 }
 

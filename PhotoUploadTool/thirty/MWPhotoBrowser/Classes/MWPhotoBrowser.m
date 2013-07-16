@@ -247,6 +247,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     mwToolBarView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
     [mwToolBarView.rightBt setImage:[UIImage imageNamed:@"trash.png"] forState:UIControlStateNormal];
     [mwToolBarView.rightBt setBackgroundImage:nil forState:UIControlStateNormal];
+    [mwToolBarView.rightBt setHidden:self.isForbidingDelete];
     // Toolbar
     _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
     _toolbar.tintColor = nil;

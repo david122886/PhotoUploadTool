@@ -36,6 +36,7 @@
 
 // Properties
 @property (nonatomic) BOOL displayActionButton;
+@property (nonatomic) BOOL isForbidingDelete;
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray  __attribute__((deprecated)); // Depreciated
 - (id)initWithDelegate:(id <MWPhotoBrowserDelegate>)delegate;

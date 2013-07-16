@@ -25,5 +25,6 @@
 - (IBAction)privateItemSelected:(UIButton *)sender;
 - (IBAction)settingItemSelected:(UIButton *)sender;
 - (IBAction)modifyBtClicked:(UIButton *)sender;
+- (IBAction)backBtClicked:(id)sender;
 
 @end

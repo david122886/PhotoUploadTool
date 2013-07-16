@@ -134,6 +134,10 @@
 //    }];
 }
 
+- (IBAction)backBtClicked:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 -(BOOL)checkInputField{
     NSString *name = self.userNameField.text;
     NSString *passwd = self.passwdField.text;

@@ -11,4 +11,5 @@
 @interface FriendObj : NSObject
 @property (nonatomic,strong) NSString *friendID;
 @property (nonatomic,strong) NSString *webURL;
+@property (nonatomic,strong) NSString *city;
 @end

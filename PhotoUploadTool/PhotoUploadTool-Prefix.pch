@@ -27,3 +27,6 @@
 
 #define ENCRYPT_KEY @"liuyun_encrypt_keyliuyun_encrypt"
 
+#define UPLOAD_IMAGES_POST_RELOADDATAS_PRIVATE @"upload_images_post_reloadDatas_private"
+#define UPLOAD_IMAGES_POST_RELOADDATAS_PUBLIC @"upload_images_post_reloadDatas_public"
+

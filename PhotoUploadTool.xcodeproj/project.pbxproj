@@ -70,6 +70,8 @@
 		634262141755E708006020DC /* ModifyUserPasswordController.m in Sources */ = {isa = PBXBuildFile; fileRef = 634262131755E707006020DC /* ModifyUserPasswordController.m */; };
 		635E20691751C8DF000CCF45 /* DRTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 635E20681751C8DF000CCF45 /* DRTabBarController.m */; };
 		635E206D1751EA0E000CCF45 /* DRGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 635E206C1751EA0E000CCF45 /* DRGridViewCell.m */; };
+		6383D1B2178E61D5000C44B2 /* FriendPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6383D1B1178E61D5000C44B2 /* FriendPhotoViewController.m */; };
+		6383D1B4178E924F000C44B2 /* lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 6383D1B3178E924F000C44B2 /* lock.png */; };
 		638EAD63177BD8BE00342D98 /* ImageHelper-Files.m in Sources */ = {isa = PBXBuildFile; fileRef = 638EAD62177BD8BE00342D98 /* ImageHelper-Files.m */; };
 		639C1289174F0C50008B11C2 /* NotificationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 639C1288174F0C50008B11C2 /* NotificationController.m */; };
 		639C128C174F0EA0008B11C2 /* NotificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 639C128B174F0EA0008B11C2 /* NotificationCell.m */; };
@@ -262,6 +264,9 @@
 		635E20681751C8DF000CCF45 /* DRTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRTabBarController.m; sourceTree = "<group>"; };
 		635E206B1751EA0E000CCF45 /* DRGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGridViewCell.h; sourceTree = "<group>"; };
 		635E206C1751EA0E000CCF45 /* DRGridViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRGridViewCell.m; sourceTree = "<group>"; };
+		6383D1B0178E61D5000C44B2 /* FriendPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendPhotoViewController.h; sourceTree = "<group>"; };
+		6383D1B1178E61D5000C44B2 /* FriendPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendPhotoViewController.m; sourceTree = "<group>"; };
+		6383D1B3178E924F000C44B2 /* lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lock.png; sourceTree = "<group>"; };
 		638EAD61177BD8BE00342D98 /* ImageHelper-Files.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ImageHelper-Files.h"; sourceTree = "<group>"; };
 		638EAD62177BD8BE00342D98 /* ImageHelper-Files.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ImageHelper-Files.m"; sourceTree = "<group>"; };
 		639C1287174F0C50008B11C2 /* NotificationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationController.h; sourceTree = "<group>"; };
@@ -623,6 +628,8 @@
 				63B78AAD175DAB1400887B2C /* ForgotPasswordController.m */,
 				6300FA89178157AF00B0C34D /* FriendsViewController.h */,
 				6300FA8A178157AF00B0C34D /* FriendsViewController.m */,
+				6383D1B0178E61D5000C44B2 /* FriendPhotoViewController.h */,
+				6383D1B1178E61D5000C44B2 /* FriendPhotoViewController.m */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -733,6 +740,7 @@
 		639EFCB11752F36900433D3C /* images */ = {
 			isa = PBXGroup;
 			children = (
+				6383D1B3178E924F000C44B2 /* lock.png */,
 				63F444C91781695D0062CE25 /* arrowBottom.png */,
 				6300FA8C17815D0D00B0C34D /* titleLogo.png */,
 				63CFD139176F1853007119FF /* trash.png */,
@@ -1056,6 +1064,7 @@
 				63CFD13A176F1853007119FF /* trash.png in Resources */,
 				6300FA8D17815D0D00B0C34D /* titleLogo.png in Resources */,
 				63F444CA1781695D0062CE25 /* arrowBottom.png in Resources */,
+				6383D1B4178E924F000C44B2 /* lock.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1150,6 +1159,7 @@
 				6300FA8B178157AF00B0C34D /* FriendsViewController.m in Sources */,
 				63F444CD178174410062CE25 /* FriendObj.m in Sources */,
 				63F444D01781752A0062CE25 /* FriendObjDao.m in Sources */,
+				6383D1B2178E61D5000C44B2 /* FriendPhotoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1234,8 +1244,8 @@
 				INFOPLIST_FILE = "PhotoUploadTool/PhotoUploadTool-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2409CC66-BF20-48CD-822D-16963AD7A647";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "2409CC66-BF20-48CD-822D-16963AD7A647";
+				PROVISIONING_PROFILE = "702D8A1A-6DB6-40B1-8234-C4EB34BB5730";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "702D8A1A-6DB6-40B1-8234-C4EB34BB5730";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1244,15 +1254,14 @@
 		632A8BFA17421BCB002A81DF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Sen Ye (FE46ZS29LM)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PhotoUploadTool/PhotoUploadTool-Prefix.pch";
 				INFOPLIST_FILE = "PhotoUploadTool/PhotoUploadTool-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "702D8A1A-6DB6-40B1-8234-C4EB34BB5730";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};

@@ -32,20 +32,22 @@
 		self.reuseGridIdentifier = [[NSString alloc] initWithString:reuseIdentifier];
 		
 		_cellButton = [[UIButton alloc] initWithFrame:self.frame];
-		_cellButton.frame = CGRectMake(0.0,0.0,202.0,242.0);
-		_cellButton.titleLabel.numberOfLines = 2;
+		_cellButton.frame = CGRectZero;
+		_cellButton.titleLabel.numberOfLines = 4;
 		_cellButton.titleLabel.lineBreakMode = UILineBreakModeWordWrap;
 		_cellButton.titleLabel.textAlignment = UITextAlignmentCenter;
+        _cellButton.backgroundColor = [UIColor clearColor];
+        [_cellButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
 		[_cellButton addTarget:self action:@selector(cellDidSelected) forControlEvents:UIControlEventTouchDown];
         self.imageView.frame = (CGRect){0,0,self.frame.size};
 		self.backgroundColor = [UIColor clearColor];
 				
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		
-		[self addSubview:_cellButton];
+		
 		self.cellimageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         [self addSubview:self.cellimageView];
-				
+        [self addSubview:_cellButton];
     }
 	
     return self;
@@ -63,6 +65,7 @@
 -(void)layoutSubviews{
     [super layoutSubviews];
     self.cellimageView.frame = (CGRect){0,0,self.frame.size};
+    self.cellButton.frame = (CGRect){0,0,self.frame.size};
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
 	
@@ -77,7 +80,9 @@
 	self.window ?
 	[[GridCache sharedCache] removeReusableView:(UIView<ReusableView> *)self] :
 	[[GridCache sharedCache] enqueueReusableView:(UIView<ReusableView> *)self];
-    [_cellimageView cancelImageRequestOperation];
+    if (!self.window) {
+        [_cellimageView cancelImageRequestOperation];
+    }
 }
 
 - (void)dealloc {
@@ -177,7 +182,11 @@
 		
 		maximumIndex.row += (int)size.height/(_cellHeight+_verticalSpacing);
 		maximumIndex.column += (int)size.width/(_cellWidth+_horizontalSpacing);
-		
+//        //added by david
+//		if (maximumIndex.row >= _rows-1) {
+//            unsigned int column = [self getCellsCount] %_rows > 0;
+//            maximumIndex.column =  column > 0? column-1:maximumIndex.column;
+//        }
 	}
 	
 	if (maximumIndex.row>_rows-1) {
@@ -196,14 +205,21 @@
  */
 - (void) removeCellWithMinimumIndex:(GridIndex)minimumIndex maximumIndex:(GridIndex)maximumIndex {
 	
-	for (GridCell * oldCell in self.subviews) {		
-		if (oldCell.index.row < minimumIndex.row || oldCell.index.column < minimumIndex.column) {
+//	for (GridCell * oldCell in self.subviews) {		
+//		if (oldCell.index.row < minimumIndex.row || oldCell.index.column < minimumIndex.column) {
+//			[oldCell removeFromSuperview];
+//		} else if (oldCell.index.row > maximumIndex.row || oldCell.index.column > maximumIndex.column) {
+//			[oldCell removeFromSuperview];
+//		} 	
+//	}
+	//modify by david
+    for (GridCell * oldCell in self.subviews) {
+		if (oldCell.index.row < minimumIndex.row) {
 			[oldCell removeFromSuperview];
-		} else if (oldCell.index.row > maximumIndex.row || oldCell.index.column > maximumIndex.column) {
+		} else if (oldCell.index.row > maximumIndex.row) {
 			[oldCell removeFromSuperview];
-		} 	
+		}
 	}
-	
 }
 
 /*
@@ -296,26 +312,71 @@
 	
 	[self removeCellWithMinimumIndex:minimumIndex maximumIndex:maximumIndex];
 	 
-	for (int row = minimumIndex.row ; row <= maximumIndex.row; row++) {	
-		for (int col = minimumIndex.column ; col <= maximumIndex.column; col++) {
-			GridIndex index;
-			index.row = row;
-			index.column = col;
-			if ([self findCellWithIndexInGrid:index] == NO) {
-				
-				GridCell * cell = [self.delegate  cellForGridAtGridIndex:index] ;
-				
-				if (cell!= nil) {
-					cell.index = index;
-					cell.delegate = self;
-					[self addCellToGrid:[cell retain] atGridIndex:index];
-					[cell release];
-					
-				}
-			}
-		}
+//	for (int row = minimumIndex.row ; row <= maximumIndex.row; row++) {	
+//		for (int col = minimumIndex.column ; col <= maximumIndex.column; col++) {
+//			GridIndex index;
+//			index.row = row;
+//			index.column = col;
+//			if ([self findCellWithIndexInGrid:index] == NO) {
+//				
+//				GridCell * cell = [self.delegate  cellForGridAtGridIndex:index] ;
+//				
+//				if (cell!= nil) {
+//					cell.index = index;
+//					cell.delegate = self;
+//					[self addCellToGrid:[cell retain] atGridIndex:index];
+//					[cell release];
+//					
+//				}
+//			}
+//		}
+//	}
+	//modify by david
+    unsigned int maxCellIndex = [self getCellsCount] -1;
+    for (int row = minimumIndex.row ; row <= maximumIndex.row; row++) {
+        if (row >= _rows - 1) {
+            for (int col = minimumIndex.column ; col <= maximumIndex.column; col++) {
+                if (_cols*row + col > maxCellIndex) {
+                    break;
+                }
+                GridIndex index;
+                index.row = row;
+                index.column = col;
+                if ([self findCellWithIndexInGrid:index] == NO) {
+                    
+                    GridCell * cell = [self.delegate  cellForGridAtGridIndex:index] ;
+                    
+                    if (cell!= nil) {
+                        cell.index = index;
+                        cell.delegate = self;
+                        [self addCellToGrid:[cell retain] atGridIndex:index];
+                        [cell release];
+                        
+                    }
+                }
+            }
+
+        }else{
+            for (int col = 0 ; col < _cols; col++) {
+                GridIndex index;
+                index.row = row;
+                index.column = col;
+                if ([self findCellWithIndexInGrid:index] == NO) {
+                    
+                    GridCell * cell = [self.delegate  cellForGridAtGridIndex:index] ;
+                    
+                    if (cell!= nil) {
+                        cell.index = index;
+                        cell.delegate = self;
+                        [self addCellToGrid:[cell retain] atGridIndex:index];
+                        [cell release];
+                        
+                    }
+                }
+            }
+
+        }
 	}
-	
 	_isLoading = NO;
 	
 }
@@ -367,7 +428,9 @@
 	}
 	
 		self.frame = CGRectMake(0.0,0.0,(_cols + 1) * _horizontalSpacing + ( _cols * _cellWidth ), (_rows + 1) * _verticalSpacing + ( _rows * _cellHeight ));
-
+    if ([self.delegate respondsToSelector:@selector(contentSizeChangeInGridView)]) {
+        [self.delegate contentSizeChangeInGridView];
+    }
 			[self loadContentForSize:size withOffset:offset];
 		
 	
@@ -490,7 +553,11 @@
 		[self.delegate cellDidSelectedAtGridIndex:index];
 }
 
-
+- (unsigned int)getCellsCount{
+    if (self.delegate &&[self.delegate respondsToSelector:@selector(numberOfCellsInGridView)] )
+		return [self.delegate numberOfCellsInGridView];
+    return 0;
+}
 @end
 
 

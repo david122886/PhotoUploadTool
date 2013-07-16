@@ -33,6 +33,14 @@
     }
     return self;
 }
+- (id)initWithFrame:(CGRect)frame isLoadMoreDataAble:(BOOL)_isable{
+    if ((self = [super initWithFrame:frame])) {
+        self.isLoadMoreDataAble = _isable;
+		[self initGrid];
+        [_grid reloadGridForSize:self.frame.size withOffset:CGPointZero];
+    }
+    return self;
+}
 /*
  To set the frame of the grid view.
  */
@@ -47,17 +55,33 @@
  */
 
 - (void)initGrid {
-	
+	self.currentPageIndex = 0;
 	_grid = [[Grid alloc] init];
 	_grid.delegate = self;
 	_grid.scaleFactor = 1.0;
+    
+    _refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:(CGRect){0,-120,self.frame.size.width,120}];
+    _refreshHeaderView.backgroundColor = [UIColor clearColor];
+    _refreshHeaderView.delegate = self;
+    [self addSubview:_refreshHeaderView];
+    
+    if (self.isLoadMoreDataAble) {
+         _refreshTailerView = [[EGORefreshTableHeaderView alloc] initWithFrame:(CGRect){0,self.frame.size.height,self.frame.size.width,120}];
+        _refreshTailerView.backgroundColor = [UIColor clearColor];
+        _refreshTailerView.delegate = self;
+        [self addSubview:_refreshTailerView];
+    }
 	[self addSubview:_grid];
+    if (_grid.frame.size.height <= self.frame.size.height) {
+        self.contentSize = (CGSize){_grid.frame.size.width,self.frame.size.height+1};
+    }else
 	self.contentSize = _grid.frame.size;
 	self.delegate = self;
 	self.minimumZoomScale = 1.0;
 	self.maximumZoomScale = 1.0;
 	_zoomScale = 1.0;
 }
+
 
 /*
  // Only override drawRect: if you perform custom drawing.
@@ -69,6 +93,12 @@
 
 - (void)dealloc {
     [super dealloc];
+    [_grid release];
+    [_refreshHeaderView release];
+    if (self.isLoadMoreDataAble) {
+        [_refreshTailerView release];
+    }
+    
 }
 
 #pragma mark Functions
@@ -93,7 +123,10 @@
 	
 	[self zoomToRect:zoomRect animated:animated];
 	
-	self.contentSize = _grid.frame.size;
+	if (_grid.frame.size.height <= self.frame.size.height) {
+        self.contentSize = (CGSize){_grid.frame.size.width,self.frame.size.height+1};
+    }else
+        self.contentSize = _grid.frame.size;
 	
 	self.minimumZoomScale = 1.0;
 	self.maximumZoomScale = 1.0;
@@ -236,6 +269,8 @@
  */
 - (void)reloadGrid {
 	[_grid removeFromSuperview];
+    [_refreshHeaderView removeFromSuperview];
+    [_refreshTailerView removeFromSuperview];
 	if (_zoomScale!=1.0) {
 		GridIndex index;
 		index.row = 0;
@@ -247,7 +282,14 @@
 		//[self setContentOffset:CGPointMake(0.0, 0.0) animated:NO];
 	[_grid reloadGridForSize:self.frame.size withOffset:self.contentOffset];
 	[self addSubview:_grid];
-	self.contentSize = _grid.frame.size;
+    [self addSubview:_refreshHeaderView];
+    if (self.currentPageIndex < [self getNumberOfPageCount]-1) {
+         [self addSubview:_refreshTailerView];
+    }
+	if (_grid.frame.size.height <= self.frame.size.height) {
+        self.contentSize = (CGSize){_grid.frame.size.width,self.frame.size.height+1};
+    }else
+        self.contentSize = _grid.frame.size;
 }
 
 /*
@@ -257,6 +299,31 @@
 	GridCell * cell = (GridCell *)[[GridCache sharedCache] dequeueReusableViewWithIdentifier:reuseIdentifier];
 	return cell;
 }
+
+#pragma mark EGORefreshTableHeaderDelegate
+-(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView *)view{
+    return self.isLoading;
+}
+
+-(NSDate *)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView *)view{
+    return [NSDate date];
+}
+
+-(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView *)view{
+    if (view == _refreshHeaderView) {
+        self.loadDataType = GRIDVIEW_RELOADDATA;
+        if (self.gridDelegate && [self.gridDelegate respondsToSelector:@selector(gridViewReloadData:)]) {
+            [self.gridDelegate gridViewReloadData:self];
+        }
+    }else{
+        self.loadDataType = GRIDVIEW_LOADMOREDATA;
+        if (self.gridDelegate && [self.gridDelegate respondsToSelector:@selector(gridView:loadMoreDataAtPageIndex:)]) {
+            [self.gridDelegate gridView:self loadMoreDataAtPageIndex:self.currentPageIndex+1];
+        }
+    }
+    self.isLoading = YES;
+}
+#pragma mark --
 
 
 #pragma mark delegate Functions
@@ -274,6 +341,31 @@
 	
 }
 
+- (int)getNumberOfPageCount{
+    if (self.gridDelegate!=nil && [self.gridDelegate respondsToSelector:@selector(numberOfPageCount)]) {
+		return [self.gridDelegate numberOfPageCount];
+	}
+	return 1;
+}
+
+-(unsigned int)numberOfCellsInGridView{
+    if (self.gridDelegate!=nil) {
+		return [self.gridDelegate numberOfCellsInGridView:self];
+	}
+	return 0;
+}
+
+
+- (void)contentSizeChangeInGridView{
+    if (self.isLoadMoreDataAble) {
+        if (self.contentSize.height < self.frame.size.height) {
+            _refreshTailerView.frame = (CGRect){0,self.frame.size.height,self.frame.size.width,120};
+        }else{
+            _refreshTailerView.frame = (CGRect){0,self.contentSize.height,self.frame.size.width,120};
+        }
+    }
+
+}
 /*
  To get the number of columns used in the grid view from the delegate method.
  if didn't returns 0.
@@ -369,6 +461,8 @@
  Calls when the grid view scrolls. Its a grid view delegate method.
  */
 
+
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 
  	if (!_zooming) {
@@ -380,8 +474,12 @@
 			_grid.frame = effectiveGridFrame;
 			
 		}
-		
-	} 
+        [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+        if (self.isLoadMoreDataAble && self.currentPageIndex < [self getNumberOfPageCount]-1) {
+            [_refreshTailerView egoRefreshScrollViewDidScroll:scrollView];
+        }
+    
+	}
 }
 /*
  Calls after the grid view Zooming ends. Its a grid view delegate method.
@@ -409,10 +507,17 @@
 	if (self.gridDelegate!=nil) {
 		if ( [self.gridDelegate respondsToSelector:@selector(gridViewWillBeginDecelerating)] )
 			[self.gridDelegate gridViewWillBeginDecelerating];
-	} 
+	}
+    
 }// called on finger up as we are moving
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	
+}
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    [_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+    if (self.isLoadMoreDataAble && self.currentPageIndex < [self getNumberOfPageCount]-1) {
+        [_refreshTailerView egoRefreshScrollViewDidEndDragging:scrollView];
+    }
+
 }
 //--------
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {

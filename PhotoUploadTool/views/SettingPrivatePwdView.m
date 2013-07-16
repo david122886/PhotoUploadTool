@@ -59,9 +59,17 @@
 }
 
 -(void)setTipValue:(SettingPrivatePwdViewType)type{
-    [self modifyTitleLabelText];
+    if (type == PRIVATEPWDVIEW_IDENTIFY) {
+        self.titleLabel.text = @"提示:私有相册需要相册密码";
+    }else{
+        [self modifyTitleLabelText];
+    }
+   
     if (type == PRIVATEPWDVIEW_SETTING) {
         self.tipLabel.text = @"设置相册密码:";
+    }
+    if (type == PRIVATEPWDVIEW_IDENTIFY) {
+        self.tipLabel.text = @"输入相册密码:";
     }else{
         self.tipLabel.text = @"修改相册密码:";
     }

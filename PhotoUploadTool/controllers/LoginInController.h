@@ -17,5 +17,6 @@
 - (IBAction)LoginBtClicked:(id)sender;
 - (IBAction)registerBtClicked:(id)sender;
 - (IBAction)forgotPasswordClicked:(id)sender;
+- (IBAction)backBtClicked:(id)sender;
 
 @end

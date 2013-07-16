@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "Grid.h"
-
+#import "EGORefreshTableHeaderView.h"
 @protocol GridViewDelegate;
-
-@interface GridView : UIScrollView <UIScrollViewDelegate,GridDelegate> {
+typedef enum {GRIDVIEW_RELOADDATA,GRIDVIEW_LOADMOREDATA}LoadDataTye;
+@interface GridView : UIScrollView <UIScrollViewDelegate,GridDelegate,EGORefreshTableHeaderDelegate> {
 	id		_gridDelegate;
 	Grid	*_grid;
 	CGFloat _zoomScale;
@@ -22,7 +22,13 @@
 
 @property (nonatomic, assign)IBOutlet NSObject <GridViewDelegate> * gridDelegate;
 @property (nonatomic, readonly) Grid * grid;
-
+@property (nonatomic, readonly,strong) EGORefreshTableHeaderView *refreshHeaderView;
+@property (nonatomic, readonly,strong) EGORefreshTableHeaderView *refreshTailerView;
+@property (nonatomic,assign) BOOL isLoading;
+@property (nonatomic,assign) BOOL isLoadMoreDataAble;
+@property (nonatomic,assign) int currentPageIndex;
+@property (nonatomic,assign) LoadDataTye loadDataType;
+- (id)initWithFrame:(CGRect)frame isLoadMoreDataAble:(BOOL)_isable;
 - (void)initGrid;
 - (void)scrollToCellAtGridIndex:(GridIndex)index animated:(BOOL)animated;
 - (void)reloadGrid;
@@ -39,6 +45,7 @@
 
 - (NSInteger)numberOfRowsInGridView:(GridView*)gridView;
 - (NSInteger)numberOfColumnsInGridView:(GridView*)gridView;
+- (unsigned int)numberOfCellsInGridView:(GridView*)gridView;
 - (GridCell *)gridView:(GridView*)gridView cellForGridAtGridIndex:(GridIndex)index;
 
 @optional
@@ -51,4 +58,7 @@
 - (void)gridViewWillBeginDecelerating;   // called on finger up as we are moving
 - (void)gridViewDidEndDecelerating;
 
+- (void)gridViewReloadData:(GridView*)gridView;
+- (void)gridView:(GridView *)gridView loadMoreDataAtPageIndex:(int)pageIndex;
+- (int)numberOfPageCount;
 @end

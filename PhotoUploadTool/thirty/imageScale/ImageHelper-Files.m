@@ -374,33 +374,21 @@ void addRoundedRectToContext(CGContextRef context, CGRect rect, CGSize ovalSize)
     return scaledImage;
 }
 
-+ (UIImage *) cutImage:(UIImage *) image cutRect:(CGRect)rect{
-    if (!image) {
-        return nil;
-    }
-    if (CGRectEqualToRect(rect, CGRectZero)) {
-        return image;
-    }
-    UIImage *cropImage = nil;
-    float scaleRate = (float)rect.size.width/image.size.width;
-    float cropHeight = rect.size.height/scaleRate;
-    if (cropHeight >= image.size.height) {
-        return image;
-    }
-    CGImageRef imageRef = CGImageCreateWithImageInRect(image.CGImage, (CGRect){0,0,image.size.width,cropHeight});
-    cropImage = [UIImage imageWithCGImage:imageRef];
-    CGImageRelease(imageRef);
-    return cropImage;
-    return image;
-}
-
-//+ (UIImage *) cutImage:(UIImage *) images cutRect:(CGRect)rect{
-//
-//    UIImage *image = [UIImage imageNamed:@"cat.png"];
+//+ (UIImage *) cutImage:(UIImage *) image cutRect:(CGRect)rect{
+//    //if image size is smaller than rect then stretch the image then cut image
+//    
+//    //if image width > height -> crop width then crop height
+//    if (!image) {
+//        return nil;
+//    }
+//    NSLog(@"%@,%@",NSStringFromCGSize(image.size),NSStringFromCGSize(rect.size));
+//    if (CGRectEqualToRect(rect, CGRectZero)) {
+//        return image;
+//    }
 //    UIImage *cropImage = nil;
 //    float scaleRate = (float)rect.size.width/image.size.width;
 //    float cropHeight = rect.size.height/scaleRate;
-//    if (cropHeight >= image.size.height) {
+//    if (scaleRate > 1 || cropHeight >= image.size.height) {
 //        return image;
 //    }
 //    CGImageRef imageRef = CGImageCreateWithImageInRect(image.CGImage, (CGRect){0,0,image.size.width,cropHeight});
@@ -409,6 +397,37 @@ void addRoundedRectToContext(CGContextRef context, CGRect rect, CGSize ovalSize)
 //    return cropImage;
 //    return image;
 //}
+
++ (UIImage *) cutImage:(UIImage *) image cutRect:(CGRect)rect{
+
+    //if image size is smaller than rect then stretch the image then cut image
+    
+    //if image width > height -> crop width then crop height
+    return image;
+    if (!image) {
+        return nil;
+    }
+    NSLog(@"%@,%@,%d",NSStringFromCGSize(image.size),NSStringFromCGSize(rect.size),image.imageOrientation);
+    if (CGRectEqualToRect(rect, CGRectZero)) {
+        return image;
+    }
+    CGRect cropRect = CGRectZero;
+    if (image.size.width > image.size.height) {
+        float scaleRate = image.size.height/(float)rect.size.height;
+        float cropWidth = rect.size.width*scaleRate;
+        cropRect = (CGRect){(image.size.width - cropWidth)/2.0,0,cropWidth,image.size.height};
+    }else{
+        float scaleRate = (float)image.size.width/rect.size.width;
+        float cropHeight = rect.size.height*scaleRate;
+        cropRect = (CGRect){0,(image.size.height - cropHeight)/2.0,image.size.width,cropHeight};
+    }
+    
+    UIImage *cropImage = nil;
+    CGImageRef imageRef = CGImageCreateWithImageInRect(image.CGImage,cropRect);
+    cropImage = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+    return cropImage;
+}
 
 + (UIImage *) image: (UIImage *) image centerInView: (UIView *) view
 {

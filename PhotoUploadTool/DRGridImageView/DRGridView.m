@@ -223,6 +223,12 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
     if (self.isShowPrivateModifyPwdView) {
         [self addSubview:self.modifyPwdView];
     }
+//    [self setGridViewContentSize];
+    float contentHeight = [self getRowHeight] * ([self getGridViewTotalCellCount]/self.columnCount + ([self getGridViewTotalCellCount]%self.columnCount == 0?0:1));
+    if (contentHeight <= self.frame.size.height) {
+        self.contentSize = (CGSize){self.frame.size.width,self.frame.size.height +1};
+    }else
+    self.contentSize = (CGSize){self.frame.size.width,contentHeight};
 }
 
 -(void)loadData{
@@ -231,7 +237,6 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
         [self addGridViewTopCells];
         [self deleteGridViewTopCells];
         [self deleteGridViewBottomCells];
-        [self setGridViewContentSize];
     } 
     
     
@@ -558,25 +563,27 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
             self.scrollViewDirection = SCROLL_UP;
         }
         [self loadData];
+        self.lastCacheOffset = self.contentOffset;
     }
-    self.lastCacheOffset = self.contentOffset;
+    
 }
 
 #pragma mark UIScrollDelegate
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    [self scrollViewScrollEnd];
+//    [self scrollViewScrollEnd];
 }
 
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     
 //    [self.footFreshView egoRefreshScrollViewDidEndDragging:scrollView];
     [self.refreshView egoRefreshScrollViewDidEndDragging:scrollView];
-    [self scrollViewScrollEnd];    
+//    [self scrollViewScrollEnd];    
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
 //    [self.footFreshView egoRefreshScrollViewDidScroll:scrollView];
     [self.refreshView egoRefreshScrollViewDidScroll:scrollView];
+    [self scrollViewScrollEnd];
     
 }
 

@@ -74,8 +74,8 @@
     AFHTTPClient *client = appDelete.afhttpClient;
 //    NSString *pwd = [FBEncryptorAES encryptBase64String:_user.userPwd keyString:ENCRYPT_KEY separateLines:NO];
 //    [FBEncryptorAES encryptString:_user.userPwd key:ENCRYPT_KEY iv:nil]
-       [client getPath:@"users/register"
-//    [client postPath:@"users/register"
+//       [client getPath:@"users/register"
+    [client postPath:@"register"
           parameters:@{@"name":_user.userName,@"password":_user.userPwd,@"email":_user.userEmail}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                  NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
@@ -176,8 +176,8 @@
     
 //    [FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO]
 //    [FBEncryptorAES encryptString:_userPwd key:ENCRYPT_KEY iv:nil]
-//    [client postPath:@"users/user_signin"
-    [client getPath:@"users/user_signin"
+    [client postPath:@"user_signin"
+//    [client getPath:@"users/user_signin"
          parameters:@{@"name":_userName,@"password":_userPwd,@"token":_token==nil?@"":_token,@"type":@"0"}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                   NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];;

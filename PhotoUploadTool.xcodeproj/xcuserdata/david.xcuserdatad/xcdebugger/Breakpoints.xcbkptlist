@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "PhotoUploadTool/thirty/MWPhotoBrowser/Classes/MWPhotoBrowser.m"
-         timestampString = "393236517.010791"
+         timestampString = "395132188.650112"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1260"
-         endingLineNumber = "1260"
+         startingLineNumber = "1261"
+         endingLineNumber = "1261"
          landmarkName = "-image:didFinishSavingWithError:contextInfo:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "PhotoUploadTool/thirty/MWPhotoBrowser/Classes/MWPhotoBrowser.m"
-         timestampString = "393236517.010791"
+         timestampString = "395132188.650112"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1276"
-         endingLineNumber = "1276"
+         startingLineNumber = "1277"
+         endingLineNumber = "1277"
          landmarkName = "-actuallyCopyPhoto:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -47,24 +47,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "PhotoUploadTool/thirty/MWPhotoBrowser/Classes/MWPhotoBrowser.m"
-         timestampString = "393235470.330252"
+         timestampString = "395132188.650112"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "567"
-         endingLineNumber = "567"
-         landmarkName = "-willAnimateRotationToInterfaceOrientation:duration:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "PhotoUploadTool/thirty/MWPhotoBrowser/Classes/MWPhotoBrowser.m"
-         timestampString = "393235726.527949"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1118"
-         endingLineNumber = "1118"
+         startingLineNumber = "1119"
+         endingLineNumber = "1119"
          landmarkName = "-actionButtonPressed:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -92,6 +79,45 @@
          startingLineNumber = "848"
          endingLineNumber = "848"
          landmarkName = "-appendPartWithFileURL:name:fileName:mimeType:error:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "PhotoUploadTool/controllers/PublicGridController.m"
+         timestampString = "395568409.630488"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "35"
+         endingLineNumber = "35"
+         landmarkName = "-receiveNotificationFromFinishedUploadImages"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "PhotoUploadTool/controllers/PrivateGridController.m"
+         timestampString = "395568409.630488"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "39"
+         endingLineNumber = "39"
+         landmarkName = "-receiveNotificationFromFinishedUploadImages"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "PhotoUploadTool/controllers/PublicGridController.m"
+         timestampString = "395568409.630488"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "77"
+         endingLineNumber = "77"
+         landmarkName = "-downloadDataISFirst:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

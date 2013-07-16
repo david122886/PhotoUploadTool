@@ -345,7 +345,7 @@
         _agImagePicker.delegate = self;
         _agImagePicker.shouldChangeStatusBarStyle = YES;
         _agImagePicker.shouldShowSavedPhotosOnTop = NO;
-        _agImagePicker.maximumNumberOfPhotosToBeSelected = 4;
+        _agImagePicker.maximumNumberOfPhotosToBeSelected = 40;
     }
     return _agImagePicker;
 }

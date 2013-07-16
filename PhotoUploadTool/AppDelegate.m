@@ -70,7 +70,10 @@
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
 	NSLog(@"My token is: %@", deviceToken);
-    self.token = [[NSString alloc] initWithData:deviceToken encoding:NSUTF8StringEncoding];
+    self.token = [[[[deviceToken description]
+                    stringByReplacingOccurrencesOfString: @"<" withString: @""]
+                   stringByReplacingOccurrencesOfString: @">" withString: @""]
+                  stringByReplacingOccurrencesOfString: @" " withString: @""];
     NSString *defaultToken = [[NSUserDefaults standardUserDefaults] objectForKey:DEFAULT_TOKEN];
     if (!self.user) {
         return;

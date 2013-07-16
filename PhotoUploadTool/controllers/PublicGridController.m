@@ -26,9 +26,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotificationFromFinishedUploadImages) name:UPLOAD_IMAGES_POST_RELOADDATAS_PUBLIC object:nil];
 //    [self downloadDataISFirst:YES];
 }
 
+- (void)receiveNotificationFromFinishedUploadImages{
+    self.isFirstDownloadData = NO;
+    [self downloadDataISFirst:YES];
+}
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 -(void)prepareReloadData:(DRGridView *)gridView{
     [self downloadDataISFirst:NO];
 //    [gridView reloadData];

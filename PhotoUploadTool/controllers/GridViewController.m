@@ -42,6 +42,7 @@
     self.gridView.isShowPrivateModifyPwdView = self.isShowModifyPrivatePwdView;
     self.gridView.gridViewDelegate = self;
     self.gridView.backgroundColor = [UIColor clearColor];
+    self.gridView.placeHolderImage = [UIImage imageNamed:@"placeholder.png"];
     [self.view addSubview:self.gridView];
     [self.gridView reloadData];
 	// Do any additional setup after loading the view.
@@ -133,7 +134,7 @@
     return 3;
 }
 -(float)heightOfGridViewCell{
-    return 120.0;
+    return self.gridView.frame.size.width/3.0*1.3;
 }
 -(int)cacheRowsOfGridView{
     return 20;

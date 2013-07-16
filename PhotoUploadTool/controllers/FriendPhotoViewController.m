@@ -170,7 +170,7 @@
     if (imageObj.isLocked) {
         [cell.cellimageView setImage:[UIImage imageNamed:@"lock.png"]];
     }else{
-        [cell.cellimageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageObj.smallImageURLStr]] placeholderImage:[UIImage imageNamed:@"titleLogo.png"] success:nil  failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        [cell.cellimageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageObj.smallImageURLStr]] placeholderImage:[UIImage imageNamed:@"placeholder.png"] success:nil  failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
         }];
     }
 //    [cell.cellButton setTitle:[NSString stringWithFormat:@"row:%d,column:%d,index:%d",index.row,index.column,index.row*GRIDVIEW_COLOUMN_COUNT+index.column] forState:UIControlStateNormal];

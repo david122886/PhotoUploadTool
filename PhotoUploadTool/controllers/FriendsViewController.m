@@ -16,7 +16,7 @@
 #if QBGridViewTest
 
 #define GRIDVIEW_SPACE 5.0
-#define GRIDVIEW_CELL_HEIGHT 180.0
+#define GRIDVIEW_CELL_HEIGHT 200.0
 #define GRIDVIEW_CELL_WIDTH 150.0
 #define GRIDVIEW_COLOUMN_COUNT  2
 @interface FriendsViewController ()
@@ -171,6 +171,7 @@
     [super viewDidUnload];
 }
 - (IBAction)topRightClicked:(UIButton *)sender {
+    [self.topRightBt setUserInteractionEnabled:NO];
     TSLocateView *locateView = [[TSLocateView alloc] initWithTitle:@"定位城市" delegate:self];
     [locateView showInView:self.view];
 }
@@ -223,7 +224,7 @@
     NSLog(@"row:%d,column:%d,index:%d",index.row,index.column,index.row*2+index.column);
     FriendObj *friend = [self.friendsArr objectAtIndex:index.row*2+index.column];
 //    [cell.cellButton setTitle:[NSString stringWithFormat:@"row:%d,column:%d,index:%d",index.row,index.column,index.row*2+index.column] forState:UIControlStateNormal];
-    [cell.cellimageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:friend.webURL]] placeholderImage:[UIImage imageNamed:@"titleLogo.png"] success:nil  failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+    [cell.cellimageView setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:friend.webURL]] placeholderImage:[UIImage imageNamed:@"placeholder.png"] success:nil  failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
     }];
 	return cell;
 }
@@ -278,6 +279,7 @@
         
         [self dowloadFriendsDataWithCityName:location.city isPullScrollViewRefreshData:NO withPageIndex:0];
     }
+    [self.topRightBt setUserInteractionEnabled:YES];
 }
 #pragma mark --
 
@@ -397,6 +399,7 @@
     [super viewDidUnload];
 }
 - (IBAction)topRightClicked:(UIButton *)sender {
+    
 }
 
 - (IBAction)bottomLeftClicked:(UIButton *)sender {

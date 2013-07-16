@@ -85,19 +85,6 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "PhotoUploadTool/controllers/PublicGridController.m"
-         timestampString = "395568409.630488"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "35"
-         endingLineNumber = "35"
-         landmarkName = "-receiveNotificationFromFinishedUploadImages"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "PhotoUploadTool/controllers/PrivateGridController.m"
          timestampString = "395568409.630488"
          startingColumnNumber = "9223372036854775807"
@@ -105,19 +92,6 @@
          startingLineNumber = "39"
          endingLineNumber = "39"
          landmarkName = "-receiveNotificationFromFinishedUploadImages"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "PhotoUploadTool/controllers/PublicGridController.m"
-         timestampString = "395568409.630488"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "77"
-         endingLineNumber = "77"
-         landmarkName = "-downloadDataISFirst:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -222,7 +222,7 @@ static char kAFImageRequestOperationObjectKey;
 
 - (void)setImageViewContentCenter{
     self.contentMode = UIViewContentModeScaleAspectFill ;
-//    self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     self.clipsToBounds = YES;
     [self setContentScaleFactor:[[UIScreen mainScreen] scale]];
 }

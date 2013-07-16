@@ -95,6 +95,7 @@
             selfCell.cachImage = [UIImage imageWithData:UIImagePNGRepresentation(image)];
             [selfCell.imageView setImage:[ImageHelper cutImage:selfCell.cachImage cutRect:selfCell.imageView.frame]];
 //            [selfCell setImageData];
+            [selfCell setImageViewContentCenter];
             if (selfCell.successBlock) {
                 selfCell.successBlock(selfCell);
             }
@@ -110,6 +111,12 @@
     }];
 }
 
+- (void)setImageViewContentCenter{
+    self.imageView.contentMode = UIViewContentModeScaleAspectFill ;
+    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    self.imageView.clipsToBounds = YES;
+    [self.imageView setContentScaleFactor:[[UIScreen mainScreen] scale]];
+}
 -(void)layoutSubviews{
     [super layoutSubviews];
     self.imageView.frame = CGRectMake(GRIDCELL_SPACE, GRIDCELL_SPACE, self.frame.size.width - GRIDCELL_SPACE*2, self.frame.size.height - GRIDCELL_SPACE*2);

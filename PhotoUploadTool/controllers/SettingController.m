@@ -127,6 +127,7 @@
             [MBProgressHUD hideHUDForView:setting.view animated:YES];
             delegate.user.userEmail = email;
             [setting.emailBt setTitle:[NSString stringWithFormat:@"%@ %@",EMAIL_TIP,email] forState:UIControlStateNormal];
+            [setting alertErrorMessage:@"用户邮箱地址修改成功"];
         }
        
     } withFailure:^(NSError *errror) {
@@ -205,6 +206,7 @@
             AppDelegate *delegate = weakDelegate;
             [MBProgressHUD hideHUDForView:setting.view animated:YES];
             delegate.user.userDescrible = info;
+            [setting alertErrorMessage:@"用户描述信息修改成功"];
         }
        
     } withFailure:^(NSError *errror) {

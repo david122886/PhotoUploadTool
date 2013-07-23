@@ -61,23 +61,27 @@
 -(void)locatePosition{
     AppDelegate __weak *weakDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     FriendsViewController __weak *weakSelf = self;
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [LocatePositionManager locatePositionSuccess:^(NSString *locatitonName, CLLocationCoordinate2D locationg) {
         if (weakSelf) {
             NSString *city = nil;
             if (locatitonName) {
                 city = [locatitonName stringByReplacingOccurrencesOfString:@"市" withString:@""];
             }
-            weakDelegate.user.userLocation = city;
+            weakDelegate.city = city;
             [weakSelf.topRightBt setTitle:city forState:UIControlStateNormal];
             if (city != nil) {
                 [LocatePositionManager stopUpdate];
             }
+            [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
             [weakSelf dowloadFriendsDataWithCityName:city isPullScrollViewRefreshData:NO withPageIndex:0];
+            
         }
         
     } failure:^(NSError *error) {
         if (weakSelf) {
             [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
+            [self.topRightBt setTitle:@"所有城市" forState:UIControlStateNormal];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[error.userInfo objectForKey:@"NSLocalizedDescription"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil];
             [alert show];
         }

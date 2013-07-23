@@ -20,6 +20,7 @@
 @property (readonly, strong, nonatomic) AFHTTPClient *afhttpClient;
 @property ( strong, nonatomic) UserObj *user;
 @property ( strong, nonatomic)  NSString *token;
+@property ( strong, nonatomic)  NSString *city;
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 

@@ -7,6 +7,7 @@
 //
 
 #import "UserObjDao.h"
+#import "CocoaSecurity.h"
 @interface UserObjDao()
 
 @end
@@ -69,14 +70,15 @@
 }
 
 
-+(void)registerUserObj:(UserObj*)_user withSuccess:(void(^)(UserObj *userObj))_success withFailure:(void(^)(NSError *errror))_failure{
++(void)registerUserObj:(UserObj*)_user location:(NSString*)_city withSuccess:(void(^)(UserObj *userObj))_success  withFailure:(void(^)(NSError *errror))_failure{
     AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     AFHTTPClient *client = appDelete.afhttpClient;
+    NSString *pwd = [CocoaSecurity md5Str:_user.userPwd];
 //    NSString *pwd = [FBEncryptorAES encryptBase64String:_user.userPwd keyString:ENCRYPT_KEY separateLines:NO];
 //    [FBEncryptorAES encryptString:_user.userPwd key:ENCRYPT_KEY iv:nil]
 //       [client getPath:@"users/register"
     [client postPath:@"register"
-          parameters:@{@"name":_user.userName,@"password":_user.userPwd,@"email":_user.userEmail}
+          parameters:@{@"name":_user.userName,@"password":pwd?:@"",@"email":_user.userEmail,@"city_name":_city?:@""}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                  NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                  if (responseStr) {
@@ -170,15 +172,15 @@
     }];
     
 }
-+(void)loginInUserObjName:(NSString*)_userName withUserPwd:(NSString*)_userPwd withToken:(NSString*)_token withSuccess:(void(^)(UserObj *userObj))_success withFailure:(void(^)(NSError *errror))_failure{
++(void)loginInUserObjName:(NSString*)_userName withUserPwd:(NSString*)_userPwd withToken:(NSString*)_token location:(NSString*)_city withSuccess:(void(^)(UserObj *userObj))_success withFailure:(void(^)(NSError *errror))_failure{
     AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     AFHTTPClient *client = appDelete.afhttpClient;
-    
+    NSString *pwd = [CocoaSecurity md5Str:_userPwd];
 //    [FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO]
 //    [FBEncryptorAES encryptString:_userPwd key:ENCRYPT_KEY iv:nil]
     [client postPath:@"user_signin"
 //    [client getPath:@"users/user_signin"
-         parameters:@{@"name":_userName,@"password":_userPwd,@"token":_token==nil?@"":_token,@"type":@"0"}
+          parameters:@{@"name":_userName,@"password":pwd?:@"",@"token":_token==nil?@"":_token,@"type":@"0",@"city_name":_city?:@""}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                   NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];;
                  if (responseStr) {
@@ -259,11 +261,12 @@
 +(void)modifyUserPwdUserObjName:(NSString*)_userName withUserPwd:(NSString*)_userPwd withEmail:(NSString *)_email withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *errror))_failure{
     AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     AFHTTPClient *client = appDelete.afhttpClient;
+     NSString *pwd = [CocoaSecurity md5Str:_userPwd];
 //    [FBEncryptorAES encryptBase64String:_userPwd keyString:ENCRYPT_KEY separateLines:NO]
 //    [FBEncryptorAES encryptString:_userPwd key:ENCRYPT_KEY iv:nil]
 //    [client postPath:@"users/change_pwd"
     [client getPath:@"users/change_pwd"
-         parameters:@{@"name":_userName,@"email":_email?:@"",@"password":_userPwd}
+         parameters:@{@"name":_userName,@"email":_email?:@"",@"password":pwd?:@""}
              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                  NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                  if (responseStr) {

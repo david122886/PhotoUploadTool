@@ -48,6 +48,7 @@
 - (CocoaSecurityResult *)aesDecryptWithData:(NSData *)data key:(NSData *)key iv:(NSData *)iv;
 
 #pragma mark - MD5
++ (NSString *)md5Str:(NSString *)str;
 + (CocoaSecurityResult *)md5:(NSString *)hashString;
 + (CocoaSecurityResult *)md5WithData:(NSData *)hashData;
 - (CocoaSecurityResult *)md5:(NSString *)hashString;

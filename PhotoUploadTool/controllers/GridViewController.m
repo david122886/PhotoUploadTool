@@ -223,6 +223,7 @@
     [self.summaryDataArr removeObjectAtIndex:index+1];
     if ([self.scanDataArr count] <= 0) {
         [photoBrowser dismissModalViewControllerAnimated:YES];
+        [self.gridView reloadData];
     }
 }
 
@@ -346,7 +347,7 @@
         _agImagePicker.delegate = self;
         _agImagePicker.shouldChangeStatusBarStyle = YES;
         _agImagePicker.shouldShowSavedPhotosOnTop = NO;
-        _agImagePicker.maximumNumberOfPhotosToBeSelected = 40;
+        _agImagePicker.maximumNumberOfPhotosToBeSelected = 4;
     }
     return _agImagePicker;
 }

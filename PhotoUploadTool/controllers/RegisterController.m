@@ -143,7 +143,7 @@
         AppDelegate __weak *weakDelegate = appDelegate;
         RegisterController __weak *weakRegCtr = self;
         [MBProgressHUD showHUDAddedTo:self.view.window animated:YES];
-        [UserObjDao registerUserObj:[self getUserObjFromView] withSuccess:^(UserObj *userObj) {
+        [UserObjDao registerUserObj:[self getUserObjFromView] location:appDelegate.city withSuccess:^(UserObj *userObj) {
             AppDelegate *delegate = weakDelegate;
             RegisterController *gesCtr = weakRegCtr;
             delegate.user = userObj;

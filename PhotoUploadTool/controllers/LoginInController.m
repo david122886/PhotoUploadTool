@@ -105,7 +105,7 @@
         AppDelegate __weak *weakAppDelegate = appDelegate;
         __weak LoginInController *weakCtr = self;
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        [UserObjDao loginInUserObjName:name withUserPwd:passwd withToken:appDelegate.token withSuccess:^(UserObj *userObj) {
+        [UserObjDao loginInUserObjName:name withUserPwd:passwd withToken:appDelegate.token location:appDelegate.city withSuccess:^(UserObj *userObj) {
             AppDelegate *delegate = weakAppDelegate;
             LoginInController *ctr = weakCtr;
             delegate.user = userObj;

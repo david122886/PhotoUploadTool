@@ -29,6 +29,23 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     }
     return self;
 }
+
+-(void)viewDidAppear:(BOOL)animated{
+    self.notificationTipLabel.layer.cornerRadius = 3;
+    if ([UIApplication sharedApplication].applicationIconBadgeNumber != 0) {
+        self.notificationTipLabel.backgroundColor = [UIColor redColor];
+        NSString *tip = [NSString stringWithFormat:@"%d",[UIApplication sharedApplication].applicationIconBadgeNumber];
+        CGRect rect = self.notificationTipLabel.frame;
+        CGSize detailSize = [tip sizeWithFont:self.notificationTipLabel.font constrainedToSize:CGSizeMake(MAXFLOAT,rect.size.height) lineBreakMode:UILineBreakModeWordWrap];
+        self.notificationTipLabel.frame = (CGRect){rect.origin.x+rect.size.width-detailSize.width-2,rect.origin.y,detailSize.width+2,rect.size.height};
+        self.notificationTipLabel.text = tip;
+    }else{
+        self.notificationTipLabel.text = @"";
+        self.notificationTipLabel.backgroundColor = [UIColor clearColor];
+    }
+    
+    [super viewDidAppear:animated];
+}
 - (void)viewDidLoad
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadDataNotification) name:TABBAR_DOWNLOADDATA_NOTIFICATION object:nil];
@@ -48,10 +65,10 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     NSString *userWeb = appDelegate.user.userWebURL;
     if (userWeb) {
-        NSString *webUrl = [userWeb stringByReplacingOccurrencesOfString:@"http://" withString:@""];
-        NSString *ipUrl = [webUrl stringByReplacingOccurrencesOfString:@"localhost:3000" withString:LIUYUSERVER_URL];
+//        NSString *webUrl = [userWeb stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+        NSString *ipUrl = [userWeb stringByReplacingOccurrencesOfString:@"localhost:3000" withString:LIUYUSERVER_URL];
         self.webURLLabel.text = [NSString stringWithFormat:@" 预览:%@",ipUrl];
-        [self.webURLLabel addLinkToURL:[NSURL URLWithString:ipUrl] withRange:NSMakeRange(4, ipUrl.length)];
+        [self.webURLLabel addLinkToURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@",ipUrl]] withRange:NSMakeRange(4, ipUrl.length)];
     }
     self.webURLLabel.delegate = self;
     self.pwdLabel.text = [NSString stringWithFormat:@"%@ %@",ALBUMPWD_TIP,appDelegate.user.userAlbumPwd?:@""];
@@ -93,6 +110,7 @@ typedef enum {PUBLICITEM = 10,PRIVATEITEM,SETTINGITEM}TabBarItem;
     self.privateController = nil;
     [self setWebURLLabel:nil];
     [self setActivityView:nil];
+    [self setNotificationTipLabel:nil];
     [super viewDidUnload];
 }
 - (IBAction)publicItemSelected:(UIButton *)sender {

@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *bottomLeftBt;
 @property (weak, nonatomic) IBOutlet UIButton *bottomRightBt;
 @property (weak, nonatomic) IBOutlet UIButton *topRightBt;
+@property (weak, nonatomic) IBOutlet UILabel *notificationTipLabel;
 - (IBAction)topRightClicked:(UIButton *)sender;
 - (IBAction)bottomLeftClicked:(UIButton *)sender;
 - (IBAction)bottomRightClicked:(UIButton *)sender;

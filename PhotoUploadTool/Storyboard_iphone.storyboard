@@ -1004,6 +1004,14 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="NsA-XG-tUu" userLabel="notificationTip">
+                                        <rect key="frame" x="264" y="2" width="11" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.18039216101169586" green="0.50196081399917603" blue="0.81568634510040283" alpha="1" colorSpace="deviceRGB"/>
                             </view>
@@ -1014,6 +1022,7 @@
                         <outlet property="activityView" destination="JbM-eh-VBq" id="qSp-Xe-faJ"/>
                         <outlet property="contentView" destination="xE8-mW-Xb3" id="ivM-Jv-sRj"/>
                         <outlet property="drtabBarView" destination="L98-4r-zzA" id="Lnn-kw-PYe"/>
+                        <outlet property="notificationTipLabel" destination="NsA-XG-tUu" id="bBi-cX-W74"/>
                         <outlet property="privateItemBt" destination="38X-HB-QYJ" id="Kbm-Qt-HyE"/>
                         <outlet property="publicItemBt" destination="xdZ-MQ-I0a" id="5hY-hY-qYA"/>
                         <outlet property="pwdCoverView" destination="lew-RC-VSd" id="upz-6T-gv9"/>
@@ -1079,11 +1088,11 @@
                                 <color key="backgroundColor" red="0.180392161" green="0.50196081400000003" blue="0.81568634510000004" alpha="1" colorSpace="deviceRGB"/>
                             </view>
                             <view alpha="0.60000000000000009" contentMode="scaleToFill" id="z3T-XJ-pxt" userLabel="bottomView">
-                                <rect key="frame" x="0.0" y="416" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="410" width="320" height="50"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" id="wAn-0u-rYH" userLabel="leftBt">
-                                        <rect key="frame" x="0.0" y="0.0" width="160" height="44"/>
+                                        <rect key="frame" x="0.0" y="6" width="160" height="44"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES"/>
                                         <accessibility key="accessibilityConfiguration">
                                             <accessibilityTraits key="traits" none="YES" button="YES" notEnabled="YES"/>
@@ -1101,8 +1110,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="4vu-1U-fn8" userLabel="rightBt">
-                                        <rect key="frame" x="160" y="0.0" width="160" height="44"/>
+                                        <rect key="frame" x="160" y="6" width="160" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="0.180392161" green="0.50196081400000003" blue="0.81568634510000004" alpha="1" colorSpace="deviceRGB"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <state key="normal" title="我的照片">
@@ -1117,12 +1127,21 @@
                                         </connections>
                                     </button>
                                     <view contentMode="scaleToFill" id="TlR-ac-P77" userLabel="line2">
-                                        <rect key="frame" x="160" y="0.0" width="2" height="44"/>
+                                        <rect key="frame" x="160" y="6" width="2" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dRz-U9-zWN" userLabel="notificationTip">
+                                        <rect key="frame" x="276" y="0.0" width="10" height="19"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                        <size key="shadowOffset" width="0.0" height="0.0"/>
+                                    </label>
                                 </subviews>
-                                <color key="backgroundColor" red="0.180392161" green="0.50196081400000003" blue="0.81568634510000004" alpha="1" colorSpace="deviceRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -1133,6 +1152,7 @@
                         <outlet property="bottomLeftBt" destination="wAn-0u-rYH" id="8JO-u1-Jhq"/>
                         <outlet property="bottomRightBt" destination="4vu-1U-fn8" id="DUD-Um-spN"/>
                         <outlet property="contentView" destination="tzC-6H-IUw" id="zM7-Yp-bLg"/>
+                        <outlet property="notificationTipLabel" destination="dRz-U9-zWN" id="Enn-q6-1fe"/>
                         <outlet property="topRightBt" destination="D4G-Qy-Euc" id="9Ex-fF-sK4"/>
                     </connections>
                 </viewController>
@@ -2006,194 +2026,6 @@
         <image name="tabbarbg.png" width="640" height="87"/>
         <image name="titleLogo.png" width="95" height="75"/>
     </resources>
-    <classes>
-        <class className="DRTabBarController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DRTabBarController.h"/>
-            <relationships>
-                <relationship kind="action" name="backBtClicked:"/>
-                <relationship kind="action" name="modifyBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="privateItemSelected:" candidateClass="UIButton"/>
-                <relationship kind="action" name="publicItemSelected:" candidateClass="UIButton"/>
-                <relationship kind="action" name="settingItemSelected:" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="activityView" candidateClass="UIActivityIndicatorView"/>
-                <relationship kind="outlet" name="contentView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="drtabBarView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="privateItemBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="publicItemBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="pwdCoverView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="pwdLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="settingItemBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="underLine" candidateClass="UIView"/>
-            </relationships>
-        </class>
-        <class className="DRWaterFlowViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DRWaterFlowViewController.h"/>
-        </class>
-        <class className="ForgetPasswordAlertView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ForgetPasswordAlertView.h"/>
-            <relationships>
-                <relationship kind="action" name="cancelBtClicked:"/>
-                <relationship kind="action" name="okBtClicked:"/>
-                <relationship kind="outlet" name="borderView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="emailLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="passwordField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="rePasswordField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="tipLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="ForgotPasswordController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ForgotPasswordController.h"/>
-            <relationships>
-                <relationship kind="action" name="OKBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="backBtClicked:"/>
-                <relationship kind="outlet" name="emailField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="nameField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="pwdField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="rePwdField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="tabbarTitleLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="tabbarView" candidateClass="UIView"/>
-            </relationships>
-        </class>
-        <class className="FriendPhotoViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FriendPhotoViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="backBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="contentView" candidateClass="UIView"/>
-            </relationships>
-        </class>
-        <class className="FriendsViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FriendsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="bottomLeftClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="bottomRightClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="topRightClicked:" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="bottomLeftBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="bottomRightBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="contentView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="topRightBt" candidateClass="UIButton"/>
-            </relationships>
-        </class>
-        <class className="GridViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GridViewController.h"/>
-        </class>
-        <class className="LoginInController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginInController.h"/>
-            <relationships>
-                <relationship kind="action" name="LoginBtClicked:"/>
-                <relationship kind="action" name="backBtClicked:"/>
-                <relationship kind="action" name="forgotPasswordClicked:"/>
-                <relationship kind="action" name="registerBtClicked:"/>
-                <relationship kind="outlet" name="forgotPwdBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="passwdField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="registerBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="typeBackground" candidateClass="UIView"/>
-                <relationship kind="outlet" name="userNameField" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="ModifyEmailView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ModifyEmailView.h"/>
-            <relationships>
-                <relationship kind="action" name="cancelBtClicked:"/>
-                <relationship kind="action" name="okBtClicked:"/>
-                <relationship kind="outlet" name="borderView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="textField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="tipLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="ModifyUserPasswordController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ModifyUserPasswordController.h"/>
-            <relationships>
-                <relationship kind="action" name="backBtClicked:"/>
-                <relationship kind="action" name="okBtClicked:"/>
-                <relationship kind="outlet" name="dNewPwdField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="nameField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="oldPwdField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="reNewPwdField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="tabbarTitleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="NotificationCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NotificationCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="backImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="dateLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="detalLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="summaryLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="NotificationController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NotificationController.h"/>
-            <relationships>
-                <relationship kind="action" name="backBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="tabbarEditBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="contentView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="tabbarRightBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="tabbarTitleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="RegisterController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/RegisterController.h"/>
-            <relationships>
-                <relationship kind="action" name="backBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="okButtonClicked:"/>
-                <relationship kind="outlet" name="emailField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="nameField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="pwField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="pwdLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="rePwField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="rePwdlabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="tabbarTitleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="SettingController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingController.h"/>
-            <relationships>
-                <relationship kind="action" name="backBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="cancelUserBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="emailBtClicked:"/>
-                <relationship kind="action" name="locationBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="locationTypeChanged:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="loginOutBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="modifyPwdBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="action" name="notificationBtClicked:"/>
-                <relationship kind="action" name="tabBarRightBtClicked:" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="emailBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="infoTextView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="locationActivityProgress" candidateClass="UIActivityIndicatorView"/>
-                <relationship kind="outlet" name="locationBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="locationTypeSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="notificationActivityProgress" candidateClass="UIActivityIndicatorView"/>
-                <relationship kind="outlet" name="notificationBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="settingView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="tabBarRightBt" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="tabBarTitleLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="userInfoView" candidateClass="UIView"/>
-            </relationships>
-        </class>
-        <class className="SettingPrivatePwdView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SettingPrivatePwdView.h"/>
-            <relationships>
-                <relationship kind="action" name="deleteBt:"/>
-                <relationship kind="action" name="okBt:" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="borderView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="textField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="tipLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="UPLoadImageController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UPLoadImageController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="progressBar" candidateClass="UIProgressView"/>
-                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

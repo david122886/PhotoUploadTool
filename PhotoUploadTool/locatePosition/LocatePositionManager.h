@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 #import "DRNetWorkingException.h"
-@interface LocatePositionManager : DRNetWorkingException<CLLocationManagerDelegate>
+@interface LocatePositionManager: DRNetWorkingException<CLLocationManagerDelegate>
 @property(nonatomic,assign) CLLocationCoordinate2D myLocation;
 +(id)defaultLocatePosition;
 +(void)stopUpdate;

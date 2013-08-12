@@ -41,6 +41,7 @@ static LocatePositionManager *locateManager;
                 manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
                 //        manager.distanceFilter = kCLDistanceFilterNone;
                 manager.distanceFilter = 500.0;
+//                [manager startMonitoringSignificantLocationChanges];
                 [manager startUpdatingLocation];
                 break;
             case kCLAuthorizationStatusDenied:
@@ -65,14 +66,16 @@ static LocatePositionManager *locateManager;
 
 +(void)stopUpdate{
    CLLocationManager *manager = [[LocatePositionManager defaultLocatePosition] locationManager];
+//    [manager stopMonitoringSignificantLocationChanges];
     [manager stopUpdatingLocation];
 }
 
 -(void)getLocationNameWithCoordinate2D:(CLLocationCoordinate2D)coordinate{
     if (self.geocoder.geocoding) {
         [self.geocoder cancelGeocode];
-    }else{
-        CLLocation *location = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
+    }
+    
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
     [self.geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
         DRLOG(@"%@", error);
         if (error) {
@@ -86,12 +89,11 @@ static LocatePositionManager *locateManager;
                 if (self.successBlock) {
                     self.successBlock(place.locality,self.myLocation);
                 }
-//                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"当前城市名称" message:place.locality delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//                [alert show];
+                //                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"当前城市名称" message:place.locality delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                //                [alert show];
             }
         }
     }];
-    }
 }
 #pragma mark CLLocationManagerDelegate
 -(void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region{
@@ -113,13 +115,13 @@ static LocatePositionManager *locateManager;
                 // can reset this for all apps by going to Settings > General > Reset > Reset Location Warnings.
             case kCLErrorDenied:
                 if (self.errorBlock && !self.isAlertError) {
-                    self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"流云相册没有权限启动定位服务，到手机设置中开启"]);
+                    self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"流云相册没有权限启动定位服务，到设备系统设置中开启"]);
                     self.isAlertError = YES;
                 }
                 break;
             case kCLErrorRegionMonitoringDenied:
                 if (self.errorBlock && !self.isAlertError) {
-                    self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"流云相册没有权限启动定位服务，到手机设置中开启"]);
+                    self.errorBlock([LocatePositionManager getErrorObjWithMessage:@"流云相册没有权限启动定位服务，到设备系统设置中开启"]);
                     self.isAlertError = YES;
                 }
                 break;

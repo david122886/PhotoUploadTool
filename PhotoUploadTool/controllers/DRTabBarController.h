@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UIView *drtabBarView;
 @property (weak, nonatomic) IBOutlet UILabel *pwdLabel;
 @property (weak, nonatomic) IBOutlet UIView *pwdCoverView;
+@property (weak, nonatomic) IBOutlet UILabel *notificationTipLabel;
 @property (strong, nonatomic)  TTTAttributedLabel *webURLLabel;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityView;
 - (IBAction)publicItemSelected:(UIButton *)sender;

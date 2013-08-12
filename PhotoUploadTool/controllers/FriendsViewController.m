@@ -47,18 +47,65 @@
     [self.topRightBt setTitle:nil forState:UIControlStateNormal];
 //    self.gridView.backgroundColor = [UIColor clearColor];
     [self.contentView addSubview:self.gridView];
-    [self locatePosition];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locateSuccess:) name:LOCATE_POSITION_SUCCESS object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locateFailure:) name:LOCATE_POSITION_FAILURE object:self];
+
+    NSNumber *locatePosionType = [[NSUserDefaults standardUserDefaults] objectForKey:LOCATE_POSITION_TYPE];
+    if (!locatePosionType || [locatePosionType boolValue] ==YES) {
+        MBProgressHUD *progress = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        progress.labelText = @"正在获取当前地理位置";
+        AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+        [appDelegate setAutoLocationForController:self];
+    }else{
+        [self locatePosition];
+    }
 	// Do any additional setup after loading the view.
 }
 
+-(void)locateSuccess:(NSNotification*)note{
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    
+    [self locatePosition];
+}
 
-
+-(void)locateFailure:(NSNotification*)note{
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    if ([[note.userInfo objectForKey:@"error"] isEqualToString:@"系统禁用定位服务"]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[note.userInfo objectForKey:@"error"] delegate:self cancelButtonTitle:@"手动设置" otherButtonTitles:nil];
+        [alert show];
+    }
+}
 -(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+    self.notificationTipLabel.layer.cornerRadius = 3;
+    if ([UIApplication sharedApplication].applicationIconBadgeNumber != 0) {
+        self.notificationTipLabel.backgroundColor = [UIColor redColor];
+        NSString *tip = [NSString stringWithFormat:@"%d",[UIApplication sharedApplication].applicationIconBadgeNumber];
+        CGRect rect = self.notificationTipLabel.frame;
+        CGSize detailSize = [tip sizeWithFont:self.notificationTipLabel.font constrainedToSize:CGSizeMake(MAXFLOAT,rect.size.height) lineBreakMode:UILineBreakModeWordWrap];
+        self.notificationTipLabel.frame = (CGRect){rect.origin.x,rect.origin.y,detailSize.width+2,rect.size.height};
+        self.notificationTipLabel.text = tip;
+    }else{
+        self.notificationTipLabel.text = @"";
+        self.notificationTipLabel.backgroundColor = [UIColor clearColor];
+    }    [super viewWillAppear:animated];
     [self.gridView reloadGrid];
 }
 
 -(void)locatePosition{
+    AppDelegate  *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    NSNumber *locatePosionType = [[NSUserDefaults standardUserDefaults] objectForKey:LOCATE_POSITION_TYPE];
+    if ([locatePosionType boolValue] == YES) {
+        [self.topRightBt setTitle:appDelegate.city forState:UIControlStateNormal];
+        [self dowloadFriendsDataWithCityName:appDelegate.city isPullScrollViewRefreshData:NO withPageIndex:0];
+    }else{
+        [self.topRightBt setUserInteractionEnabled:NO];
+        TSLocateView *locateView = [[TSLocateView alloc] initWithTitle:@"定位城市" delegate:self];
+        [locateView showInView:self.view];
+    }
+    return;
+    
+    
     AppDelegate __weak *weakDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     FriendsViewController __weak *weakSelf = self;
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -93,6 +140,9 @@
 -(void)dowloadFriendsDataWithCityName:(NSString*)city isPullScrollViewRefreshData:(BOOL)isPullScrollView withPageIndex:(int)pageIndex{
     if (!isPullScrollView) {
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    }
+    if (!city || [city isEqualToString:@""]) {
+        city = @"上海";
     }
     FriendsViewController __weak *weakSelf = self;
     [FriendObjDao downloadFriendObjsWithCityName:city withPageIndex:pageIndex withSuccess:^(NSDictionary *friendsDic) {
@@ -172,6 +222,7 @@
     [self setBottomRightBt:nil];
     [self setTopRightBt:nil];
     [self setContentView:nil];
+    [self setNotificationTipLabel:nil];
     [super viewDidUnload];
 }
 - (IBAction)topRightClicked:(UIButton *)sender {
@@ -311,6 +362,10 @@
     return _friendPhotoCtr;
 }
 #pragma mark --
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 @end
 
 #else

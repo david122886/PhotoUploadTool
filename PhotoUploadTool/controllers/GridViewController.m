@@ -215,8 +215,9 @@
 #pragma mark - MWPhotoBrowserDelegate
 
 -(void)photoBrowser:(MWPhotoBrowser *)photoBrowser backAtIndex:(NSUInteger)index{
+    [self setCoverImageViewCellWithIndex:photoBrowser.coverImageIndex+1];
     [self.gridView reloadData];
-    [self.gridView jumpToCellIndex:index];
+    [self.gridView jumpToCellIndex:index+1];
 }
 -(void)photoBrowser:(MWPhotoBrowser *)photoBrowser deletedPhotoAtIndex:(NSUInteger)index{
     [self.scanDataArr removeObjectAtIndex:index];
@@ -265,6 +266,41 @@
         }
         
     }];
+}
+
+
+-(void)photoBrowser:(MWPhotoBrowser *)photoBrowser setCoverPhotoAtIndex:(NSUInteger)index{
+    if (index >= [self.scanDataArr count]) {
+        DRLOG(@"%@", @"delete index over all count");
+        return;
+    }
+    [MBProgressHUD showHUDAddedTo:photoBrowser.view animated:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION object:nil];
+    MWPhotoBrowser __weak *weakCtr = photoBrowser;
+    MWPhoto *deletedData = [self.scanDataArr objectAtIndex:index];
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    [DRImageTool setCoverImageWithUserID:appDelegate.user.userId withPhotoID:deletedData.imageDataID withSuccess:^(NSString *success){
+        MWPhotoBrowser *Ctr = weakCtr;
+        if (Ctr) {
+            [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:success delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+        }
+        
+    } withFailure:^(NSError *error){
+        MWPhotoBrowser *Ctr = weakCtr;
+        if (Ctr) {
+            [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[error.userInfo objectForKey:@"NSLocalizedDescription"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+        }
+        
+    }];
+}
+
+
+-(void)setCoverImageViewCellWithIndex:(int)index{
+    self.gridView.coverImageIndex = index;
 }
 
 //- (MWCaptionView *)photoBrowser:(MWPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index {

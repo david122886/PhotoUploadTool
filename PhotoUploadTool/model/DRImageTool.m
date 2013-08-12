@@ -10,12 +10,17 @@
 #import "DRImageObj.h"
 @implementation DRImageTool
 
-+(NSArray*)parseImagesDataFromJsonStr:(NSArray*)jsonStr withUserID:(NSString*)_userID{
++(NSArray*)parseImagesDataFromJsonStr:(NSDictionary*)jsonStr withUserID:(NSString*)_userID{
     if (!jsonStr) {
         return nil;
     }
-    NSMutableArray *dataArr = [NSMutableArray arrayWithCapacity:[jsonStr count]];
-    for (NSDictionary *dataDic in jsonStr) {
+    NSString *coverImageID = nil;
+    NSString *coverImage = [NSString stringWithFormat:@"%@",[jsonStr objectForKey:@"cover_image"]];
+    if (coverImage && ![coverImage isEqualToString:@"<null>"]) {
+        coverImageID = coverImage;
+    }
+    NSMutableArray *dataArr = [NSMutableArray arrayWithCapacity:[[jsonStr objectForKey:@"photo"] count]];
+    for (NSDictionary *dataDic in [jsonStr objectForKey:@"photo"]) {
         DRImageObj *obj = [[DRImageObj alloc] init];
         NSString *dataId = [NSString stringWithFormat:@"%@",[dataDic objectForKey:@"id"]];
         if (dataId && ![dataId isEqualToString:@"<null>"]) {
@@ -33,6 +38,11 @@
         NSString *describle = [NSString stringWithFormat:@"%@",[dataDic objectForKey:@"describe"]];
         if (describle && ![describle isEqualToString:@"<null>"]) {
             obj.describle = describle;
+        }
+        if (coverImageID && [coverImageID isEqualToString:dataId]) {
+            obj.isCoverImage = YES;
+        }else{
+            obj.isCoverImage = NO;
         }
         [dataArr addObject:obj];
     }
@@ -118,6 +128,53 @@
                 }else
                     if (_failure) {
                         _failure([DRImageTool getErrorObjWithMessage:@"删除照片失败"]);
+                    }
+            }];
+}
+
++(void)setCoverImageWithUserID:(NSString*)_userID withPhotoID:(NSString*)_photoID withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *error) )_failure{
+//    http://192.168.0.137:3000/users/set_cover?user_id=1&photo_id=2
+    AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    AFHTTPClient *client = appDelete.afhttpClient;
+    //    [client postPath:@"/users/destroy_user"
+    [client getPath:@"users/set_cover"
+         parameters:@{@"user_id":_userID,@"photo_id":_photoID?:@"1"}
+            success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                if (responseStr) {
+                    if ([responseStr isEqualToString:@"success"]) {
+                        if (_success) {
+                            _success(@"设置封面成功");
+                        }
+                    }else
+                        if([responseStr isEqualToString:@"usererror"]){
+                            if (_failure) {
+                                _failure([DRImageTool getErrorObjWithMessage:@"无法设置封面，该用户已经不存在"]);
+                            }
+                        }else
+                    if([responseStr isEqualToString:@"photoerror"]){
+                        if (_failure) {
+                            _failure([DRImageTool getErrorObjWithMessage:@"当前照片已经被删除"]);
+                        }
+                    }
+                        else{
+                            if (_failure) {
+                                _failure([DRImageTool getErrorObjWithMessage:@"设置封面照片失败"]);
+                            }
+                        }
+                }else{
+                    if (_failure) {
+                        _failure([DRImageTool getErrorObjWithMessage:@"设置封面照片失败"]);
+                    }
+                    
+                }
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                DRLOG(@"destroyUserObjID:%@",error);
+                if ([DRImageTool judgeErrorTypeWithFailureBlock:_failure withError:error]) {
+                    
+                }else
+                    if (_failure) {
+                        _failure([DRImageTool getErrorObjWithMessage:@"设置封面照片失败"]);
                     }
             }];
 }

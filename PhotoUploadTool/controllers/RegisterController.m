@@ -13,12 +13,16 @@
 #import "DRTabBarController.h"
 #define ITEM_CANCEL @"取消"
 #define ITEM_SAVE  @"保存"
+#import "TSLocateView.h"
 @interface RegisterController ()
 @property(nonatomic,strong) DRTabBarController *drtabbarController;
 @end
 
 @implementation RegisterController
 
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -28,9 +32,28 @@
     return self;
 }
 
+-(void)locateSuccess:(NSNotification*)note{
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+}
+
+-(void)locateFailure:(NSNotification*)note{
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    NSString *str = [NSString stringWithFormat:@"%@",[[note userInfo] objectForKey:@"error"]];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:@"手动设置" otherButtonTitles:nil];
+    [alert show];
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locateSuccess:) name:LOCATE_POSITION_SUCCESS object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locateFailure:) name:LOCATE_POSITION_FAILURE object:self];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    if (!appDelegate.city) {
+        MBProgressHUD *progress =  [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        progress.labelText = @"正在获取当前位置";
+        [appDelegate setAutoLocationForController:self];
+    }
 //    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.width);
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"registerbg.png"]];
     if (self.type == MODIFY_USER) {
@@ -134,6 +157,16 @@
     [self setTabbarTitleLabel:nil];
     [super viewDidUnload];
 }
+
+#pragma mark UIAlertDelegate
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    TSLocateView *locateView = [[TSLocateView alloc] initWithTitle:@"定位城市" delegate:self];
+    [locateView showInView:self.view];
+}
+
+#pragma mark --
+
+
 #pragma mark UITextFieldDelegate
 #pragma mark --
 - (IBAction)okButtonClicked:(id)sender {
@@ -158,6 +191,7 @@
 }
 
 -(void)registerSuccess{
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     [self.navigationController pushViewController:self.drtabbarController animated:YES];
 }
 
@@ -178,6 +212,19 @@
     [self.rePwField resignFirstResponder];
     [self.emailField resignFirstResponder];
 }
+
+#pragma mark UIActionSheetDelegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        TSLocateView *locateView = (TSLocateView *)actionSheet;
+        TSLocation *location = locateView.locate;
+        AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+        appDelegate.city = location.city;
+    }
+}
+
+#pragma mark --
 
 #pragma mark UITextFieldDelegate
 -(void)textFieldDidBeginEditing:(UITextField *)textField{

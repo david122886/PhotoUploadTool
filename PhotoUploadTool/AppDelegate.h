@@ -10,6 +10,7 @@
 #import "AFNetworking.h"
 #import "UserObj.h"
 #import "MBProgressHUD.h"
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
@@ -23,5 +24,5 @@
 @property ( strong, nonatomic)  NSString *city;
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
-
+-(void)setAutoLocationForController:(UIViewController*)contr;
 @end

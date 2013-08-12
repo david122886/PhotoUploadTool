@@ -18,6 +18,8 @@
 @property(nonatomic,strong) UIActivityIndicatorView *activityView;
 @property(nonatomic,assign) int cellIndex;
 @property(nonatomic,strong) UIImageView *rmoveImage;
+@property(nonatomic,strong) UIImageView *coverFlagImage;
+@property(nonatomic,assign) BOOL isCoverImage;
 - (id)initWithReuseIdentifier:(NSString *)idStr;
 -(void)hiddenRemoveButton:(BOOL)l;
 -(void)downLoadImageWithURLStr:(NSString*)url withPlaceHolderImage:(UIImage*)holderImage withSuccess:(void(^)(DRGridViewCell *cell))success failure:(void(^)(NSError *error))failure;

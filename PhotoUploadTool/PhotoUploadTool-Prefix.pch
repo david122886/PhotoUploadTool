@@ -15,10 +15,10 @@
 #endif
 
 //#define LIUYUSERVER_URL @"http://localhost:3000"
-#define LIUYUSERVER_URL @"http://192.241.221.34:3000"
+#define LIUYUSERVER_URL @"http://liuyun.in"
 #define TABBAR_DOWNLOADDATA_NOTIFICATION @"TABBAR_DOWNLOADDATA_NOTIFICATION"
 #define TABBAR_DOWNLOADDATA_NOTIFICATION_OK @"TABBAR_DOWNLOADDATA_NOTIFICATION_OK"
-#define debug 1
+#define debug 0
 #if debug
 #define DRLOG(x,y) (NSLog((x),(y)))
 #else
@@ -30,3 +30,8 @@
 #define UPLOAD_IMAGES_POST_RELOADDATAS_PRIVATE @"upload_images_post_reloadDatas_private"
 #define UPLOAD_IMAGES_POST_RELOADDATAS_PUBLIC @"upload_images_post_reloadDatas_public"
 
+#define LOCATE_POSITION_TYPE @"locate_position_type"
+#define LOCATE_POSITION_SUCCESS @"locate_position_success"
+#define LOCATE_POSITION_FAILURE @"locate_position_failure"
+
+#define LAST_LOCATION_CITY @"last_location_city"

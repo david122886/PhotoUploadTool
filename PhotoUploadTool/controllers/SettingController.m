@@ -17,8 +17,6 @@
 #define NOTIFICATION_TIP @"通知列表 :"
 #define EMAIL_TIP @"邮箱 :"
 #define LOCATION_TIP @"所在地方 :"
-#define LOCATION_VALUE @"DefaultLocationValue"
-#define LOCATE_POSITION_TYPE @"locate_position_type"
 @interface SettingController ()
 @property(nonatomic,strong) NSArray *notificationArr;
 @end
@@ -35,6 +33,7 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated{
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     [super viewDidAppear:animated];
 
 }
@@ -45,9 +44,7 @@
     [self.infoTextView setText:user.userDescrible];
     [self.emailBt setTitle:[NSString stringWithFormat:@"%@ %@",EMAIL_TIP,user.userEmail==nil?@"":user.userEmail] forState:UIControlStateNormal];
     [self.notificationBt setTitle:NOTIFICATION_TIP forState:UIControlStateNormal];
-    NSString *defaultLocation = @"";
-    defaultLocation = [[NSUserDefaults standardUserDefaults] objectForKey:LOCATION_VALUE]?:@"";
-    [self.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,defaultLocation] forState:UIControlStateNormal];
+    [self.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,appDelegate.city?:@""] forState:UIControlStateNormal];
     NSNumber *locatePosionType = [[NSUserDefaults standardUserDefaults] objectForKey:LOCATE_POSITION_TYPE];
     user.locationType = [locatePosionType boolValue]?LOCATION_AUTO_SET:LOCATION_USER_SET;
     [self.locationTypeSwitch setOn:user.locationType == LOCATION_AUTO_SET?YES:NO];
@@ -68,14 +65,8 @@
     [self.locationTypeSwitch setOffImage:[UIImage imageNamed:@"sd.png"]];
 
     [self setSettingViewData];
-    
-    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    if (appDelegate.user.locationType == LOCATION_AUTO_SET) {
-        [self locatePosition];
-    }else{
-        [LocatePositionManager stopUpdate];
-        //        [self.locationActivityProgress setHidden:YES];
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locateSuccess:) name:LOCATE_POSITION_SUCCESS object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(locateFailure:) name:LOCATE_POSITION_FAILURE object:self];
 }
 
 -(void)userTapGesture:(UITapGestureRecognizer*)tapGesture{
@@ -151,11 +142,12 @@
         //LocateManager set location
         appDelegate.user.locationType = LOCATION_AUTO_SET;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
-        [self locatePosition];
+//        [self locatePosition];
+        [appDelegate setAutoLocationForController:self];
     }else{
     //user set location by self
         appDelegate.user.locationType = LOCATION_USER_SET;
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:LOCATE_POSITION_TYPE];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
         [LocatePositionManager stopUpdate];
         TSLocateView *locateView = [[TSLocateView alloc] initWithTitle:@"定位城市" delegate:self];
         [locateView showInView:self.view];
@@ -190,6 +182,11 @@
 }
 
 - (IBAction)tabBarRightBtClicked:(UIButton *)sender {
+    
+    if (self.infoTextView.text.length > 255) {
+        [self alertErrorMessage:@"个人描述字数在255个字符内"];
+        return;
+    }
     [sender setHidden:YES];
     NSString *info = [self.infoTextView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if ([info isEqualToString:@""]) {
@@ -250,9 +247,11 @@
     if (alertView.tag == 10) {//login out
         if (buttonIndex == 1) {
             //ok
-            [self.navigationController popToRootViewControllerAnimated:YES];
+            
             AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
             appDelegate.user = nil;
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
+            [self.navigationController popToRootViewControllerAnimated:YES];
         }else{
             //cancel
             
@@ -260,7 +259,9 @@
     }else{//cancel user
         if (buttonIndex == 1) {
             //ok
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
             [self cancelUser];
+            
         }else{
             //cancel
             
@@ -295,14 +296,16 @@
 //    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     SettingController __weak *weakSettingCtr = self;
+    AppDelegate __weak *weakDelegate = appDelegate;
     [self.locationActivityProgress startAnimating];
     [self.locationActivityProgress setHidden:NO];
     [UserObjDao modifyUserLocationUserObjId:appDelegate.user.userId withUserLocation:locationCity withSuccess:^(NSString *success) {
         SettingController *setting = weakSettingCtr;
+        weakDelegate.city = locationCity;
+        [[NSUserDefaults standardUserDefaults] setObject:locationCity forKey:LAST_LOCATION_CITY];
         if (setting) {
             //        [MBProgressHUD hideHUDForView:setting.view animated:YES];
             [setting.locationBt setTitle:[NSString stringWithFormat:@"%@ %@",LOCATION_TIP,locationCity] forState:UIControlStateNormal];
-            [[NSUserDefaults standardUserDefaults] setObject:locationCity forKey:LOCATION_VALUE];
             [setting.locationActivityProgress stopAnimating];
             [setting.locationActivityProgress setHidden:YES];
         }
@@ -344,6 +347,7 @@
     }];
 }
 
+/*
 -(void)locatePosition{
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     AppDelegate __weak *weakDelegate = appDelegate;
@@ -378,6 +382,16 @@
 
     }];
 }
+
+*/
+-(void)locateSuccess:(NSNotification*)note{
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    [self updateUserLocation:appDelegate.city];
+}
+
+-(void)locateFailure:(NSNotification*)note{
+    [self alertErrorMessage:[[note userInfo] objectForKey:@"error"]];
+}
 #pragma mark property
 -(NSArray *)notificationArr{
     if (!_notificationArr) {
@@ -394,4 +408,8 @@
     }
 }
 
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 @end

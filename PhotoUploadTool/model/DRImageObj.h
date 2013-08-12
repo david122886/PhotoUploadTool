@@ -14,4 +14,5 @@
 @property(nonatomic,strong) NSString *describle;
 @property(nonatomic,strong) NSString *imageDataID;
 @property(nonatomic,assign) BOOL isLocked;
+@property(nonatomic,assign) BOOL isCoverImage;
 @end

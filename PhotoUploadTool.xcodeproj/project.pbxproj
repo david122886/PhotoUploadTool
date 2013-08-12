@@ -79,6 +79,8 @@
 		639C1290174F2201008B11C2 /* NotificationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 639C128F174F2201008B11C2 /* NotificationObject.m */; };
 		639D5E991760649900106F78 /* DRImageObj.m in Sources */ = {isa = PBXBuildFile; fileRef = 639D5E981760649900106F78 /* DRImageObj.m */; };
 		639D5E9C176068DF00106F78 /* DRNetWorkingException.m in Sources */ = {isa = PBXBuildFile; fileRef = 639D5E9B176068DF00106F78 /* DRNetWorkingException.m */; };
+		639E047917B87AD700A3F723 /* edit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 639E047817B87AD700A3F723 /* edit@2x.png */; };
+		639E047B17B8C7AC00A3F723 /* coverFlag.png in Resources */ = {isa = PBXBuildFile; fileRef = 639E047A17B8C7AC00A3F723 /* coverFlag.png */; };
 		639EFCB71752F37A00433D3C /* btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 639EFCB31752F37A00433D3C /* btn.png */; };
 		639EFCB81752F37A00433D3C /* login_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 639EFCB41752F37A00433D3C /* login_bg.png */; };
 		639EFCB91752F37A00433D3C /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 639EFCB51752F37A00433D3C /* logo.png */; };
@@ -281,6 +283,8 @@
 		639D5E981760649900106F78 /* DRImageObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRImageObj.m; sourceTree = "<group>"; };
 		639D5E9A176068DF00106F78 /* DRNetWorkingException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRNetWorkingException.h; sourceTree = "<group>"; };
 		639D5E9B176068DF00106F78 /* DRNetWorkingException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRNetWorkingException.m; sourceTree = "<group>"; };
+		639E047817B87AD700A3F723 /* edit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit@2x.png"; sourceTree = "<group>"; };
+		639E047A17B8C7AC00A3F723 /* coverFlag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = coverFlag.png; sourceTree = "<group>"; };
 		639EFCB31752F37A00433D3C /* btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn.png; sourceTree = "<group>"; };
 		639EFCB41752F37A00433D3C /* login_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = login_bg.png; sourceTree = "<group>"; };
 		639EFCB51752F37A00433D3C /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
@@ -742,6 +746,8 @@
 		639EFCB11752F36900433D3C /* images */ = {
 			isa = PBXGroup;
 			children = (
+				639E047A17B8C7AC00A3F723 /* coverFlag.png */,
+				639E047817B87AD700A3F723 /* edit@2x.png */,
 				639809FE1795364900CBB073 /* placeholder.png */,
 				639809FF1795364900CBB073 /* addImage.png */,
 				63980A001795364900CBB073 /* lock.png */,
@@ -1069,6 +1075,8 @@
 				63980A011795364900CBB073 /* placeholder.png in Resources */,
 				63980A021795364900CBB073 /* addImage.png in Resources */,
 				63980A031795364900CBB073 /* lock.png in Resources */,
+				639E047917B87AD700A3F723 /* edit@2x.png in Resources */,
+				639E047B17B8C7AC00A3F723 /* coverFlag.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1248,8 +1256,8 @@
 				INFOPLIST_FILE = "PhotoUploadTool/PhotoUploadTool-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "702D8A1A-6DB6-40B1-8234-C4EB34BB5730";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "702D8A1A-6DB6-40B1-8234-C4EB34BB5730";
+				PROVISIONING_PROFILE = "BF3E5AD2-E31C-4B78-99E0-8BB954F734C3";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BF3E5AD2-E31C-4B78-99E0-8BB954F734C3";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1258,14 +1266,15 @@
 		632A8BFA17421BCB002A81DF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Sen Ye (FE46ZS29LM)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Sen Ye (KVSA99Q5KG)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Sen Ye (KVSA99Q5KG)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PhotoUploadTool/PhotoUploadTool-Prefix.pch";
 				INFOPLIST_FILE = "PhotoUploadTool/PhotoUploadTool-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "702D8A1A-6DB6-40B1-8234-C4EB34BB5730";
+				PROVISIONING_PROFILE = "6941D49A-F2C0-4508-913B-34858A3F1AB8";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6941D49A-F2C0-4508-913B-34858A3F1AB8";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};

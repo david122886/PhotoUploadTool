@@ -39,6 +39,10 @@
         self.imageView.backgroundColor = [UIColor clearColor];
         [self addSubview:self.imageView];
         
+        self.coverFlagImage = [[UIImageView alloc] initWithFrame:CGRectZero];
+        self.coverFlagImage.image = [UIImage imageNamed:@"coverFlag.png"];
+        [self.coverFlagImage setHidden:YES];
+        [self addSubview:self.coverFlagImage];
         self.rmoveImage = [[UIImageView alloc] initWithFrame:CGRectZero];
         self.rmoveImage.image = [UIImage imageNamed:@"privatePwd_delete.png"];
         [self addSubview:self.rmoveImage];
@@ -123,6 +127,7 @@
     self.rmoveImage.frame = CGRectMake(self.frame.size.width - GRIDCELL_REMOVE_WIDTH, 0, GRIDCELL_REMOVE_WIDTH, GRIDCELL_REMOVE_HEIGHT);
     self.activityView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
     
+    self.coverFlagImage.frame = CGRectMake(self.frame.size.width/5*4, 0, self.frame.size.width/5+1, 10);
     if (self.cachImage) {
         [self.imageView setImage:[ImageHelper cutImage:self.cachImage cutRect:self.imageView.frame]];
 //        [self setImageData];
@@ -144,7 +149,11 @@
  // Drawing code
      
  }
- 
+
+-(void)setIsCoverImage:(BOOL)isCoverImage{
+    [self.coverFlagImage setHidden:!isCoverImage];
+    _isCoverImage = isCoverImage;
+}
 -(void)hiddenRemoveButton:(BOOL)l{
     [self.rmoveImage setHidden:l];
 }

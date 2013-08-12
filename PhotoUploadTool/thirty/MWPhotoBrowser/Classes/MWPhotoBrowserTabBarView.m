@@ -28,7 +28,11 @@
         self.middleLabel.textAlignment = UITextAlignmentCenter;
         self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
         
+        self.middleBt = [[UIButton alloc] initWithFrame:(CGRect){self.frame.size.width - 80,7,30,30}];
+        self.middleBt.autoresizingMask = UIViewAutoresizingFlexibleRightMargin ;
+        [self.middleBt setBackgroundImage:[UIImage imageNamed:@"edit.png"] forState:UIControlStateNormal];
 //        [self addSubview:self.leftBt];
+        [self addSubview:self.middleBt];
         [self addSubview:self.rightBt];
         [self addSubview:self.middleLabel];
         

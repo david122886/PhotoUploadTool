@@ -70,6 +70,7 @@
 @property (nonatomic, retain) UIBarButtonItem *previousViewControllerBackButton;
 @property (nonatomic, retain) UIImage *navigationBarBackgroundImageDefault, *navigationBarBackgroundImageLandscapePhone;
 @property (nonatomic, retain) UIActionSheet *actionsSheet;
+@property (nonatomic, retain) UIActionSheet *setCoverimageSheet;
 @property (nonatomic, retain) MBProgressHUD *progressHUD;
 
 // Private Methods
@@ -202,6 +203,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [[SDImageCache sharedImageCache] clearMemory]; // clear memory
     [_photos release];
     [_progressHUD release];
+    [_setCoverimageSheet release];
     [super dealloc];
 }
 
@@ -242,12 +244,14 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     //tab bar
     mwTabView = [[MWPhotoBrowserTabBarView alloc] initWithFrame:(CGRect){0,0,self.view.frame.size.width,44}];
     mwTabView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+    [mwTabView.middleBt setHidden:YES];
     
     mwToolBarView = [[MWPhotoBrowserTabBarView alloc] initWithFrame:(CGRect){0,self.view.frame.size.height - 44,self.view.frame.size.width,44}];
     mwToolBarView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
     [mwToolBarView.rightBt setImage:[UIImage imageNamed:@"trash.png"] forState:UIControlStateNormal];
     [mwToolBarView.rightBt setBackgroundImage:nil forState:UIControlStateNormal];
     [mwToolBarView.rightBt setHidden:self.isForbidingDelete];
+    [mwToolBarView.middleBt setHidden:self.isForbidingDelete];
     // Toolbar
     _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
     _toolbar.tintColor = nil;
@@ -313,6 +317,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     
     [self.view addSubview:mwToolBarView];
     [mwToolBarView.rightBt addTarget:self action:@selector(actionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [mwToolBarView.middleBt addTarget:self action:@selector(actionSetCoverImageButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     /*
     UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"scan_back.png"] landscapeImagePhone:[UIImage imageNamed:@"scan_back.png"] style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonPressed:)] autorelease];
     UIBarButtonItem *deleteButton = [[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"scan_delete.png"] landscapeImagePhone:[UIImage imageNamed:@"scan_delete.png"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteButtonPressed:)] autorelease];
@@ -1114,6 +1119,29 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [self dismissModalViewControllerAnimated:YES];
 }
 
+-(void)actionSetCoverImageButtonPressed:(id)sender{
+    id <MWPhoto> photo = [self photoAtIndex:_currentPageIndex];
+    if ([self numberOfPhotos] > 0 && [photo underlyingImage]) {
+        
+        // Keep controls hidden
+        [self setControlsHidden:NO animated:YES permanent:YES];
+        
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [self.setCoverimageSheet showFromBarButtonItem:sender animated:YES];
+        } else {
+            [self.setCoverimageSheet showInView:self.view];
+        }
+        
+    }
+    
+    if ([self numberOfPhotos] > 0 && ![photo underlyingImage]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"正在下载照片，请稍候再试" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alert show];
+        
+    }
+}
+
 - (void)actionButtonPressed:(id)sender {
     if (_actionsSheet) {
         // Dismiss
@@ -1161,42 +1189,22 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 #pragma mark - Action Sheet Delegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    /*
-    if (actionSheet == _actionsSheet) {           
-        // Actions 
+
+    if (actionSheet == _actionsSheet) {
         self.actionsSheet = nil;
         if (buttonIndex != actionSheet.cancelButtonIndex) {
-            if (buttonIndex == actionSheet.firstOtherButtonIndex) {
-                [self savePhoto]; return;
-            } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
-                [self copyPhoto]; return;	
-            } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 2) {
-                if ([MFMailComposeViewController canSendMail]) {
-                    [self emailPhoto]; return;
-                }else{
-                //delete
-                    [self didStartDeletingPageAtIndex:[self getCurrentIndex]];
-                    return;
-                }
-                
-            }else if (buttonIndex == actionSheet.firstOtherButtonIndex + 3) {
-                //delete
-                [self didStartDeletingPageAtIndex:[self getCurrentIndex]];
-                 return;
+            [self deleteButtonPressed:nil];
+        }
+    }else
+    if (actionSheet == _setCoverimageSheet) {
+        self.setCoverimageSheet = nil;
+        if (buttonIndex != actionSheet.cancelButtonIndex) {
+            self.coverImageIndex = [self getCurrentIndex];
+            if (_delegate && [_delegate respondsToSelector:@selector(photoBrowser:setCoverPhotoAtIndex:)]) {
+                [_delegate photoBrowser:self setCoverPhotoAtIndex:[self getCurrentIndex]];
             }
         }
     }
-    */
-    
-    if (actionSheet == _actionsSheet) {
-        // Actions
-        self.actionsSheet = nil;
-        if (buttonIndex != actionSheet.cancelButtonIndex) {
-//            [self didStartDeletingPageAtIndex:[self getCurrentIndex]];
-            [self deleteButtonPressed:nil];
-        }
-    }
-//    [self hideControlsAfterDelay]; // Continue as normal...
 }
 
 #pragma mark - MBProgressHUD
@@ -1238,6 +1246,16 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     }
     self.navigationController.navigationBar.userInteractionEnabled = YES;
 }
+
+#pragma mark property
+-(UIActionSheet *)setCoverimageSheet{
+    if (!_setCoverimageSheet) {
+        _setCoverimageSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"用作封面照片", nil];
+        _setCoverimageSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    }
+    return _setCoverimageSheet;
+}
+#pragma mark --
 
 #pragma mark - Actions
 

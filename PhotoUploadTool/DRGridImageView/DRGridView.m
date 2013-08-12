@@ -299,6 +299,11 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
                 } failure:^(NSError *error) {
                     DRLOG(@"DRGridViewCell download imaage error:%@",error);
                 }];
+                if (self.coverImageIndex == newCell.cellIndex && newCell.cellIndex != 0) {
+                    newCell.isCoverImage = YES;
+                }else{
+                    newCell.isCoverImage = NO;
+                }
             }
 //            [newCell.imageView setImage:[ImageHelper cutImage:newCell.imageView.image cutRect:newCell.frame]];
             [newCell hiddenRemoveButton:!self.isAbleDelete];
@@ -350,6 +355,12 @@ typedef enum {SCROLL_UP,SCROLL_DOWN}ScrollViewDirection;//SCROLL_UP:scroll conte
             } failure:^(NSError *error) {
                 DRLOG(@"DRGridViewCell download imaage error:%@",error);
             }];
+            
+            if (self.coverImageIndex == cell.cellIndex && cell.cellIndex != 0) {
+                cell.isCoverImage = YES;
+            }else{
+             cell.isCoverImage = NO;
+            }
         }
         
         cell.testLabel.text = [NSString stringWithFormat:@"%d",startIndex];

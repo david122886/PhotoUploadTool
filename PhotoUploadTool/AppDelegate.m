@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import "UserObjDao.h"
+#import "DRNetWorkingException.h"
+#import "LocatePositionManager.h"
 #define  DEFAULT_TOKEN @"default_token"
 @implementation AppDelegate
 
@@ -32,10 +34,9 @@
     
 //    [[UINavigationBar appearance] setBackgroundImage:NavigationPortraitBackground forBarMetrics:UIBarMetricsDefault];
 //    [[UINavigationBar appearance] setBackgroundImage:NavigationLandscapeBackground forBarMetrics:UIBarMetricsLandscapePhone];
-    
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 50;
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     return YES;
 }
 
@@ -49,6 +50,7 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -64,7 +66,9 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     [self saveContext];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
 }
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
@@ -91,7 +95,6 @@
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
     DRLOG(@"idReceiveRemoteNotification::%@", userInfo);
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 - (void)saveContext
 {
@@ -178,6 +181,37 @@
     }    
     
     return _persistentStoreCoordinator;
+}
+
+-(void)setAutoLocationForController:(UIViewController*)contr{
+    UIViewController __weak *weakContr = contr;
+    NSNumber *locatePosionType = [[NSUserDefaults standardUserDefaults] objectForKey:LOCATE_POSITION_TYPE];
+    if (!locatePosionType) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
+    }
+    AppDelegate __weak *weakSelf = self;
+    if (!locatePosionType || [locatePosionType boolValue] == YES) {
+        [LocatePositionManager locatePositionSuccess:^(NSString *locatitonName, CLLocationCoordinate2D locationg) {
+            NSString *cityS = nil;
+            if (locatitonName) {
+                cityS = [locatitonName stringByReplacingOccurrencesOfString:@"市" withString:@""];
+            }
+            weakSelf.city = cityS;
+            [[NSUserDefaults standardUserDefaults] setObject:cityS forKey:LAST_LOCATION_CITY];
+            [[NSNotificationCenter defaultCenter] postNotificationName:LOCATE_POSITION_SUCCESS object:weakContr userInfo:@{@"city": cityS?:@""}];
+//            [weakSelf updateUserLocationForBack:weakSelf.user updateCity:cityS];
+        } failure:^(NSError *error) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:LOCATE_POSITION_FAILURE object:weakContr userInfo:@{@"error": [[error userInfo] objectForKey:@"NSLocalizedDescription"]?:@""}];
+        }];
+    }
+}
+
+-(void)updateUserLocationForBack:(UserObj *)userObj updateCity:(NSString*)locate{
+    if (userObj) {
+        [UserObjDao modifyUserLocationUserObjId:userObj.userId withUserLocation:locate withSuccess:^(NSString *success) {
+        } withFailure:^(NSError *errror) {            
+        }];
+    }
 }
 
 #pragma mark - Application's Documents directory

@@ -20,6 +20,7 @@ typedef struct {int row;float offset;}GridViewCritical;
 @property(nonatomic,strong) UIImage  *placeHolderImage;
 @property(nonatomic,assign) BOOL isAbleDelete;
 @property(nonatomic,assign) BOOL isloadingData;
+@property(nonatomic,assign) int coverImageIndex;
 @property(nonatomic,assign) BOOL isShowPrivateModifyPwdView;
 @property(nonatomic,strong) PrivatePwdmodifyView *modifyPwdView;
 - (DRGridViewCell *)dequeueReusableCellWithIdentifier: (NSString *)idStr;

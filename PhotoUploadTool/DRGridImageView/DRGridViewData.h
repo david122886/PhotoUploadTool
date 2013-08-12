@@ -14,4 +14,5 @@ typedef enum {DRGRIDVIEWDATA_LOCATION,DRGRIDVIEWDATA_NETWORK}DRGridViewDataSourc
 @property(nonatomic,assign) int imageID;
 @property(nonatomic,strong) NSString *imageDataID;
 @property(nonatomic,assign) DRGridViewDataSourceType imageSourceType;
+@property(nonatomic,assign) BOOL isCoverImage;
 @end

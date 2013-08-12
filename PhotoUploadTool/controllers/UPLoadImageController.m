@@ -56,6 +56,15 @@
 }
 #if 1
 
+- (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize
+{
+    UIGraphicsBeginImageContext(CGSizeMake(image.size.width * scaleSize, image.size.height * scaleSize));
+    [image drawInRect:CGRectMake(0, 0, image.size.width * scaleSize, image.size.height * scaleSize)];
+    UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext(); 
+   return scaledImage;
+}
+                                
 -(void)uploadImages:(NSArray *)assertArr withParmeters:(NSDictionary*)parmeters{
     [self.leftPhotos removeAllObjects];
     self.isUploadFinished = NO;
@@ -80,6 +89,15 @@
              DRLOG(@"%@", @"ALAssetRepresentation fullScreenImage is null");
              }
              UIImage *image = [UIImage imageWithCGImage:representation.fullScreenImage];
+            if (image.size.width > image.size.height) {
+                if (image.size.width > 1024) {
+                    image = [self scaleImage:image toScale:1024.0/image.size.width];
+                }
+            }else{
+                if (image.size.height > 1024) {
+                    image = [self scaleImage:image toScale:1024.0/image.size.height];
+                }
+            }
              NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
 //            NSData *imageData = UIImagePNGRepresentation(image);
             [formData appendPartWithFileData:imageData name:@"img" fileName:@"imag.png" mimeType:@"image/jpeg"];

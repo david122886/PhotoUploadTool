@@ -12,4 +12,5 @@
 @property(nonatomic,strong)UIButton *leftBt;
 @property(nonatomic,strong) UILabel *middleLabel;
 @property(nonatomic,strong) UIButton *rightBt;
+@property(nonatomic,strong) UIButton *middleBt;
 @end

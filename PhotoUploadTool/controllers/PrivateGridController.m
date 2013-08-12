@@ -59,6 +59,9 @@
         data.imageID = imageIndex;
         data.imageDataID = obj.imageDataID;
         data.imageURLStr = obj.smallImageURLStr;
+        if (obj.isCoverImage) {
+            self.gridView.coverImageIndex = imageIndex+1;
+        }
         [self.summaryDataArr addObject:data];
         //        http://ww2.sinaimg.cn/bmiddle/acb53f76gw1e0d3m71gtdj.jpg
         MWPhoto *photo = [MWPhoto photoWithURL:[NSURL URLWithString:obj.bigImageURLStr]];

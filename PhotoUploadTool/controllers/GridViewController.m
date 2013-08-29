@@ -33,8 +33,20 @@
     }
     return self;
 }
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
+-(void)coverImageNotification:(NSNotification*)note{
+    if (note.object != self) {
+        self.gridView.coverImageIndex = -1;
+    }
+}
 - (void)viewDidLoad
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(coverImageNotification:) name:SETCOVER_NOTIFICATION object:nil];
     [super viewDidLoad];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:nil action:nil];
     self.gridView = [[DRGridView alloc] initWithFrame:(CGRect){0,0,self.contentRect.size.width,self.contentRect.size.height}];
@@ -168,6 +180,7 @@
     // Create browser
 	MWPhotoBrowser *browser = [[MWPhotoBrowser alloc] initWithDelegate:self];
     browser.displayActionButton = YES;
+    browser.coverImageIndex = gridView.coverImageIndex-1;
     //browser.wantsFullScreenLayout = NO;
     //[browser setInitialPageIndex:2];
     browser.view.frame = [[UIScreen mainScreen] bounds];
@@ -213,6 +226,8 @@
 #pragma mark --
 
 #pragma mark - MWPhotoBrowserDelegate
+
+
 
 -(void)photoBrowser:(MWPhotoBrowser *)photoBrowser backAtIndex:(NSUInteger)index{
     [self setCoverImageViewCellWithIndex:photoBrowser.coverImageIndex+1];
@@ -269,20 +284,22 @@
 }
 
 
--(void)photoBrowser:(MWPhotoBrowser *)photoBrowser setCoverPhotoAtIndex:(NSUInteger)index{
-    if (index >= [self.scanDataArr count]) {
+-(void)photoBrowser:(MWPhotoBrowser *)photoBrowser setCoverPhotoAtIndex:(int)index{
+    if (index >= [self.scanDataArr count] || index < 0) {
         DRLOG(@"%@", @"delete index over all count");
         return;
     }
     [MBProgressHUD showHUDAddedTo:photoBrowser.view animated:YES];
     [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION object:nil];
     MWPhotoBrowser __weak *weakCtr = photoBrowser;
+    NSString *catory = [self isKindOfClass:[PublicGridController class]]?@"public":@"private";
     MWPhoto *deletedData = [self.scanDataArr objectAtIndex:index];
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     [DRImageTool setCoverImageWithUserID:appDelegate.user.userId withPhotoID:deletedData.imageDataID withSuccess:^(NSString *success){
         MWPhotoBrowser *Ctr = weakCtr;
         if (Ctr) {
             [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
+            [[NSNotificationCenter defaultCenter] postNotificationName:SETCOVER_NOTIFICATION object:nil userInfo:@{@"catory":catory}];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:success delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
             [alert show];
         }

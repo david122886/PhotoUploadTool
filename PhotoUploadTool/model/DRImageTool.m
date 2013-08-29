@@ -178,4 +178,39 @@
                     }
             }];
 }
+
++(void)reportImageWithUserID:(NSString*)_userID withPhotoID:(NSString*)_photoID withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *error) )_failure{
+    //    http://192.168.0.137:3000/users/set_cover?user_id=1&photo_id=2
+    AppDelegate *appDelete = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    AFHTTPClient *client = appDelete.afhttpClient;
+    //    [client postPath:@"/users/destroy_user"
+    [client getPath:@"admins/report_user"
+         parameters:@{@"id":_photoID?:@""}
+            success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                if (responseStr) {
+                    if ([responseStr isEqualToString:@"success"]) {
+                        if (_success) {
+                            _success(@"举报成功");
+                        }
+                    }else
+                        if (_failure) {
+                            _failure([DRImageTool getErrorObjWithMessage:@"举报失败"]);
+                        }
+                }else{
+                    if (_failure) {
+                        _failure([DRImageTool getErrorObjWithMessage:@"举报失败"]);
+                    }
+                    
+                }
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                DRLOG(@"destroyUserObjID:%@",error);
+                if ([DRImageTool judgeErrorTypeWithFailureBlock:_failure withError:error]) {
+                    
+                }else
+                    if (_failure) {
+                        _failure([DRImageTool getErrorObjWithMessage:@"举报失败"]);
+                    }
+            }];
+}
 @end

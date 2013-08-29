@@ -248,7 +248,7 @@
         if (buttonIndex == 1) {
             //ok
             
-            AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+            AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
             appDelegate.user = nil;
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
             [self.navigationController popToRootViewControllerAnimated:YES];

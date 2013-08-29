@@ -10,7 +10,13 @@
 #import "UserObjDao.h"
 #import "DRNetWorkingException.h"
 #import "LocatePositionManager.h"
+
 #define  DEFAULT_TOKEN @"default_token"
+@interface AppDelegate()
+@property(nonatomic, strong) NSString *versionUrlStr;
+@property(nonatomic, strong) NSMutableData *definitionData;//请求到应用id的数据信息
+@end
+
 @implementation AppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -34,9 +40,19 @@
     
 //    [[UINavigationBar appearance] setBackgroundImage:NavigationPortraitBackground forBarMetrics:UIBarMetricsDefault];
 //    [[UINavigationBar appearance] setBackgroundImage:NavigationLandscapeBackground forBarMetrics:UIBarMetricsLandscapePhone];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 50;
+//    [UIApplication sharedApplication].applicationIconBadgeNumber = 50;
+    //获取appstore中的应用版本信息
+    //异步请求信息
+    self.definitionData = [NSMutableData data];//数据缓存对象
+    //实际上架后需要更改应用id
+    NSURL *url=[NSURL URLWithString:@"http://itunes.apple.com/lookup?id=684150816"];
+    NSURLRequest *req = [NSURLRequest requestWithURL:url];
+    [NSURLConnection connectionWithRequest:req delegate:self];
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+//    if (!self.city) {
+//        self.city = @"上海";
+//    }
     return YES;
 }
 
@@ -231,4 +247,47 @@
 }
 
 #pragma mark --
+
+
+#pragma mark tip new version
+
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+	[self.definitionData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    NSError *error=nil;
+    NSDictionary *jsonData=[NSJSONSerialization JSONObjectWithData:self.definitionData options:NSJSONReadingMutableLeaves error:&error];
+    NSArray *infoArray = [jsonData objectForKey:@"results"];
+    if ([infoArray count]>0) {
+        NSDictionary *releaseInfo = [infoArray objectAtIndex:0];
+        NSString *latestVersion = [releaseInfo objectForKey:@"version"];
+        NSString *trackViewUrl = [releaseInfo objectForKey:@"trackViewUrl"];
+        self.versionUrlStr=trackViewUrl;
+        
+        NSString* appver=[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+        
+        double clientVer = [appver doubleValue];
+        double serverVer = [latestVersion doubleValue];
+        if (clientVer>=serverVer) {
+            
+        }else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"软件有最新版本%@，您是否升级？",latestVersion] delegate:self cancelButtonTitle:nil otherButtonTitles:@"立即更新",@"以后再试", nil];
+            [alert show];
+        }
+    }
+}
+
+#pragma mark UIAlertViewDelegate
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 0) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.versionUrlStr]];
+    }else
+    if (buttonIndex == 1) {
+        
+    }
+}
+#pragma mark --
+
 @end

@@ -74,9 +74,17 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION_OK object:nil];
 }
 
+-(void)coverImageNotification:(NSNotification*)note{
+    if ([[note.userInfo objectForKey:@"catory"]  isEqualToString:@"private"]) {
+        self.gridView.coverImageIndex = -1;
+    }
+}
 -(void)downloadDataISFirst:(BOOL)isFirst{
     if (isFirst) {
         if (self.isFirstDownloadData) {
+            if (self.gridView.coverImageIndex == -1) {
+                [self.gridView reloadData];
+            }
             return;
         }else{
             self.isFirstDownloadData = isFirst;

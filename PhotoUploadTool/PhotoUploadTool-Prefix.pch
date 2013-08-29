@@ -18,7 +18,7 @@
 #define LIUYUSERVER_URL @"http://liuyun.in"
 #define TABBAR_DOWNLOADDATA_NOTIFICATION @"TABBAR_DOWNLOADDATA_NOTIFICATION"
 #define TABBAR_DOWNLOADDATA_NOTIFICATION_OK @"TABBAR_DOWNLOADDATA_NOTIFICATION_OK"
-#define debug 0
+#define debug 1
 #if debug
 #define DRLOG(x,y) (NSLog((x),(y)))
 #else
@@ -35,3 +35,7 @@
 #define LOCATE_POSITION_FAILURE @"locate_position_failure"
 
 #define LAST_LOCATION_CITY @"last_location_city"
+
+#define SETCOVER_NOTIFICATION @"setcover_notification"
+
+#define FIRST_USE_APP @"first_use_app"

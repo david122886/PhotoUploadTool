@@ -212,6 +212,35 @@
 
 #pragma mark - MWPhotoBrowserDelegate
 
+-(void)photoBrowser:(MWPhotoBrowser *)photoBrowser reportPhotoAtIndex:(int)index{
+    if (index >= [self.friendsArr count] || index < 0) {
+        DRLOG(@"%@", @"delete index over all count");
+        return;
+    }
+    [MBProgressHUD showHUDAddedTo:photoBrowser.view animated:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TABBAR_DOWNLOADDATA_NOTIFICATION object:nil];
+    MWPhotoBrowser __weak *weakCtr = photoBrowser;
+    DRImageObj *imageObj = [self.friendsArr objectAtIndex:index];    
+    [DRImageTool reportImageWithUserID:self.friendID withPhotoID:imageObj.imageDataID withSuccess:^(NSString *success) {
+        MWPhotoBrowser *Ctr = weakCtr;
+        if (Ctr) {
+            [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:success delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+        }
+        
+    } withFailure:^(NSError *error) {
+        MWPhotoBrowser *Ctr = weakCtr;
+        if (Ctr) {
+            [MBProgressHUD hideHUDForView:Ctr.view animated:YES];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[error.userInfo objectForKey:@"NSLocalizedDescription"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alert show];
+        }
+        
+    }];
+}
+
+
 -(void)photoBrowser:(MWPhotoBrowser *)photoBrowser backAtIndex:(NSUInteger)index{
 
 }

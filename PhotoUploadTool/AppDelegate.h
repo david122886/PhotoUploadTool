@@ -11,7 +11,7 @@
 #import "UserObj.h"
 #import "MBProgressHUD.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate,NSURLConnectionDelegate,UIAlertViewDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

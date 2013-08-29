@@ -13,6 +13,7 @@
 #import "FriendsViewController.h"
 #import "LoginInController.h"
 #import "DRTabBarController.h"
+#import "ReportViewController.h"
 #if QBGridViewTest
 
 #define GRIDVIEW_SPACE 5.0
@@ -73,6 +74,10 @@
     [MBProgressHUD hideHUDForView:self.view animated:YES];
     if ([[note.userInfo objectForKey:@"error"] isEqualToString:@"系统禁用定位服务"]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:[note.userInfo objectForKey:@"error"] delegate:self cancelButtonTitle:@"手动设置" otherButtonTitles:nil];
+        [alert show];
+    }else
+    if ([note.name isEqualToString:@"locate_position_failure"]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"定位失败" delegate:self cancelButtonTitle:@"手动设置" otherButtonTitles:nil];
         [alert show];
     }
 }

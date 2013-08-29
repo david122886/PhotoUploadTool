@@ -18,7 +18,9 @@ typedef enum {REGISTER_USER = 10,MODIFY_USER}RegisterControllerType;
 @property (weak, nonatomic) IBOutlet UILabel *rePwdlabel;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UILabel *tabbarTitleLabel;
+@property (weak, nonatomic) IBOutlet UISwitch *reportSwitch;
 @property(nonatomic,assign) RegisterControllerType type;
 - (IBAction)okButtonClicked:(id)sender;
+- (IBAction)reportBtClicked:(id)sender;
 
 @end

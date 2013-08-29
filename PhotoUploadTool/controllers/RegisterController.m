@@ -33,11 +33,11 @@
 }
 
 -(void)locateSuccess:(NSNotification*)note{
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [MBProgressHUD hideHUDForView:self.scrollView animated:YES];
 }
 
 -(void)locateFailure:(NSNotification*)note{
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [MBProgressHUD hideHUDForView:self.scrollView  animated:YES];
     NSString *str = [NSString stringWithFormat:@"%@",[[note userInfo] objectForKey:@"error"]];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:str delegate:self cancelButtonTitle:@"手动设置" otherButtonTitles:nil];
     [alert show];
@@ -50,7 +50,7 @@
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:LOCATE_POSITION_TYPE];
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     if (!appDelegate.city) {
-        MBProgressHUD *progress =  [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        MBProgressHUD *progress =  [MBProgressHUD showHUDAddedTo:self.scrollView animated:YES];
         progress.labelText = @"正在获取当前位置";
         [appDelegate setAutoLocationForController:self];
     }
@@ -139,6 +139,10 @@
         [self alertErrorMessage:@"无效邮箱地址"];
         return NO;
     }
+    if (self.reportSwitch.on == NO) {
+        [self alertErrorMessage:@"必须同意并遵守《流云》使用条款才能注册"];
+        return NO;
+    }
     return YES;
 }
 
@@ -155,6 +159,7 @@
     [self setPwdLabel:nil];
     [self setRePwdlabel:nil];
     [self setTabbarTitleLabel:nil];
+    [self setReportSwitch:nil];
     [super viewDidUnload];
 }
 
@@ -188,6 +193,9 @@
             [gesCtr alertErrorMessage:[errror.userInfo objectForKey:@"NSLocalizedDescription"]];
         }];
     }
+}
+
+- (IBAction)reportBtClicked:(id)sender {
 }
 
 -(void)registerSuccess{

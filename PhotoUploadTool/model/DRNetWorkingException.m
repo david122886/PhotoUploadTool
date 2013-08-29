@@ -31,6 +31,11 @@
         _failure([DRNetWorkingException getErrorObjWithMessage:@"未能连接到服务器"]);
         return YES;
     }
+    
+    if ([[error.userInfo objectForKey:@"NSLocalizedDescription"] isEqualToString:@"似乎已断开与互联网的连接。"]) {
+        _failure([DRNetWorkingException getErrorObjWithMessage:@"无法连接网络"]);
+        return YES;
+    }
     return NO;
 }
 @end

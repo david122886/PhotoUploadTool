@@ -15,4 +15,6 @@ typedef enum {PUBLIC_IMAGEDATA,PRIVATE_IMAGEDATA}ImageDataType;
 +(void)deleteDRImageDataWithDRImageDataID:(NSString*)_drimageDataId withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *error) )_failure;
 
 +(void)setCoverImageWithUserID:(NSString*)_userID withPhotoID:(NSString*)_photoID withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *error) )_failure;
+
++(void)reportImageWithUserID:(NSString*)_userID withPhotoID:(NSString*)_photoID withSuccess:(void(^)(NSString *success))_success withFailure:(void(^)(NSError *error) )_failure;
 @end

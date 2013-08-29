@@ -70,6 +70,7 @@
 @property (nonatomic, retain) UIBarButtonItem *previousViewControllerBackButton;
 @property (nonatomic, retain) UIImage *navigationBarBackgroundImageDefault, *navigationBarBackgroundImageLandscapePhone;
 @property (nonatomic, retain) UIActionSheet *actionsSheet;
+@property (nonatomic, retain) UIActionSheet *reportSheet;
 @property (nonatomic, retain) UIActionSheet *setCoverimageSheet;
 @property (nonatomic, retain) MBProgressHUD *progressHUD;
 
@@ -139,7 +140,7 @@
 @synthesize previousNavBarTintColor = _previousNavBarTintColor;
 @synthesize navigationBarBackgroundImageDefault = _navigationBarBackgroundImageDefault,
 navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandscapePhone;
-@synthesize displayActionButton = _displayActionButton, actionsSheet = _actionsSheet;
+@synthesize displayActionButton = _displayActionButton, actionsSheet = _actionsSheet,reportSheet = _reportSheet;
 @synthesize progressHUD = _progressHUD;
 @synthesize previousViewControllerBackButton = _previousViewControllerBackButton;
 
@@ -204,6 +205,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [_photos release];
     [_progressHUD release];
     [_setCoverimageSheet release];
+    [_reportSheet release];
     [super dealloc];
 }
 
@@ -245,13 +247,14 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     mwTabView = [[MWPhotoBrowserTabBarView alloc] initWithFrame:(CGRect){0,0,self.view.frame.size.width,44}];
     mwTabView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     [mwTabView.middleBt setHidden:YES];
-    
+    [mwTabView.reportBt setHidden:YES];
     mwToolBarView = [[MWPhotoBrowserTabBarView alloc] initWithFrame:(CGRect){0,self.view.frame.size.height - 44,self.view.frame.size.width,44}];
     mwToolBarView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth;
     [mwToolBarView.rightBt setImage:[UIImage imageNamed:@"trash.png"] forState:UIControlStateNormal];
     [mwToolBarView.rightBt setBackgroundImage:nil forState:UIControlStateNormal];
     [mwToolBarView.rightBt setHidden:self.isForbidingDelete];
     [mwToolBarView.middleBt setHidden:self.isForbidingDelete];
+    [mwToolBarView.reportBt setHidden:!self.isForbidingDelete];
     // Toolbar
     _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
     _toolbar.tintColor = nil;
@@ -318,6 +321,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [self.view addSubview:mwToolBarView];
     [mwToolBarView.rightBt addTarget:self action:@selector(actionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [mwToolBarView.middleBt addTarget:self action:@selector(actionSetCoverImageButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [mwToolBarView.reportBt addTarget:self action:@selector(actionReportButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     /*
     UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"scan_back.png"] landscapeImagePhone:[UIImage imageNamed:@"scan_back.png"] style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonPressed:)] autorelease];
     UIBarButtonItem *deleteButton = [[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"scan_delete.png"] landscapeImagePhone:[UIImage imageNamed:@"scan_delete.png"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteButtonPressed:)] autorelease];
@@ -1119,6 +1123,29 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [self dismissModalViewControllerAnimated:YES];
 }
 
+-(void)actionReportButtonPressed:(id)sender{
+    id <MWPhoto> photo = [self photoAtIndex:_currentPageIndex];
+    if ([self numberOfPhotos] > 0 && [photo underlyingImage]) {
+        
+        // Keep controls hidden
+        [self setControlsHidden:NO animated:YES permanent:YES];
+        
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [self.reportSheet showFromBarButtonItem:sender animated:YES];
+        } else {
+            [self.reportSheet showInView:self.view];
+        }
+        
+    }
+    
+    if ([self numberOfPhotos] > 0 && ![photo underlyingImage]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"正在下载照片，请稍候再试" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alert show];
+        
+    }
+}
+
 -(void)actionSetCoverImageButtonPressed:(id)sender{
     id <MWPhoto> photo = [self photoAtIndex:_currentPageIndex];
     if ([self numberOfPhotos] > 0 && [photo underlyingImage]) {
@@ -1201,7 +1228,15 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
         if (buttonIndex != actionSheet.cancelButtonIndex) {
             self.coverImageIndex = [self getCurrentIndex];
             if (_delegate && [_delegate respondsToSelector:@selector(photoBrowser:setCoverPhotoAtIndex:)]) {
-                [_delegate photoBrowser:self setCoverPhotoAtIndex:[self getCurrentIndex]];
+                [_delegate photoBrowser:self setCoverPhotoAtIndex:self.coverImageIndex];
+            }
+        }
+    }else
+    if (actionSheet == _reportSheet) {
+        if (buttonIndex != actionSheet.cancelButtonIndex) {
+            self.coverImageIndex = [self getCurrentIndex];
+            if (_delegate && [_delegate respondsToSelector:@selector(photoBrowser:reportPhotoAtIndex:)]) {
+                [_delegate photoBrowser:self reportPhotoAtIndex:self.coverImageIndex];
             }
         }
     }
@@ -1254,6 +1289,14 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
         _setCoverimageSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     }
     return _setCoverimageSheet;
+}
+
+-(UIActionSheet *)reportSheet{
+    if (!_reportSheet) {
+        _reportSheet = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"举报该照片", nil];
+        _reportSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    }
+    return _reportSheet;
 }
 #pragma mark --
 

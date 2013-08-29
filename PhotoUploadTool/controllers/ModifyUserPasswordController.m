@@ -10,6 +10,7 @@
 #import "UserObjDao.h"
 #import "MBProgressHUD.h"
 #import "AppDelegate.h"
+#import "CocoaSecurity.h"
 @interface ModifyUserPasswordController ()
 
 @end
@@ -133,7 +134,7 @@
         return NO;
     }
     AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    if ([oldpwStr isEqualToString:@""] || ![oldpwStr isEqualToString:appDelegate.user.userPwd]) {
+    if ([oldpwStr isEqualToString:@""] || ![[CocoaSecurity md5Str:oldpwStr] isEqualToString:appDelegate.user.userPwd]) {
         [self alertErrorMessage:@"原始密码不正确"];
         return NO;
     }

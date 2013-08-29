@@ -13,6 +13,7 @@
 		6300FA8B178157AF00B0C34D /* FriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6300FA8A178157AF00B0C34D /* FriendsViewController.m */; };
 		6300FA8D17815D0D00B0C34D /* titleLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 6300FA8C17815D0D00B0C34D /* titleLogo.png */; };
 		6319B50F174897F30009A448 /* DRWaterFlowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6319B50E174897F30009A448 /* DRWaterFlowViewController.m */; };
+		6321296517CF218D0066420C /* alert.png in Resources */ = {isa = PBXBuildFile; fileRef = 6321296417CF218D0066420C /* alert.png */; };
 		632A8BDA17421BCB002A81DF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 632A8BD917421BCB002A81DF /* UIKit.framework */; };
 		632A8BDC17421BCB002A81DF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 632A8BDB17421BCB002A81DF /* Foundation.framework */; };
 		632A8BDE17421BCB002A81DF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 632A8BDD17421BCB002A81DF /* CoreGraphics.framework */; };
@@ -166,6 +167,7 @@
 		63CFD135176EED54007119FF /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63CFD134176EED54007119FF /* CoreText.framework */; };
 		63CFD138176F1395007119FF /* PrivatePwdmodifyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CFD137176F1395007119FF /* PrivatePwdmodifyView.m */; };
 		63CFD13A176F1853007119FF /* trash.png in Resources */ = {isa = PBXBuildFile; fileRef = 63CFD139176F1853007119FF /* trash.png */; };
+		63E626F617CDE640003D39C8 /* ReportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E626F517CDE640003D39C8 /* ReportViewController.m */; };
 		63F444CA1781695D0062CE25 /* arrowBottom.png in Resources */ = {isa = PBXBuildFile; fileRef = 63F444C91781695D0062CE25 /* arrowBottom.png */; };
 		63F444CD178174410062CE25 /* FriendObj.m in Sources */ = {isa = PBXBuildFile; fileRef = 63F444CC178174410062CE25 /* FriendObj.m */; };
 		63F444D01781752A0062CE25 /* FriendObjDao.m in Sources */ = {isa = PBXBuildFile; fileRef = 63F444CF1781752A0062CE25 /* FriendObjDao.m */; };
@@ -184,6 +186,7 @@
 		6300FA8C17815D0D00B0C34D /* titleLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = titleLogo.png; sourceTree = "<group>"; };
 		6319B50D174897F30009A448 /* DRWaterFlowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRWaterFlowViewController.h; sourceTree = "<group>"; };
 		6319B50E174897F30009A448 /* DRWaterFlowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRWaterFlowViewController.m; sourceTree = "<group>"; };
+		6321296417CF218D0066420C /* alert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alert.png; sourceTree = "<group>"; };
 		632A8BD617421BCB002A81DF /* PhotoUploadTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoUploadTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		632A8BD917421BCB002A81DF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		632A8BDB17421BCB002A81DF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -424,6 +427,8 @@
 		63CFD136176F1395007119FF /* PrivatePwdmodifyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrivatePwdmodifyView.h; sourceTree = "<group>"; };
 		63CFD137176F1395007119FF /* PrivatePwdmodifyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivatePwdmodifyView.m; sourceTree = "<group>"; };
 		63CFD139176F1853007119FF /* trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trash.png; sourceTree = "<group>"; };
+		63E626F417CDE640003D39C8 /* ReportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportViewController.h; sourceTree = "<group>"; };
+		63E626F517CDE640003D39C8 /* ReportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportViewController.m; sourceTree = "<group>"; };
 		63F444C91781695D0062CE25 /* arrowBottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrowBottom.png; sourceTree = "<group>"; };
 		63F444CB178174410062CE25 /* FriendObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendObj.h; sourceTree = "<group>"; };
 		63F444CC178174410062CE25 /* FriendObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendObj.m; sourceTree = "<group>"; };
@@ -636,6 +641,8 @@
 				6300FA8A178157AF00B0C34D /* FriendsViewController.m */,
 				6383D1B0178E61D5000C44B2 /* FriendPhotoViewController.h */,
 				6383D1B1178E61D5000C44B2 /* FriendPhotoViewController.m */,
+				63E626F417CDE640003D39C8 /* ReportViewController.h */,
+				63E626F517CDE640003D39C8 /* ReportViewController.m */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -746,6 +753,7 @@
 		639EFCB11752F36900433D3C /* images */ = {
 			isa = PBXGroup;
 			children = (
+				6321296417CF218D0066420C /* alert.png */,
 				639E047A17B8C7AC00A3F723 /* coverFlag.png */,
 				639E047817B87AD700A3F723 /* edit@2x.png */,
 				639809FE1795364900CBB073 /* placeholder.png */,
@@ -1077,6 +1085,7 @@
 				63980A031795364900CBB073 /* lock.png in Resources */,
 				639E047917B87AD700A3F723 /* edit@2x.png in Resources */,
 				639E047B17B8C7AC00A3F723 /* coverFlag.png in Resources */,
+				6321296517CF218D0066420C /* alert.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1172,6 +1181,7 @@
 				63F444CD178174410062CE25 /* FriendObj.m in Sources */,
 				63F444D01781752A0062CE25 /* FriendObjDao.m in Sources */,
 				6383D1B2178E61D5000C44B2 /* FriendPhotoViewController.m in Sources */,
+				63E626F617CDE640003D39C8 /* ReportViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1249,15 +1259,13 @@
 		632A8BF917421BCB002A81DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Sen Ye (FE46ZS29LM)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Sen Ye (FE46ZS29LM)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PhotoUploadTool/PhotoUploadTool-Prefix.pch";
 				INFOPLIST_FILE = "PhotoUploadTool/PhotoUploadTool-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "BF3E5AD2-E31C-4B78-99E0-8BB954F734C3";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BF3E5AD2-E31C-4B78-99E0-8BB954F734C3";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
